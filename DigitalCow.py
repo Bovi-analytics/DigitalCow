@@ -13,6 +13,7 @@ class DigitalCow(DigitalHerd):
         self.__current_days_pregnant = current_days_pregnant
         self.__age_at_first_heat = age_at_first_heat
         self.__life_states = {'Open', 'Pregnant', 'DoNotBreed', 'Exit'}
+        # self.__life_states = ['Open', 'Pregnant', 'DoNotBreed, 'Exit']
         self.__total_states = {}
 
     def probability_state_change(self, dim=None, ln=None, dp=None):
@@ -117,16 +118,20 @@ class DigitalCow(DigitalHerd):
 
     def age(self, days=1):
         for day in range(days):
-            self.__current_days_in_milk += 1
-            for state in range(len(self.__life_states)):
+            for state in self.__life_states:
                 new_state = f"{state}_" \
                             f"{self.__current_days_in_milk}_" \
                             f"{self.__current_lactation_number}"
+
+                # alle probabilities berekenen van states waarin new_state kan veranderen
                 prob_state_change = self.probability_state_change()
                 new_state = {
-                    new_state: []  # probabilities
+                    new_state: {}  # probabilities
+                    # new_state: {state waarin new state kan veranderen: probability}
                 }
                 self.__total_states.update(new_state)
+                # self.__total_states.append(new_state)
+            self.__current_days_in_milk += 1
             #
             # new_open_state = f"Open_{self.__current_days_in_milk}_{self.__current_lactation_number}"
             # new_pregnant_state = f"Pregnant_{self.__current_days_in_milk}_{self.__current_lactation_number}"

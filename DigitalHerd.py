@@ -32,7 +32,7 @@ class DigitalHerd:
                 cow.__voluntary_waiting_period = self.__voluntary_waiting_period
                 cow.__mu_age_at_first_heat = self.__mu_age_at_first_heat
                 cow.__sigma_age_at_first_heat = self.__sigma_age_at_first_heat
-                # cow.__herd = self.__herd
+                cow.__herd = self
 
     @property
     def mu_age_at_first_heat(self):
@@ -41,6 +41,16 @@ class DigitalHerd:
     @mu_age_at_first_heat.setter
     def mu_age_at_first_heat(self, mu):
         self.__mu_age_at_first_heat = mu
+        self.__set_herd_variables_in_cow()
+
+    @property
+    def sigma_age_at_first_heat(self):
+        return self.__sigma_age_at_first_heat
+
+    @sigma_age_at_first_heat.setter
+    def sigma_age_at_first_heat(self, sigma):
+        self.__sigma_age_at_first_heat = sigma
+        self.__set_herd_variables_in_cow()
 
     def calculate_mu_age_at_first_heat(self):
         mu_age_at_first_heat = 0
@@ -55,6 +65,20 @@ class DigitalHerd:
     @property
     def herd(self):
         return self.__herd
+
+    @herd.setter
+    def herd(self, herd):
+        from DigitalCow import DigitalCow
+        all_instances = True
+        for cow in herd:
+            if not isinstance(cow, DigitalCow):
+                all_instances = False
+        if all_instances:
+            self.__herd = herd
+            self.__set_herd_variables_in_cow()
+        else:
+            # Error handling
+            print()
 
     @property
     def voluntary_waiting_period(self):
