@@ -20,8 +20,11 @@ def make_herd():
     cow4 = DigitalCow(39, 0, 0)
     cow5 = DigitalCow(200, 3, 74)
     another_herd.add_to_herd(cows=[cow4, cow5])
+    print('before aging 7 days:\n' + str(cow3))
+    print(cow3.total_states)
     cow3.age(7)
-    print(cow3.current_days_in_milk, cow3.current_lactation_number, cow3.current_days_pregnant)
+    print('after aging 7 days:\n' + str(cow3))
+    print(cow3.total_states)
     print(new_herd.herd)
     print(another_herd.herd)
 
@@ -29,18 +32,12 @@ def make_herd():
 def new_herd_example():
     just_another_herd = DigitalHerd(240, 0, 50)
     a_cow = DigitalCow(15, 2, 0)
-    just_another_herd.herd = [a_cow]
+    another_cow = DigitalCow(269, 1, 144)
+    just_another_herd.herd = [a_cow, another_cow]
     print('test')
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-    # See PyCharm help at https://www.jetbrains.com/help/pycharm/
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    # print_hi('PyCharm')
     # make_herd()
     new_herd_example()

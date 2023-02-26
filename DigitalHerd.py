@@ -32,7 +32,9 @@ class DigitalHerd:
                 cow.__voluntary_waiting_period = self.__voluntary_waiting_period
                 cow.__mu_age_at_first_heat = self.__mu_age_at_first_heat
                 cow.__sigma_age_at_first_heat = self.__sigma_age_at_first_heat
-                cow.__herd = self
+                for cow_ in self.__herd:
+                    if not cow == cow_:
+                        cow.__herd.append(cow_)
 
     @property
     def mu_age_at_first_heat(self):
