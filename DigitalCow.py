@@ -7,17 +7,18 @@ class DigitalCow(DigitalHerd):
     def __init__(self, days_in_milk=0, lactation_number=0, current_days_pregnant=0,
                  age_at_first_heat=None, condition=None, state='Open'):
         super().__init__()
+        self.__herd = None
         self.__current_days_in_milk = days_in_milk
         self.__current_lactation_number = lactation_number
         self.__current_days_pregnant = current_days_pregnant
         self.__age_at_first_heat = age_at_first_heat
         self.__condition = condition
-        self.__herd = []
-        self.__current_state = f"{state}_{self.__current_days_in_milk}_{self.__current_lactation_number}"
+        self.__current_state = state
         self.__life_states = ['Open', 'Pregnant', 'DoNotBreed', 'Exit']
         self.__total_states = {}
 
     def age(self, days=1):
+        self.__total_states = {}
         new_days_in_milk = self.__current_days_in_milk
         new_days_pregnant = self.__current_days_pregnant
         new_lactation_number = self.__current_lactation_number
@@ -222,11 +223,12 @@ class DigitalCow(DigitalHerd):
         return __probability_heat() * __probability_pregnancy()
 
     def __str__(self):
-        return f"DIM: {self.__current_days_in_milk}\n" \
-               f"Lactation number: {self.__current_lactation_number}\n" \
-               f"Days pregnant: {self.__current_days_pregnant}\n" \
-               f"Current state: {self.__current_state}\n" \
-               f"Condition: {self.__condition}"
+        return f"Cow:\n" \
+               f"\tDIM: {self.__current_days_in_milk}\n" \
+               f"\tLactation number: {self.__current_lactation_number}\n" \
+               f"\tDays pregnant: {self.__current_days_pregnant}\n" \
+               f"\tCurrent state: {self.__current_state}\n" \
+               f"\tCondition: {self.__condition}"
 
     # def __repr__(self):
     #     return 'Digital twin of a dairy cow'
@@ -265,20 +267,19 @@ class DigitalCow(DigitalHerd):
 
     @property
     def current_state(self):
-        return self.__current_state
+        return f"{self.__current_state}_{self.__current_days_in_milk}_{self.__current_lactation_number}"
 
     @current_state.setter
     def current_state(self, state):
-        # must be state_dim_ln
         self.__current_state = state
 
-    @property
-    def condition(self):
-        return self.__condition
-
-    @condition.setter
-    def condition(self, condition):
-        self.__condition = condition
+    # @property
+    # def condition(self):
+    #     return self.__condition
+    #
+    # @condition.setter
+    # def condition(self, condition):
+    #     self.__condition = condition
 
     @property
     def total_states(self):
