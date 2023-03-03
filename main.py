@@ -4,6 +4,7 @@
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 from DigitalCow import DigitalCow
 from DigitalHerd import DigitalHerd
+from DigitalCowFacade import DigitalCowFacade
 
 
 def make_herd():
@@ -22,11 +23,15 @@ def make_herd():
     another_herd.add_to_herd(cows=[cow4, cow5])
     print('before aging 7 days:\n' + str(cow3))
     print(cow3.total_states)
-    cow3.age(7)
+    cow3.generate_total_states(7)
     print('after aging 7 days:\n' + str(cow3))
     print(cow3.total_states)
     print(new_herd.herd)
     print(another_herd.herd)
+    facade = DigitalCowFacade(cow3, cow3.total_states)
+    # matrix = facade.probability()
+    # vector = calculation(matrix)
+    # amount_of_milk = cow3.get_milk(vector)
 
 
 def new_herd_example():
