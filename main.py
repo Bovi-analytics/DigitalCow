@@ -40,9 +40,20 @@ def new_herd_example():
     another_cow = DigitalCow(269, 1, 144)
     just_another_herd.herd = [a_cow, another_cow]
     print('test')
+    print(a_cow.total_states)
+    a_cow.generate_total_states(1)
+    print(a_cow.total_states)
+
+
+def test():
+    a_cow = DigitalCow(15, 2, 0)
+    print(a_cow.total_states)
+    a_cow.generate_total_states(1)
+    print(a_cow.total_states)
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     # make_herd()
-    new_herd_example()
+    # new_herd_example()
+    test()

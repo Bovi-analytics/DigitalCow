@@ -57,10 +57,10 @@ class DigitalCow(DigitalHerd):
                         print('Error')
 
                 self.total_states.append(new_current_state)
-                new_days_in_milk += 1
+            new_days_in_milk += 1
         self.total_states = tuple(self.total_states)
 
-    def probability_state_change(self, current_state, new_state, dim=None, ln=None, dp=None):
+    def probability_state_change(self, current_state, new_state, dim=None, ln=None, dp=None) -> Decimal:
         if new_state.split('_')[0] not in self.__life_states:
             print('Error')
         if dim is None:
@@ -72,7 +72,7 @@ class DigitalCow(DigitalHerd):
 
         if new_state.split('_')[1] != dim + 1 and new_state.split('_')[2] == ln and \
                 current_state.split('_')[0] != 'Exit':
-            return 0.0
+            return Decimal(0)
 
         if ln == 0:
             return self.__probability_state_change_heifer(current_state, new_state, dim, dp)
@@ -84,33 +84,33 @@ class DigitalCow(DigitalHerd):
         #     #
         #     return
 
-    def __probability_state_change_heifer(self, current_state, new_state, days_in_milk, days_pregnant):
+    def __probability_state_change_heifer(self, current_state, new_state, days_in_milk, days_pregnant) -> Decimal:
         age_at_first_heat = self.generate_age_at_first_heat()
 
         def __probability_heat():
             if days_in_milk < age_at_first_heat or days_pregnant > 0:
-                return 0.0
+                return Decimal(0)
             else:
-                return 0.8
+                return Decimal(0.8)
 
         def __probability_pregnancy():
             ##
-            return 0.5
+            return Decimal(0.5)
 
         def __probability_birth():
-            return 0.4
+            return Decimal(0.4)
 
         def __probability_abortion():
             if days_pregnant > 0:
-                return 0.2
+                return Decimal(0.2)
             else:
-                return 0.0
+                return Decimal(0.0)
 
         def __probability_exit():
-            return 0.01
+            return Decimal(0.01)
 
         def __probability_dnb():
-            return 0.0
+            return Decimal(0.0)
 
         match current_state.split('_')[0]:
             case 'Open':
@@ -142,9 +142,9 @@ class DigitalCow(DigitalHerd):
             case 'DoNotBreed':
                 match new_state.split('_')[0]:
                     case 'Open':
-                        return 0.0
+                        return Decimal(0)
                     case 'Pregnant':
-                        return 0.0
+                        return Decimal(0)
                     case 'DoNotBreed':
                         return  # staying DoNotBreed
                     case 'Exit':
@@ -152,9 +152,9 @@ class DigitalCow(DigitalHerd):
             case 'Exit':
                 match new_state.split('_')[0]:
                     case 'Exit':
-                        return 1.0
+                        return Decimal(1)
                     case ('Open' | 'Pregnant' | 'DoNotBreed'):
-                        return 0.0
+                        return Decimal(0)
 
 
 

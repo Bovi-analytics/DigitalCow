@@ -22,7 +22,8 @@ class DigitalHerd:
         if cows is not None:
             for cow in cows:
                 if isinstance(cow, DigitalCow):
-                    self.herd.append(cow)
+                    if cow not in self.herd:
+                        self.herd.append(cow)
         self.__set_herd_variables_in_cow()
 
     def __set_herd_variables_in_cow(self):
@@ -43,7 +44,7 @@ class DigitalHerd:
     @mu_age_at_first_heat.setter
     def mu_age_at_first_heat(self, mu):
         self._mu_age_at_first_heat = mu
-        self.__set_herd_variables_in_cow()
+        # self.__set_herd_variables_in_cow()
 
     @property
     def sigma_age_at_first_heat(self):
@@ -52,7 +53,7 @@ class DigitalHerd:
     @sigma_age_at_first_heat.setter
     def sigma_age_at_first_heat(self, sigma):
         self._sigma_age_at_first_heat = sigma
-        self.__set_herd_variables_in_cow()
+        # self.__set_herd_variables_in_cow()
 
     def calculate_mu_age_at_first_heat(self):
         mu_age_at_first_heat = 0
@@ -77,7 +78,7 @@ class DigitalHerd:
                 all_instances = False
         if all_instances:
             self.herd = herd
-            self.__set_herd_variables_in_cow()
+            # self.__set_herd_variables_in_cow()
         else:
             # Error handling
             print()
@@ -89,4 +90,4 @@ class DigitalHerd:
     @voluntary_waiting_period.setter
     def voluntary_waiting_period(self, vwp):
         self.voluntary_waiting_period = vwp
-        self.__set_herd_variables_in_cow()
+        # self.__set_herd_variables_in_cow()
