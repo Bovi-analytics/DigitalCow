@@ -1,14 +1,12 @@
-import numpy as np
-from DigitalHerd import DigitalHerd
 from decimal import Decimal
+import DigitalHerd
 
 
-class DigitalCow(DigitalHerd):
+class DigitalCow:
 
     def __init__(self, days_in_milk=0, lactation_number=0, current_days_pregnant=0,
-                 age_at_first_heat=None, state='Open'):
-        super().__init__()
-        self._herd = []
+                 age_at_first_heat=None, herd=None, state='Open'):
+        self._herd = herd
         self._current_days_in_milk = days_in_milk
         self._current_lactation_number = lactation_number
         self._current_days_pregnant = current_days_pregnant
@@ -17,7 +15,7 @@ class DigitalCow(DigitalHerd):
         self.__life_states = ['Open', 'Pregnant', 'DoNotBreed', 'Exit']
         self._total_states = ()
 
-    def generate_total_states(self, dim_threshold=1000, ln_threshold=9):
+    def generate_total_states(self, dim_limit=1000, ln_limit=9):
         self._total_states = []
         new_days_in_milk = self._current_days_in_milk
         new_lactation_number = self._current_lactation_number
@@ -27,9 +25,9 @@ class DigitalCow(DigitalHerd):
                                     f"{new_days_in_milk}_" \
                                     f"{new_lactation_number}"
                 self._total_states.append(new_current_state)
-            if new_days_in_milk == dim_threshold:
+            if new_days_in_milk == dim_limit:
                 new_days_in_milk = 0
-                if new_lactation_number < ln_threshold:
+                if new_lactation_number < ln_limit:
                     new_lactation_number += 1
                 else:
                     break
@@ -63,7 +61,7 @@ class DigitalCow(DigitalHerd):
         #     return
 
     def __probability_state_change_heifer(self, current_state, new_state, days_in_milk, days_pregnant) -> Decimal:
-        age_at_first_heat = self.generate_age_at_first_heat()
+        age_at_first_heat = self.herd.generate_age_at_first_heat()
 
         def __probability_heat():
             if days_in_milk < age_at_first_heat or days_pregnant > 0:
@@ -154,83 +152,57 @@ class DigitalCow(DigitalHerd):
                     case ('Open' | 'Pregnant' | 'DoNotBreed'):
                         return Decimal(0)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    def __probability_state_change_first_lactation(self, new_state, days_in_milk, days_pregnant):
-
-        def __probability_heat():
-            if days_in_milk < self.voluntary_waiting_period or days_pregnant > 0:
-                return 0.0
-            else:
-                return 0.8
-
-        def __probability_pregnancy():
-            ##
-            return 0.5
-
-        def __probability_abortion():
-            if days_pregnant > 0:
-                return 0.2
-            else:
-                return 0.0
-
-        def __probability_exit():
-            return 0.01
-
-        def __probability_dnb():
-            return 0.0
-
-        return __probability_heat() * __probability_pregnancy()
-
-    def __probability_state_change_new_lactation(self, new_state, days_in_milk, days_pregnant):
-
-        def __probability_heat():
-            if days_in_milk < self.voluntary_waiting_period or days_pregnant > 0:
-                return 0.0
-            else:
-                return 0.8
-
-        def __probability_pregnancy():
-            ##
-            return 0.5
-
-        def __probability_abortion():
-            if days_pregnant > 0:
-                return 0.2
-            else:
-                return 0.0
-
-        def __probability_exit():
-            return 0.01
-
-        def __probability_dnb():
-            return 0.0
-
-        return __probability_heat() * __probability_pregnancy()
+    # def __probability_state_change_first_lactation(self, new_state, days_in_milk, days_pregnant):
+    #
+    #     def __probability_heat():
+    #         if days_in_milk < self.herd.voluntary_waiting_period or days_pregnant > 0:
+    #             return 0.0
+    #         else:
+    #             return 0.8
+    #
+    #     def __probability_pregnancy():
+    #         ##
+    #         return 0.5
+    #
+    #     def __probability_abortion():
+    #         if days_pregnant > 0:
+    #             return 0.2
+    #         else:
+    #             return 0.0
+    #
+    #     def __probability_exit():
+    #         return 0.01
+    #
+    #     def __probability_dnb():
+    #         return 0.0
+    #
+    #     return __probability_heat() * __probability_pregnancy()
+    #
+    # def __probability_state_change_new_lactation(self, new_state, days_in_milk, days_pregnant):
+    #
+    #     def __probability_heat():
+    #         if days_in_milk < self.herd.voluntary_waiting_period or days_pregnant > 0:
+    #             return 0.0
+    #         else:
+    #             return 0.8
+    #
+    #     def __probability_pregnancy():
+    #         ##
+    #         return 0.5
+    #
+    #     def __probability_abortion():
+    #         if days_pregnant > 0:
+    #             return 0.2
+    #         else:
+    #             return 0.0
+    #
+    #     def __probability_exit():
+    #         return 0.01
+    #
+    #     def __probability_dnb():
+    #         return 0.0
+    #
+    #     return __probability_heat() * __probability_pregnancy()
 
     def __str__(self):
         return f"DigitalCow:\n" \
@@ -239,15 +211,24 @@ class DigitalCow(DigitalHerd):
                f"\tDays pregnant: {self._current_days_pregnant}\n" \
                f"\tCurrent state: {self._current_state}"
 
-    def __repr__(self):
-        return f"DigitalCow(days_in_milk={self._current_days_in_milk}, " \
-               f"lactation_number={self._current_lactation_number}, " \
-               f"current_days_pregnant={self._current_days_pregnant}, " \
-               f"age_at_first_heat={self._age_at_first_heat}, " \
-               f"state={self._current_state})"
+    # def __repr__(self):
+    #     return f"DigitalCow(days_in_milk={self._current_days_in_milk}, " \
+    #            f"lactation_number={self._current_lactation_number}, " \
+    #            f"current_days_pregnant={self._current_days_pregnant}, " \
+    #            f"age_at_first_heat={self._age_at_first_heat}, " \
+    #            f"state={self._current_state})"
 
     @property
-    def current_days_in_milk(self):
+    def herd(self) -> DigitalHerd.DigitalHerd:
+        return self._herd
+
+    @herd.setter
+    def herd(self, herd):
+        if isinstance(herd, DigitalHerd.DigitalHerd):
+            self._herd = herd
+
+    @property
+    def current_days_in_milk(self) -> int:
         return self._current_days_in_milk
 
     @current_days_in_milk.setter
@@ -255,7 +236,7 @@ class DigitalCow(DigitalHerd):
         self._current_days_in_milk = dim
 
     @property
-    def current_days_pregnant(self):
+    def current_days_pregnant(self) -> int:
         return self._current_days_pregnant
 
     @current_days_pregnant.setter
@@ -263,7 +244,7 @@ class DigitalCow(DigitalHerd):
         self._current_days_pregnant = dp
 
     @property
-    def current_lactation_number(self):
+    def current_lactation_number(self) -> int:
         return self._current_lactation_number
 
     @current_lactation_number.setter
@@ -271,7 +252,7 @@ class DigitalCow(DigitalHerd):
         self._current_lactation_number = ln
 
     @property
-    def age_at_first_heat(self):
+    def age_at_first_heat(self) -> int:
         return self._age_at_first_heat
 
     @age_at_first_heat.setter
@@ -279,7 +260,7 @@ class DigitalCow(DigitalHerd):
         self._age_at_first_heat = age_at_first_heat
 
     @property
-    def current_state(self):
+    def current_state(self) -> str:
         return f"{self._current_state}_" \
                f"{self._current_days_in_milk}_" \
                f"{self._current_lactation_number}"
@@ -289,7 +270,7 @@ class DigitalCow(DigitalHerd):
         self._current_state = state
 
     @property
-    def total_states(self):
+    def total_states(self) -> tuple:
         return self._total_states
 
     @total_states.setter

@@ -16,16 +16,13 @@ def make_herd():
     new_herd.add_to_herd(cows=[cow1, cow2])
     print(new_herd.herd)
     another_herd = DigitalHerd(360, 1, 32)
-    DigitalHerd.add_to_herd(another_herd, 3, dim_cows=[82, 15, 157],
+    DigitalHerd.add_to_herd(another_herd, dim_cows=[82, 15, 157],
                             lns_cows=[2, 3, 1], dp_cows=[31, 0, 120])
     cow3 = another_herd.herd[0]
     cow4 = DigitalCow(39, 0, 0)
     cow5 = DigitalCow(200, 3, 74)
     another_herd.add_to_herd(cows=[cow4, cow5])
-    print('before aging 7 days:\n' + str(cow3))
-    print(cow3.total_states)
-    cow3.generate_total_states(7)
-    print('after aging 7 days:\n' + str(cow3))
+    cow3.generate_total_states(dim_limit=600)
     print(cow3.total_states)
     print(new_herd.herd)
     print(another_herd.herd)
@@ -49,12 +46,12 @@ def new_herd_example():
 def test():
     a_cow = DigitalCow(0, 0, 0)
     print(a_cow._total_states)
-    a_cow.generate_total_states(dim_threshold=600, ln_threshold=6)
+    a_cow.generate_total_states(dim_limit=600, ln_limit=6)
     print(a_cow._total_states)
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    # make_herd()
-    new_herd_example()
+    make_herd()
+    # new_herd_example()
     # test()
