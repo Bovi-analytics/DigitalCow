@@ -18,8 +18,7 @@ class DigitalHerd:
         if dp_cows is None:
             dp_cows = []
         if not len(dim_cows) == len(lns_cows) == len(dp_cows):
-            # raise error
-            print('Error length of dim, lns and dp lists do not match')
+            raise IndexError("Length of dim, lns and dp lists do not match")
         for i in range(len(dim_cows)):
             self._herd.append(DigitalCow.DigitalCow(dim_cows[i], lns_cows[i], dp_cows[i], herd=self))
         if cows is not None:
@@ -68,8 +67,7 @@ class DigitalHerd:
         if all_instances:
             self._herd = herd
         else:
-            # Error handling
-            print()
+            raise TypeError("Herd property has to be a list of DigitalCow objects")
 
     @property
     def voluntary_waiting_period(self):
