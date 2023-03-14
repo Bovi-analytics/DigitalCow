@@ -65,12 +65,6 @@ class DigitalCow:
             dp = self._current_days_pregnant
         except TypeError:
             raise TypeError("dim, ln and dp must be integers")
-        # if dim is None:
-        #     dim = self._current_days_in_milk
-        # if ln is None:
-        #     ln = self._current_lactation_number
-        # if dp is None:
-        #     dp = self._current_days_pregnant
 
         if new_state.split('_')[1] != dim + 1 and new_state.split('_')[2] == ln and \
                 current_state.split('_')[0] != 'Exit':
@@ -391,12 +385,12 @@ class DigitalCow:
                f"\tDays pregnant: {self._current_days_pregnant}\n" \
                f"\tCurrent state: {self._current_state}"
 
-    # def __repr__(self):
-    #     return f"DigitalCow(days_in_milk={self._current_days_in_milk}, " \
-    #            f"lactation_number={self._current_lactation_number}, " \
-    #            f"current_days_pregnant={self._current_days_pregnant}, " \
-    #            f"age_at_first_heat={self._age_at_first_heat}, " \
-    #            f"state={self._current_state})"
+    def __repr__(self):
+        return f"DigitalCow(days_in_milk={self._current_days_in_milk}, " \
+               f"lactation_number={self._current_lactation_number}, " \
+               f"current_days_pregnant={self._current_days_pregnant}, " \
+               f"age_at_first_heat={self._age_at_first_heat}, " \
+               f"state={self._current_state})"
 
     @property
     def herd(self) -> DigitalHerd.DigitalHerd:
