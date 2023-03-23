@@ -34,7 +34,7 @@ class DigitalCow:
         self._total_states = []
         new_days_in_milk = self._current_days_in_milk
         new_lactation_number = self._current_lactation_number
-        while True:
+        while not new_lactation_number > ln_limit:
             for state in self.__life_states:
                 new_current_state = f"{state}_" \
                                     f"{new_days_in_milk}_" \
@@ -42,10 +42,7 @@ class DigitalCow:
                 self._total_states.append(new_current_state)
             if new_days_in_milk == dim_limit:
                 new_days_in_milk = 0
-                if new_lactation_number < ln_limit:
-                    new_lactation_number += 1
-                else:
-                    break
+                new_lactation_number += 1
             else:
                 new_days_in_milk += 1
         self._total_states = tuple(self._total_states)
@@ -435,9 +432,7 @@ class DigitalCow:
 
     @property
     def current_state(self) -> str:
-        return f"{self._current_state}_" \
-               f"{self._current_days_in_milk}_" \
-               f"{self._current_lactation_number}"
+        return self._current_state
 
     @current_state.setter
     def current_state(self, state):
