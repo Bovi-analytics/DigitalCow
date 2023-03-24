@@ -1,10 +1,10 @@
-
-
 class State:
 
-    def __int__(self, state='Open', days_in_milk=0, lactation_number=0,
-                days_pregnant=0):
+    def __init__(self, state, days_in_milk, lactation_number,
+                 days_pregnant=0):
         self._state = state
+
+        # raise exception if variables are not of the correct type
         self._days_in_milk = days_in_milk
         self._lactation_number = lactation_number
         self._days_pregnant = days_pregnant
