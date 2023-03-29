@@ -1,4 +1,5 @@
 from DigitalCow import DigitalCow
+from DairyState import State
 from abc import ABC, abstractmethod
 from decimal import Decimal
 from typing import Generic, TypeVar
@@ -64,13 +65,13 @@ class DigitalCowFacade(AbstractDigitalTwinFacade[DigitalCow]):
     """Subclass of the base class AbstractDigitalTwinFacade for the DigitalCow object.
     """
 
-    def probability(self, state_from: str, state_to: str) -> Decimal:
+    def probability(self, state_from: State, state_to: State) -> Decimal:
         """Overwrites the method from the base class.
 
         :param state_from: The state that the transition starts from.
-        :type state_from: str
+        :type state_from: State obj
         :param state_to: The state that the transition ends in.
-        :type state_to: str
+        :type state_to: State obj
         :return: The probability of transitioning from state_from to state_to.
         :rtype: Decimal
         """

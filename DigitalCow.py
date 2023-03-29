@@ -61,8 +61,7 @@ class DigitalCow:
 
         if new_state.days_in_milk != current_state.days_in_milk + 1 and \
                 new_state.lactation_number == current_state.lactation_number \
-                and \
-                current_state.state != 'Exit':
+                and current_state.state != 'Exit':
             return Decimal(0)
 
         if current_state.lactation_number == 0:
@@ -389,6 +388,7 @@ class DigitalCow:
                f"\tDIM: {self.current_days_in_milk}\n" \
                f"\tLactation number: {self.current_lactation_number}\n" \
                f"\tDays pregnant: {self.current_days_pregnant}\n" \
+               f"\tHerd: {self._herd}\n" \
                f"\tCurrent state: {self.current_state}"
 
     def __repr__(self):
@@ -396,6 +396,7 @@ class DigitalCow:
                f"lactation_number={self.current_lactation_number}, " \
                f"current_days_pregnant={self.current_days_pregnant}, " \
                f"age_at_first_heat={self._age_at_first_heat}, " \
+               f"herd={self._herd}, " \
                f"state={self.current_state})"
 
     @property
@@ -447,6 +448,8 @@ class DigitalCow:
     def current_state(self, state):
         if isinstance(state, DairyState.State):
             self._current_state = state
+        elif type(state) == str:
+            self._current_state.state = state
 
     @property
     def total_states(self) -> tuple:
@@ -458,7 +461,11 @@ class DigitalCow:
 
 
 def possible_new_states(current_state: DairyState.State) -> tuple:
-    # Make a list with all new states current_state can transition to.
+    """
+
+    :param current_state:
+    :return:
+    """
     match current_state.state:
         case 'Open':
             return (
@@ -497,4 +504,4 @@ def possible_new_states(current_state: DairyState.State) -> tuple:
                                  current_state.lactation_number),
             )
         case _:
-            raise Exception
+            raise ValueError('The current state given is invalid.')

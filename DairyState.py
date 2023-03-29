@@ -1,16 +1,33 @@
 class State:
 
-    def __init__(self, state, days_in_milk, lactation_number,
-                 days_pregnant=0):
+    def __init__(self, state, days_in_milk, lactation_number, days_pregnant=0):
         self._state = state
-
-        # raise exception if variables are not of the correct type
+        if not type(self._state) == str:
+            raise TypeError
         self._days_in_milk = days_in_milk
+        if not type(self._days_in_milk) == int:
+            raise TypeError
         self._lactation_number = lactation_number
+        if not type(self._lactation_number) == int:
+            raise TypeError
         self._days_pregnant = days_pregnant
+        if not type(self._days_pregnant) == int:
+            raise TypeError
+
+    def __str__(self):
+        return f"state: {self._state}\n" \
+               f"days_in_milk: {self._days_in_milk}\n" \
+               f"lactation_number: {self._lactation_number}\n" \
+               f"days_pregnant: {self._days_pregnant}"
+
+    def __repr__(self):
+        return f"State(state={self._state}, " \
+               f"days_in_milk={self._days_in_milk}, " \
+               f"lactation_number={self._lactation_number}, " \
+               f"days_pregnant={self._days_pregnant})"
 
     @property
-    def state(self):
+    def state(self) -> str:
         return self._state
 
     @state.setter
@@ -18,7 +35,7 @@ class State:
         self._state = state
 
     @property
-    def days_in_milk(self):
+    def days_in_milk(self) -> int:
         return self._days_in_milk
 
     @days_in_milk.setter
@@ -26,7 +43,7 @@ class State:
         self._days_in_milk = dim
 
     @property
-    def lactation_number(self):
+    def lactation_number(self) -> int:
         return self._lactation_number
 
     @lactation_number.setter
@@ -34,7 +51,7 @@ class State:
         self._lactation_number = ln
 
     @property
-    def days_pregnant(self):
+    def days_pregnant(self) -> int:
         return self._days_pregnant
 
     @days_pregnant.setter
