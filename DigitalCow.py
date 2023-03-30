@@ -1,11 +1,12 @@
 from decimal import Decimal
 import DigitalHerd
+import numpy as np
 
 
 class DigitalCow:
 
-    def __init__(self, days_in_milk=0, lactation_number=0, current_days_pregnant=0, age_at_first_heat=None,
-                 herd=None, state='Open'):
+    def __init__(self, days_in_milk=0, lactation_number=0, current_days_pregnant=0,
+                 age_at_first_heat=None, herd=None, state='Open'):
         """
 
         :param days_in_milk:
@@ -23,6 +24,16 @@ class DigitalCow:
         self._age_at_first_heat = age_at_first_heat
         self.__life_states = ['Open', 'Pregnant', 'DoNotBreed', 'Exit']
         self._total_states = ()
+        self._initial_state_vector = None
+
+    def generate_initial_state_vector(self):
+        initial_state_vector = []
+        for state in self.total_states:
+            if state == self.current_state:
+                initial_state_vector.append(1)
+            else:
+                initial_state_vector.append(0)
+        return np.array(initial_state_vector)
 
     def generate_total_states(self, dim_limit=1000, ln_limit=9) -> None:
         """
@@ -65,6 +76,9 @@ class DigitalCow:
 
         if new_state.split('_')[1] != dim + 1 and new_state.split('_')[2] == ln and \
                 current_state.split('_')[0] != 'Exit':
+            return Decimal("0")
+
+        if new_state not in possible_new_states(current_state):
             return Decimal("0")
 
         if ln == 0:
@@ -129,7 +143,7 @@ class DigitalCow:
                         return __probability_stay_open()
                         # chance staying open
                     case 'Pregnant':
-                        return Decimal(__probability_heat() * __probability_pregnancy())
+                        return __probability_heat() * __probability_pregnancy()
                         # chance becoming pregnant
                     case 'DoNotBreed':
                         return __probability_dnb()

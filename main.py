@@ -1,4 +1,5 @@
 # This is a sample Python script.
+import chain_simulator
 
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
@@ -58,8 +59,21 @@ def test():
             print(probability)
 
 
+def chain_simulator_test():
+    just_another_herd = DigitalHerd()
+    just_another_cow = DigitalCow()
+    just_another_cow.herd = just_another_herd
+    just_another_cow.generate_total_states(400, 0)
+    facade = DigitalCowFacade(just_another_cow, just_another_cow.total_states)
+    assembler = chain_simulator.ScipyCSRAssembler(facade)
+    tm = assembler.assemble()
+    tm2 = tm.toarray()
+    print(tm)
+
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     # make_herd()
     # new_herd_example()
-    test()
+    # test()
+    chain_simulator_test()
