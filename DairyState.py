@@ -1,3 +1,7 @@
+from dataclasses import dataclass
+
+
+@dataclass(repr=True, eq=True)
 class State:
 
     def __init__(self, state, days_in_milk, lactation_number, days_pregnant=0,
@@ -22,12 +26,6 @@ class State:
                f"days_in_milk: {self._days_in_milk}\n" \
                f"lactation_number: {self._lactation_number}\n" \
                f"days_pregnant: {self._days_pregnant}"
-
-    def __repr__(self):
-        return f"State(state={self._state}, " \
-               f"days_in_milk={self._days_in_milk}, " \
-               f"lactation_number={self._lactation_number}, " \
-               f"days_pregnant={self._days_pregnant})"
 
     @property
     def state(self) -> str:
