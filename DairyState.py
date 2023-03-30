@@ -1,6 +1,7 @@
 class State:
 
-    def __init__(self, state, days_in_milk, lactation_number, days_pregnant=0):
+    def __init__(self, state, days_in_milk, lactation_number, days_pregnant=0,
+                 milk_output=None):
         self._state = state
         if not type(self._state) == str:
             raise TypeError
@@ -13,6 +14,8 @@ class State:
         self._days_pregnant = days_pregnant
         if not type(self._days_pregnant) == int:
             raise TypeError
+
+        self._milk_output = milk_output
 
     def __str__(self):
         return f"state: {self._state}\n" \

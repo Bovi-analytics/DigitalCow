@@ -1,6 +1,10 @@
+from _decimal import Decimal
 from decimal import Decimal, getcontext
+from typing import Tuple
+
 import DigitalHerd
 import DairyState
+import math
 
 
 class DigitalCow:
@@ -23,6 +27,8 @@ class DigitalCow:
         self._age_at_first_heat = age_at_first_heat
         self.__life_states = ['Open', 'Pregnant', 'DoNotBreed', 'Exit']
         self._total_states = ()
+        self._milkbot_variables = (Decimal("30.0"), Decimal("0.5"),
+                                   Decimal("0.0"), Decimal("0.01"))
 
     def generate_total_states(self, dim_limit=1000, ln_limit=9) -> None:
         """
@@ -48,6 +54,25 @@ class DigitalCow:
             else:
                 new_days_in_milk += 1
         self._total_states = tuple(self._total_states)
+
+    def milk_production(self, days_in_milk: int):
+        """
+
+        :param days_in_milk:
+        :return:
+        """
+        # precision
+        scale = self._milkbot_variables[0]
+        ramp = self._milkbot_variables[1]
+        offset = self._milkbot_variables[2]
+        decay = self._milkbot_variables[3]
+        return scale * Decimal(Decimal("1") - (pow(Decimal(math.e),
+                                                   ((offset -
+                                                     Decimal(days_in_milk))
+                                                    / ramp)
+                                                   )
+                                               / Decimal("2"))
+                               ) * pow(Decimal(math.e), -decay * Decimal(days_in_milk))
 
     def probability_state_change(self, current_state, new_state) -> Decimal:
         """
@@ -461,6 +486,15 @@ class DigitalCow:
     @total_states.setter
     def total_states(self, states):
         self._total_states = states
+
+    @property
+    def milkbot_variables(self) -> tuple[Decimal, Decimal, Decimal, Decimal]:
+        return self._milkbot_variables
+
+    @milkbot_variables.setter
+    def milkbot_variables(self, var):
+        if type(var) == tuple[Decimal] and len(var) == 4:
+            self._milkbot_variables = var
 
 
 def possible_new_states(current_state: DairyState.State) -> tuple:
