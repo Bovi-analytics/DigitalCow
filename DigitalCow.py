@@ -1,4 +1,4 @@
-from decimal import Decimal
+from decimal import Decimal, getcontext
 import DigitalHerd
 import DairyState
 
@@ -56,6 +56,8 @@ class DigitalCow:
         :param new_state:
         :return:
         """
+        getcontext().prec = 4
+
         if new_state.state not in self.__life_states:
             raise ValueError("new_state must be defined in self.__life_states")
 
@@ -86,40 +88,43 @@ class DigitalCow:
         if self.age_at_first_heat is None:
             self.age_at_first_heat = self.herd.generate_age_at_first_heat()
 
-        def __probability_heat():
-            if current_state.days_in_milk < self.age_at_first_heat or \
-                    current_state.days_pregnant > 0:
-                return Decimal(0)
+        def __probability_insemination():
+            if current_state.days_in_milk < self.age_at_first_heat:
+                return Decimal("0")
             else:
-                return Decimal(0.8)
+                return Decimal("0.7")
 
         def __probability_pregnancy():
             ##
-            return Decimal(0.5)
+            return Decimal("0.45")
 
         def __probability_birth():
-            return Decimal(0.4)
+            return Decimal("0.4")
 
         def __probability_abortion():
             if current_state.days_pregnant > 0:
-                return Decimal(0.2)
+                return Decimal("0.2")
             else:
-                return Decimal(0)
+                return Decimal("0")
 
         def __probability_exit():
-            return Decimal(0.01)
+            return Decimal("0.01")
 
         def __probability_dnb():
-            return Decimal(0.001)
+            return Decimal("0.001")
 
         def __probability_stay_open():
-            return Decimal(0.5)
+            if current_state.days_in_milk < self._age_at_first_heat:
+                return Decimal("1")
+            else:
+                return Decimal(Decimal("1") - __probability_insemination() -
+                               __probability_dnb() - __probability_exit())
 
         def __probability_stay_pregnant():
-            return Decimal(0.8)
+            return Decimal("0.8")
 
         def __probability_stay_dnb():
-            return Decimal(0.6)
+            return Decimal("0.6")
 
         match current_state.state:
             case 'Open':
@@ -129,7 +134,7 @@ class DigitalCow:
                         # chance staying open
                     case 'Pregnant':
                         return Decimal(
-                            __probability_heat() * __probability_pregnancy())
+                            __probability_insemination() * __probability_pregnancy())
                         # chance becoming pregnant
                     case 'DoNotBreed':
                         return __probability_dnb()
@@ -141,7 +146,7 @@ class DigitalCow:
                 match new_state.state:
                     case 'Open':
                         if current_state.days_pregnant > 279:
-                            return __probability_birth()  # * __probability_abortion()
+                            return __probability_birth() + __probability_abortion()
                             # chance aborting or calving
                         else:
                             return __probability_abortion()
@@ -163,9 +168,9 @@ class DigitalCow:
             case 'DoNotBreed':
                 match new_state.state:
                     case 'Open':
-                        return Decimal(0)
+                        return Decimal("0")
                     case 'Pregnant':
-                        return Decimal(0)
+                        return Decimal("0")
                     case 'DoNotBreed':
                         return __probability_stay_dnb()
                         # chance staying DoNotBreed
@@ -175,9 +180,9 @@ class DigitalCow:
             case 'Exit':
                 match new_state.state:
                     case 'Exit':
-                        return Decimal(1)
+                        return Decimal("1")
                     case ('Open' | 'Pregnant' | 'DoNotBreed'):
-                        return Decimal(0)
+                        return Decimal("0")
 
     def __probability_state_change_first_lactation(self, current_state,
                                                    new_state) -> Decimal:
@@ -188,40 +193,39 @@ class DigitalCow:
         :return:
         """
 
-        def __probability_heat():
-            if current_state.days_in_milk < self.herd.voluntary_waiting_period or \
-                    current_state.days_pregnant > 0:
-                return Decimal(0)
+        def __probability_insemination():
+            if current_state.days_in_milk < self.herd.voluntary_waiting_period:
+                return Decimal("0")
             else:
-                return Decimal(0.7)
+                return Decimal("0.7")
 
         def __probability_pregnancy():
             ##
-            return Decimal(0.45)
+            return Decimal("0.45")
 
         def __probability_birth():
-            return Decimal(0.4)
+            return Decimal("0.4")
 
         def __probability_abortion():
             if current_state.days_pregnant > 0:
-                return Decimal(0.25)
+                return Decimal("0.25")
             else:
-                return Decimal(0)
+                return Decimal("0")
 
         def __probability_exit():
-            return Decimal(0.015)
+            return Decimal("0.015")
 
         def __probability_dnb():
-            return Decimal(0.01)
+            return Decimal("0.01")
 
         def __probability_stay_open():
-            return Decimal(0.5)
+            return Decimal("0.5")
 
         def __probability_stay_pregnant():
-            return Decimal(0.8)
+            return Decimal("0.8")
 
         def __probability_stay_dnb():
-            return Decimal(0.6)
+            return Decimal("0.6")
 
         match current_state.state:
             case 'Open':
@@ -231,7 +235,7 @@ class DigitalCow:
                         # chance staying open
                     case 'Pregnant':
                         return Decimal(
-                            __probability_heat() * __probability_pregnancy())
+                            __probability_insemination() * __probability_pregnancy())
                         # chance becoming pregnant
                     case 'DoNotBreed':
                         return __probability_dnb()
@@ -265,9 +269,9 @@ class DigitalCow:
             case 'DoNotBreed':
                 match new_state.state:
                     case 'Open':
-                        return Decimal(0)
+                        return Decimal("0")
                     case 'Pregnant':
-                        return Decimal(0)
+                        return Decimal("0")
                     case 'DoNotBreed':
                         return __probability_stay_dnb()
                         # chance staying DoNotBreed
@@ -277,9 +281,9 @@ class DigitalCow:
             case 'Exit':
                 match new_state.state:
                     case 'Exit':
-                        return Decimal(1)
+                        return Decimal("1")
                     case ('Open' | 'Pregnant' | 'DoNotBreed'):
-                        return Decimal(0)
+                        return Decimal("0")
 
     def __probability_state_change_new_lactation(self, current_state,
                                                  new_state) -> Decimal:
@@ -290,40 +294,39 @@ class DigitalCow:
         :return:
         """
 
-        def __probability_heat():
-            if current_state.days_in_milk < self.herd.voluntary_waiting_period or \
-                    current_state.days_pregnant > 0:
-                return Decimal(0)
+        def __probability_insemination():
+            if current_state.days_in_milk < self.herd.voluntary_waiting_period:
+                return Decimal("0")
             else:
-                return Decimal(0.6)
+                return Decimal("0.5")
 
         def __probability_pregnancy():
             ##
-            return Decimal(0.4)
+            return Decimal("0.35")
 
         def __probability_birth():
-            return Decimal(0.4)
+            return Decimal("0.4")
 
         def __probability_abortion():
             if current_state.days_pregnant > 0:
-                return Decimal(0.37)
+                return Decimal("0.37")
             else:
-                return Decimal(0)
+                return Decimal("0")
 
         def __probability_exit():
-            return Decimal(0.02)
+            return Decimal("0.02")
 
         def __probability_dnb():
-            return Decimal(0.001)
+            return Decimal("0.001")
 
         def __probability_stay_open():
-            return Decimal(0.5)
+            return Decimal("0.5")
 
         def __probability_stay_pregnant():
-            return Decimal(0.8)
+            return Decimal("0.8")
 
         def __probability_stay_dnb():
-            return Decimal(0.6)
+            return Decimal("0.6")
 
         match current_state.state:
             case 'Open':
@@ -333,7 +336,7 @@ class DigitalCow:
                         # chance staying open
                     case 'Pregnant':
                         return Decimal(
-                            __probability_heat() * __probability_pregnancy())
+                            __probability_insemination() * __probability_pregnancy())
                         # chance becoming pregnant
                     case 'DoNotBreed':
                         return __probability_dnb()
@@ -367,9 +370,9 @@ class DigitalCow:
             case 'DoNotBreed':
                 match new_state.state:
                     case 'Open':
-                        return Decimal(0)
+                        return Decimal("0")
                     case 'Pregnant':
-                        return Decimal(0)
+                        return Decimal("0")
                     case 'DoNotBreed':
                         return __probability_stay_dnb()
                         # chance staying DoNotBreed
@@ -379,9 +382,9 @@ class DigitalCow:
             case 'Exit':
                 match new_state.state:
                     case 'Exit':
-                        return Decimal(1)
+                        return Decimal("1")
                     case ('Open' | 'Pregnant' | 'DoNotBreed'):
-                        return Decimal(0)
+                        return Decimal("0")
 
     def __str__(self):
         return f"DigitalCow:\n" \
