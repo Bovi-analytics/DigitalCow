@@ -1,11 +1,12 @@
 from dataclasses import dataclass
+from decimal import Decimal
 
 
 @dataclass(repr=True, eq=True)
 class State:
 
     def __init__(self, state, days_in_milk, lactation_number, days_pregnant=0,
-                 milk_output=None):
+                 milk_output=0):
         self._state = state
         if not type(self._state) == str:
             raise TypeError
@@ -58,3 +59,12 @@ class State:
     @days_pregnant.setter
     def days_pregnant(self, dp):
         self._days_pregnant = dp
+
+    @property
+    def milk_output(self) -> Decimal:
+        return self._milk_output
+
+    @milk_output.setter
+    def milk_output(self, mo):
+        if type(mo) == Decimal:
+            self._milk_output = mo
