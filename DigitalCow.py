@@ -417,7 +417,7 @@ class DigitalCow:
                f"\tLactation number: {self.current_lactation_number}\n" \
                f"\tDays pregnant: {self.current_days_pregnant}\n" \
                f"\tHerd: {self._herd}\n" \
-               f"\tCurrent state: {self.current_state}"
+               f"\tCurrent state: {self.current_life_state}"
 
     def __repr__(self):
         return f"DigitalCow(days_in_milk={self.current_days_in_milk}, " \
@@ -425,7 +425,7 @@ class DigitalCow:
                f"current_days_pregnant={self.current_days_pregnant}, " \
                f"age_at_first_heat={self._age_at_first_heat}, " \
                f"herd={self._herd}, " \
-               f"state={self.current_state})"
+               f"state={self.current_life_state})"
 
     @property
     def herd(self) -> DigitalHerd.DigitalHerd:
@@ -469,15 +469,19 @@ class DigitalCow:
         self._age_at_first_heat = age_at_first_heat
 
     @property
-    def current_state(self) -> str:
+    def current_life_state(self) -> str:
         return self._current_state.state
 
-    @current_state.setter
-    def current_state(self, state):
+    @current_life_state.setter
+    def current_life_state(self, state):
         if isinstance(state, DairyState.State):
             self._current_state = state
         elif type(state) == str:
             self._current_state.state = state
+
+    @property
+    def current_state(self) -> DairyState.State:
+        return self._current_state
 
     @property
     def total_states(self) -> tuple:
@@ -496,49 +500,51 @@ class DigitalCow:
         if type(var) == tuple[Decimal] and len(var) == 4:
             self._milkbot_variables = var
 
+    def possible_new_states(self, current_state: DairyState.State) -> tuple:
+        """
 
-def possible_new_states(current_state: DairyState.State) -> tuple:
-    """
-
-    :param current_state:
-    :return:
-    """
-    match current_state.state:
-        case 'Open':
-            return (
-                DairyState.State('Open', current_state.days_in_milk + 1,
-                                 current_state.lactation_number),
-                DairyState.State('Pregnant', current_state.days_in_milk + 1,
-                                 current_state.lactation_number),
-                DairyState.State('DoNotBreed', current_state.days_in_milk + 1,
-                                 current_state.lactation_number),
-                DairyState.State('Exit', current_state.days_in_milk + 1,
-                                 current_state.lactation_number)
-            )
-        case 'Pregnant':
-            return (
-                DairyState.State('Open', current_state.days_in_milk + 1,
-                                 current_state.lactation_number),
-                DairyState.State('Pregnant', current_state.days_in_milk + 1,
-                                 current_state.lactation_number),
-                DairyState.State('DoNotBreed', current_state.days_in_milk + 1,
-                                 current_state.lactation_number),
-                DairyState.State('Exit', current_state.days_in_milk + 1,
-                                 current_state.lactation_number),
-                DairyState.State('Open', 0, current_state.lactation_number + 1),
-                DairyState.State('DoNotBreed', 0, current_state.lactation_number + 1)
-            )
-        case 'DoNotBreed':
-            return (
-                DairyState.State('DoNotBreed', current_state.days_in_milk + 1,
-                                 current_state.lactation_number),
-                DairyState.State('Exit', current_state.days_in_milk + 1,
-                                 current_state.lactation_number)
-            )
-        case 'Exit':
-            return (
-                DairyState.State('Exit', current_state.days_in_milk,
-                                 current_state.lactation_number),
-            )
-        case _:
-            raise ValueError('The current state given is invalid.')
+        :param current_state:
+        :return:
+        """
+        if not current_state:
+            current_state = self.current_state
+        match current_state.state:
+            case 'Open':
+                return (
+                    DairyState.State('Open', current_state.days_in_milk + 1,
+                                     current_state.lactation_number),
+                    DairyState.State('Pregnant', current_state.days_in_milk + 1,
+                                     current_state.lactation_number, 1),
+                    DairyState.State('DoNotBreed', current_state.days_in_milk + 1,
+                                     current_state.lactation_number),
+                    DairyState.State('Exit', current_state.days_in_milk + 1,
+                                     current_state.lactation_number)
+                )
+            case 'Pregnant':
+                return (
+                    DairyState.State('Open', current_state.days_in_milk + 1,
+                                     current_state.lactation_number),
+                    DairyState.State('Pregnant', current_state.days_in_milk + 1,
+                                     current_state.lactation_number,
+                                     current_state.days_pregnant + 1),
+                    DairyState.State('DoNotBreed', current_state.days_in_milk + 1,
+                                     current_state.lactation_number),
+                    DairyState.State('Exit', current_state.days_in_milk + 1,
+                                     current_state.lactation_number),
+                    DairyState.State('Open', 0, current_state.lactation_number + 1),
+                    DairyState.State('DoNotBreed', 0, current_state.lactation_number + 1)
+                )
+            case 'DoNotBreed':
+                return (
+                    DairyState.State('DoNotBreed', current_state.days_in_milk + 1,
+                                     current_state.lactation_number),
+                    DairyState.State('Exit', current_state.days_in_milk + 1,
+                                     current_state.lactation_number)
+                )
+            case 'Exit':
+                return (
+                    DairyState.State('Exit', current_state.days_in_milk,
+                                     current_state.lactation_number),
+                )
+            case _:
+                raise ValueError('The current state given is invalid.')

@@ -4,11 +4,13 @@ from decimal import Decimal
 
 
 class DigitalHerd:
-    def __init__(self, mu_age_at_first_heat=365, sigma_age_at_first_heat=0, vwp=40, milk_threshold=Decimal("30")):
+    def __init__(self, mu_age_at_first_heat=365, sigma_age_at_first_heat=0, vwp=40,
+                 days_in_milk_cutoff=300, milk_threshold=Decimal("30")):
         self._mu_age_at_first_heat = mu_age_at_first_heat
         self._sigma_age_at_first_heat = sigma_age_at_first_heat
         self._voluntary_waiting_period = vwp
         self._milk_threshold = milk_threshold
+        self._days_in_milk_cutoff = days_in_milk_cutoff
         self._herd = []
         # other general properties shared between the entities in the _herd
 
@@ -90,3 +92,12 @@ class DigitalHerd:
     def milk_threshold(self, mt):
         if type(mt) == Decimal:
             self._milk_threshold = mt
+
+    @property
+    def days_in_milk_cutoff(self) -> int:
+        return self._days_in_milk_cutoff
+
+    @days_in_milk_cutoff.setter
+    def days_in_milk_cutoff(self, cutoff):
+        if type(cutoff) == int:
+            self._days_in_milk_cutoff = cutoff

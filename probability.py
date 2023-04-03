@@ -13,6 +13,7 @@ def probability_state_change(self, current_state, new_state) -> Decimal:
     if new_state.state not in self.__life_states:
         raise ValueError("new_state must be defined in self.__life_states")
 
+    # !!!!!!!
     # if (new_state.days_in_milk != current_state.days_in_milk + 1 and
     #     new_state.lactation_number != current_state.lactation_number + 1
     #     and current_state.state != 'Exit') or new_state not in possible_new_states(current_state):
@@ -32,14 +33,14 @@ def probability_state_change(self, current_state, new_state) -> Decimal:
             match current_state.lactation_number:
                 case 0:
                     return Decimal("0.7")
-                case (1 | 2 | 3):
+                case range(1, 9):
                     return Decimal("0.5")
 
     def __probability_pregnancy():
         match current_state.lactation_number:
             case 0:
                 return Decimal("0.45")
-            case (1 | 2 | 3):
+            case range(1, 9):
                 return Decimal("0.35")
 
     def __probability_birth():
@@ -53,68 +54,81 @@ def probability_state_change(self, current_state, new_state) -> Decimal:
         # dp 30-45 12.5%
         # dp 46-180 9.9%
         # dp 181-282 2%
-        if current_state.days_pregnant > 0:
-            return Decimal("0.2")
-        # !!!!!!
+        if 29 < current_state.days_pregnant < 45:
+            return Decimal("0.0083333")
+        elif 45 < current_state.days_pregnant < 180:
+            return Decimal("0.0007333")
+        elif 180 < current_state.days_pregnant < 283:
+            return Decimal("0.0001961")
         else:
             return Decimal("0")
 
-    def __probability_dnb():
-        if current_state.days_in_milk > 300:
+    def __probability_above_dim_cutoff():
+        # !!!!!
+        if current_state.state == 'Open' and current_state.days_in_milk > self.herd.days_in_milk_cutoff:
             return Decimal("1")
         else:
             return Decimal("0")
 
-    def __probability_stay_dnb():
-        if current_state.milk_output > self.herd.milk_threshold:
+    def __probability_milk_below_threshold():
+        if current_state.milk_output < self.herd.milk_threshold:
             return Decimal("1")
         else:
             return Decimal("0")
 
-    def __probability_exit():
+    def __probability_death():
         # 5% / y
-        return Decimal("0.01")
+        # !!!!!!!!!!!!!!
+        match current_state.lactation_number:
+            case 0:
+                return Decimal("0.0001369")
+            case range(1, 9):
+                return Decimal("0")
 
     match current_state.state:
         case 'Open':
             match new_state.state:
                 case 'Open':
                     if current_state.days_in_milk < vwp:
+                        return (Decimal("1") - __probability_death()) * (Decimal("1") - __probability_milk_below_threshold())
+                    else:
+                        return (Decimal("1") - __probability_death()) * (Decimal("1") - (__probability_insemination() * __probability_pregnancy())) * (Decimal("1") - __probability_milk_below_threshold()) * (Decimal("1") - __probability_above_dim_cutoff())
+                    # chance staying open
+                case 'Pregnant':
+                    return (__probability_insemination() * __probability_pregnancy()) * (Decimal("1") - __probability_death()) * (Decimal("1") - __probability_milk_below_threshold()) * (Decimal("1") - __probability_above_dim_cutoff())
+                    # chance becoming pregnant
+                case 'DoNotBreed':
+                    return __probability_above_dim_cutoff() * (Decimal("1") - __probability_death()) * (Decimal("1") - __probability_milk_below_threshold())
+                    # chance becoming dnb
+                case 'Exit':
+                    # !!!!!!!
+                    if current_state.milk_output < self.herd.milk_threshold and not current_state.days_in_milk < vwp:
                         return Decimal("1")
                     else:
-                        return (Decimal("1") - __probability_exit()) * (Decimal("1") -
-                                                                        (__probability_insemination() *
-                                                                         __probability_pregnancy()))
-                    # chance staying open
-                case 'Pregnant':
-                    return __probability_insemination() * __probability_pregnancy()
-                    # chance becoming pregnant
-                case 'DoNotBreed':
-                    return __probability_dnb()
-                    # chance becoming dnb
-                case 'Exit':
-                    return __probability_exit()
-                    # mortality
+                        return __probability_death()
+                    # chance mortality or culling
 
         case 'Pregnant':
             match new_state.state:
                 case 'Open':
-                    return Decimal("0")
-
+                    if new_state.lactation_number == current_state.lactation_number + 1:
+                        return __probability_birth() * (Decimal("1") - __probability_death())
+                    else:
+                        return __probability_abortion() * (Decimal("1") - __probability_death())
                 case 'Pregnant':
-                    return (Decimal("1") - __probability_exit()) * (Decimal("1") - __probability_abortion())
+                    return (Decimal("1") - __probability_death()) * (Decimal("1") - __probability_abortion())
                     # chance staying pregnant
                 case 'DoNotBreed':
-                    if current_state.days_pregnant > 279:
-                        return Decimal(
-                            __probability_birth() * __probability_dnb())
-                        # chance calving and dnb or aborting dnb
-                    else:
-                        return Decimal(
-                            __probability_abortion() * __probability_dnb())
+                    # !!!!!!!
+                    return Decimal("0")
                 case 'Exit':
-                    return __probability_exit()
-                    # mortality
+                    # !!!!!!!
+                    if current_state.milk_output < self.herd.milk_threshold and not current_state.days_in_milk < vwp:
+                        return Decimal("1")
+                    else:
+                        return __probability_death()
+                    # chance mortality or culling
+
         case 'DoNotBreed':
             match new_state.state:
                 case 'Open':
@@ -122,225 +136,18 @@ def probability_state_change(self, current_state, new_state) -> Decimal:
                 case 'Pregnant':
                     return Decimal("0")
                 case 'DoNotBreed':
-                    return __probability_stay_dnb()
+                    return Decimal("1") - __probability_milk_below_threshold()
                     # chance staying DoNotBreed
                 case 'Exit':
-                    return __probability_exit()
+                    # !!!!!!!
+                    if current_state.milk_output < self.herd.milk_threshold and not current_state.days_in_milk < vwp:
+                        return Decimal("1")
+                    else:
+                        return __probability_death()
                     # chance mortality or culling
+
         case 'Exit':
-            match new_state.state:
-                case 'Exit':
-                    return Decimal("1")
-                case ('Open' | 'Pregnant' | 'DoNotBreed'):
-                    return Decimal("0")
-
-    # elif current_state.lactation_number == 1:
-    #     return self.__probability_state_change_first_lactation(current_state,
-    #                                                            new_state)
-    # elif current_state.lactation_number >= 2:
-    #     return self.__probability_state_change_new_lactation(current_state,
-    #                                                          new_state)
-    # else:
-    #     raise ValueError("Lactation number should be equal to or greater than 0")
-
-
-def __probability_state_change_first_lactation(self, current_state,
-                                               new_state) -> Decimal:
-    """
-
-    :param current_state:
-    :param new_state:
-    :return:
-    """
-
-    def __probability_insemination():
-        if current_state.days_in_milk < self.herd.voluntary_waiting_period:
-            return Decimal("0")
-        else:
-            return Decimal("0.7")
-
-    def __probability_pregnancy():
-        ##
-        return Decimal("0.45")
-
-    def __probability_birth():
-        return Decimal("0.4")
-
-    def __probability_abortion():
-        if current_state.days_pregnant > 0:
-            return Decimal("0.25")
-        else:
-            return Decimal("0")
-
-    def __probability_exit():
-        return Decimal("0.015")
-
-    def __probability_dnb():
-        return Decimal("0.01")
-
-    def __probability_stay_open():
-        return Decimal("0.5")
-
-    def __probability_stay_pregnant():
-        return Decimal("0.8")
-
-    def __probability_stay_dnb():
-        return Decimal("0.6")
-
-    match current_state.state:
-        case 'Open':
-            match new_state.state:
-                case 'Open':
-                    return __probability_stay_open()
-                    # chance staying open
-                case 'Pregnant':
-                    return Decimal(
-                        __probability_insemination() * __probability_pregnancy())
-                    # chance becoming pregnant
-                case 'DoNotBreed':
-                    return __probability_dnb()
-                    # chance becoming dnb
-                case 'Exit':
-                    return __probability_exit()
-                    # mortality
-        case 'Pregnant':
-            match new_state.state:
-                case 'Open':
-                    if current_state.days_pregnant > 279:
-                        return __probability_birth()  # * __probability_abortion()
-                        # chance aborting or calving
-                    else:
-                        return __probability_abortion()
-                        # chance aborting
-                case 'Pregnant':
-                    return __probability_stay_pregnant()
-                    # chance staying pregnant
-                case 'DoNotBreed':
-                    if current_state.days_pregnant > 279:
-                        return Decimal(
-                            __probability_birth() * __probability_dnb())
-                        # chance calving and dnb or aborting dnb
-                    else:
-                        return Decimal(
-                            __probability_abortion() * __probability_dnb())
-                case 'Exit':
-                    return __probability_exit()
-                    # mortality
-        case 'DoNotBreed':
-            match new_state.state:
-                case 'Open':
-                    return Decimal("0")
-                case 'Pregnant':
-                    return Decimal("0")
-                case 'DoNotBreed':
-                    return __probability_stay_dnb()
-                    # chance staying DoNotBreed
-                case 'Exit':
-                    return __probability_exit()
-                    # chance mortality or culling
-        case 'Exit':
-            match new_state.state:
-                case 'Exit':
-                    return Decimal("1")
-                case ('Open' | 'Pregnant' | 'DoNotBreed'):
-                    return Decimal("0")
-
-
-def __probability_state_change_new_lactation(self, current_state,
-                                             new_state) -> Decimal:
-    """
-
-    :param current_state:
-    :param new_state:
-    :return:
-    """
-
-    def __probability_insemination():
-        if current_state.days_in_milk < self.herd.voluntary_waiting_period:
-            return Decimal("0")
-        else:
-            return Decimal("0.5")
-
-    def __probability_pregnancy():
-        ##
-        return Decimal("0.35")
-
-    def __probability_birth():
-        return Decimal("0.4")
-
-    def __probability_abortion():
-        if current_state.days_pregnant > 0:
-            return Decimal("0.37")
-        else:
-            return Decimal("0")
-
-    def __probability_exit():
-        return Decimal("0.02")
-
-    def __probability_dnb():
-        return Decimal("0.001")
-
-    def __probability_stay_open():
-        return Decimal("0.5")
-
-    def __probability_stay_pregnant():
-        return Decimal("0.8")
-
-    def __probability_stay_dnb():
-        return Decimal("0.6")
-
-    match current_state.state:
-        case 'Open':
-            match new_state.state:
-                case 'Open':
-                    return __probability_stay_open()
-                    # chance staying open
-                case 'Pregnant':
-                    return Decimal(
-                        __probability_insemination() * __probability_pregnancy())
-                    # chance becoming pregnant
-                case 'DoNotBreed':
-                    return __probability_dnb()
-                    # chance becoming dnb
-                case 'Exit':
-                    return __probability_exit()
-                    # mortality
-        case 'Pregnant':
-            match new_state.state:
-                case 'Open':
-                    if current_state.days_pregnant > 279:
-                        return __probability_birth()  # * __probability_abortion()
-                        # chance aborting or calving
-                    else:
-                        return __probability_abortion()
-                        # chance aborting
-                case 'Pregnant':
-                    return __probability_stay_pregnant()
-                    # chance staying pregnant
-                case 'DoNotBreed':
-                    if current_state.days_pregnant > 279:
-                        return Decimal(
-                            __probability_birth() * __probability_dnb())
-                        # chance calving and dnb or aborting dnb
-                    else:
-                        return Decimal(
-                            __probability_abortion() * __probability_dnb())
-                case 'Exit':
-                    return __probability_exit()
-                    # mortality
-        case 'DoNotBreed':
-            match new_state.state:
-                case 'Open':
-                    return Decimal("0")
-                case 'Pregnant':
-                    return Decimal("0")
-                case 'DoNotBreed':
-                    return __probability_stay_dnb()
-                    # chance staying DoNotBreed
-                case 'Exit':
-                    return __probability_exit()
-                    # chance mortality or culling
-        case 'Exit':
+            # !!!!!!!
             match new_state.state:
                 case 'Exit':
                     return Decimal("1")
