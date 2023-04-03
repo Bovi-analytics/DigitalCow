@@ -1,10 +1,11 @@
 # This is a sample Python script.
-
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 from DigitalCow import DigitalCow
 from DigitalHerd import DigitalHerd
 from DigitalCowFacade import DigitalCowFacade
+import chain_simulator
+import time
 
 
 def make_herd():
@@ -58,8 +59,24 @@ def test():
             print(probability)
 
 
+def chain_simulator_test():
+    just_another_herd = DigitalHerd()
+    just_another_cow = DigitalCow()
+    just_another_cow.herd = just_another_herd
+    start = time.perf_counter()
+    just_another_cow.generate_total_states(749, 8)
+    end = time.perf_counter()
+    print(len(just_another_cow.total_states))
+    print(f"duration for generating states: {end - start}")
+    facade = DigitalCowFacade(just_another_cow, just_another_cow.total_states)
+    # assembler = chain_simulator.ScipyCSRAssembler(facade)
+    # tm = assembler.assemble()
+    print("hoi")
+
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     # make_herd()
     # new_herd_example()
-    test()
+    # test()
+    chain_simulator_test()

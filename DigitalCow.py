@@ -30,7 +30,7 @@ class DigitalCow:
         self._milkbot_variables = (Decimal("30.0"), Decimal("0.5"),
                                    Decimal("0.0"), Decimal("0.01"))
 
-    def generate_total_states(self, dim_limit=1000, ln_limit=8) -> None:
+    def generate_total_states(self, dim_limit=999, ln_limit=8) -> None:
         """
 
         :param dim_limit:
