@@ -2,7 +2,7 @@
 
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-from DigitalCow import DigitalCow, possible_new_states
+from DigitalCow import DigitalCow
 from DigitalHerd import DigitalHerd
 from DigitalCowFacade import DigitalCowFacade
 
@@ -46,13 +46,13 @@ def new_herd_example():
 def test():
     a_cow = DigitalCow(0, 0, 0)
     print(a_cow._total_states)
+    a_herd = DigitalHerd()
+    a_cow.herd = a_herd
     a_cow.generate_total_states(dim_limit=600, ln_limit=6)
     print(a_cow._total_states)
-    a_herd = DigitalHerd()
-    a_herd.add_to_herd([a_cow])
     facade = DigitalCowFacade(a_cow, a_cow.total_states)
     for state in a_cow.total_states:
-        new_states = possible_new_states(state)
+        new_states = a_cow.possible_new_states(state)
         for new_state in new_states:
             probability = facade.probability(state, new_state)
             print(probability)

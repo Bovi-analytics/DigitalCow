@@ -65,7 +65,7 @@ def probability_state_change(self, current_state, new_state) -> Decimal:
 
     def __probability_above_dim_cutoff():
         # !!!!!
-        if current_state.state == 'Open' and current_state.days_in_milk > self.herd.days_in_milk_cutoff:
+        if current_state.state == 'Open' and current_state.days_in_milk > self.herd.insemination_dim_cutoff:
             return Decimal("1")
         else:
             return Decimal("0")

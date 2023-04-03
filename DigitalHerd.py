@@ -10,13 +10,19 @@ class DigitalHerd:
         self._sigma_age_at_first_heat = sigma_age_at_first_heat
         self._voluntary_waiting_period = vwp
         self._milk_threshold = milk_threshold
-        self._days_in_milk_cutoff = days_in_milk_cutoff
+        self._insemination_days_in_milk_cutoff = days_in_milk_cutoff
         self._herd = []
         # other general properties shared between the entities in the _herd
 
     def add_to_herd(self, cows=None, dim_cows=None, lns_cows=None, dp_cows=None):
+        """
 
-        # CHANGE THAT cow.herd = herd DOES NOT ADD COW TO THE HERD OF THE DIGITALHERD OBJECT
+        :param cows:
+        :param dim_cows:
+        :param lns_cows:
+        :param dp_cows:
+        :return:
+        """
         if dim_cows is None:
             dim_cows = []
         if lns_cows is None:
@@ -26,7 +32,9 @@ class DigitalHerd:
         if not len(dim_cows) == len(lns_cows) == len(dp_cows):
             raise IndexError("Length of dim, lns and dp lists do not match")
         for i in range(len(dim_cows)):
-            self.herd.append(DigitalCow.DigitalCow(dim_cows[i], lns_cows[i], dp_cows[i], herd=self))
+            self.herd.append(
+                DigitalCow.DigitalCow(dim_cows[i], lns_cows[i], dp_cows[i],
+                                      herd=self))
         if cows is not None:
             for cow in cows:
                 if isinstance(cow, DigitalCow.DigitalCow):
@@ -37,13 +45,16 @@ class DigitalHerd:
     def calculate_mu_age_at_first_heat(self):
         mu_age_at_first_heat = 0
         for cow in self.herd:
-            mu_age_at_first_heat += cow.age_at_first_heat
+            if cow.age_at_first_heat is not None:
+                mu_age_at_first_heat += cow.age_at_first_heat
         mu_age_at_first_heat = mu_age_at_first_heat / len(self.herd)
-        self.mu_age_at_first_heat = mu_age_at_first_heat
+        if not mu_age_at_first_heat == 0:
+            self.mu_age_at_first_heat = mu_age_at_first_heat
 
     def generate_age_at_first_heat(self):
         self.calculate_mu_age_at_first_heat()
-        return np.random.normal(self.mu_age_at_first_heat, self.sigma_age_at_first_heat)
+        return np.random.normal(self.mu_age_at_first_heat,
+                                self.sigma_age_at_first_heat)
 
     @property
     def mu_age_at_first_heat(self):
@@ -94,10 +105,10 @@ class DigitalHerd:
             self._milk_threshold = mt
 
     @property
-    def days_in_milk_cutoff(self) -> int:
-        return self._days_in_milk_cutoff
+    def insemination_dim_cutoff(self) -> int:
+        return self._insemination_days_in_milk_cutoff
 
-    @days_in_milk_cutoff.setter
-    def days_in_milk_cutoff(self, cutoff):
+    @insemination_dim_cutoff.setter
+    def insemination_dim_cutoff(self, cutoff):
         if type(cutoff) == int:
-            self._days_in_milk_cutoff = cutoff
+            self._insemination_days_in_milk_cutoff = cutoff
