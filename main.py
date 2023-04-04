@@ -45,11 +45,11 @@ def new_herd_example():
 
 
 def test():
-    a_cow = DigitalCow(0, 0, 0)
+    a_cow = DigitalCow(100, 2, 30)
     print(a_cow._total_states)
     a_herd = DigitalHerd()
     a_cow.herd = a_herd
-    a_cow.generate_total_states(dim_limit=600, ln_limit=6)
+    a_cow.generate_total_states(dim_limit=450, ln_limit=3)
     print(a_cow._total_states)
     facade = DigitalCowFacade(a_cow, a_cow.total_states)
     for state in a_cow.total_states:
@@ -64,7 +64,7 @@ def chain_simulator_test():
     just_another_cow = DigitalCow()
     just_another_cow.herd = just_another_herd
     start = time.perf_counter()
-    just_another_cow.generate_total_states(749, 8)
+    just_another_cow.generate_total_states(dim_limit=450, ln_limit=4)
     end = time.perf_counter()
     print(len(just_another_cow.total_states))
     print(f"duration for generating states: {end - start}")
