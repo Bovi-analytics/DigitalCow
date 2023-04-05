@@ -64,14 +64,14 @@ def chain_simulator_test():
     just_another_cow = DigitalCow()
     just_another_cow.herd = just_another_herd
     start = time.perf_counter()
-    just_another_cow.generate_total_states(dim_limit=450, ln_limit=4)
+    just_another_cow.generate_total_states(dim_limit=400, ln_limit=3)
     end = time.perf_counter()
-    print(len(just_another_cow.total_states))
+    print(just_another_cow.node_count)
+    print(just_another_cow.edge_count)
     print(f"duration for generating states: {end - start}")
     facade = DigitalCowFacade(just_another_cow, just_another_cow.total_states)
-    # assembler = chain_simulator.ScipyCSRAssembler(facade)
+    assembler = chain_simulator.ScipyCSRAssembler(facade)
     # tm = assembler.assemble()
-    print("hoi")
 
 
 # Press the green button in the gutter to run the script.

@@ -1,3 +1,12 @@
+# $Id:
+# Author: Gabe van den Hoeven
+# Copyright:
+"""
+
+
+"""
+
+
 import numpy as np
 import DigitalCow
 from decimal import Decimal

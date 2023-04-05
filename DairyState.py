@@ -1,3 +1,12 @@
+# $Id:
+# Author: Gabe van den Hoeven
+# Copyright:
+"""
+
+
+"""
+
+
 from dataclasses import dataclass
 from decimal import Decimal
 
@@ -7,6 +16,8 @@ class State:
 
     def __init__(self, state, days_in_milk, lactation_number, days_pregnant=0,
                  milk_output=Decimal("0")):
+        if days_pregnant != 0 and state != 'Pregnant':
+            raise ValueError
         self._state = state
         if not type(self._state) == str:
             raise TypeError

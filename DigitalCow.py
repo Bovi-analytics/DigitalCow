@@ -1,12 +1,69 @@
-# $Id:
+# $Id: DigitalCow.py
 # Author: Gabe van den Hoeven
 # Copyright:
 """
+...
+This module defines the following classes:
 
+- 'DigitalCow', a digital twin of a cow
+
+Exception classes:
+
+-
+
+Functions:
+
+-
+
+How To Use This Module
+======================
+(See the individual classes, methods, and attributes for details.)
+
+1. Import the class DigitalCow: ``import DigitalCow.DigitalCow`` or ``from
+DigitalCow import DigitalCow``.
+You will also need the DigitalHerd class from the DigitalHerd module.
+
+2. Create a DigitalCow object:
+a) Without a DigitalHerd object:
+    ``Without parameters``
+    cow = DigitalCow()
+
+    ``With parameters``
+    cow = DigitalCow(days_in_milk=245, lactation_number=3,
+    current_days_pregnant=165, age_at_first_heat=371, state='Pregnant')
+
+b) With a DigitalHerd object:
+    ``Without parameters``
+    a_herd = DigitalHerd()
+    cow = DigitalCow(herd=a_herd)
+
+    ``With parameters``
+    a_herd = DigitalHerd(vwp=50, days_in_milk_cutoff=300,
+    milk_threshold=Decimal("30"))
+    cow = DigitalCow(days_in_milk=67, lactation_number=1,
+    current_days_pregnant=0, herd=a_herd, state='Open')
+
+c) Set the herd of the DigitalCow:
+    ``Overwrites the DigitalHerd as the herd of the DigitalCow``
+    a_herd = DigitalHerd()
+    cow = DigitalCow()
+    cow.herd = a_herd
+
+    ``Adds the DigitalCow objects to the DigitalHerd and sets the DigitalHerd as
+    the herd of each DigitalCow``
+    a_herd = DigitalHerd()
+    cow = DigitalCow()
+    cow2 = DigitalCow()
+    a_herd.add_to_herd(cows=[cow, cow2])
+
+    ``Overwrites the list of DigitalCow objects as the herd of the DigitalHerd``
+    a_herd = DigitalHerd()
+    cow = DigitalCow()
+    cow2 = DigitalCow()
+    a_herd.herd = [cow, cow2]
 
 """
 
-__docformat__ = 'restructuredtext'
 
 from decimal import Decimal, getcontext
 import DigitalHerd
@@ -53,7 +110,7 @@ class DigitalCow:
         """
         self.__set_milkbot_variables(lactation_number)
 
-    def generate_total_states(self, dim_limit=999, ln_limit=8) -> None:
+    def generate_total_states(self, dim_limit=1000, ln_limit=9) -> None:
         """
         Creates state objects for all states between the cows current state and
         the limit defined by the parameters.
@@ -73,9 +130,8 @@ class DigitalCow:
             new_days_pregnant = self.current_days_pregnant
             start_as_pregnant = True
 
-        self.__set_milkbot_variables(new_lactation_number)
-
-        while not new_lactation_number > ln_limit:
+        while new_lactation_number < ln_limit:
+            self.__set_milkbot_variables(new_lactation_number)
             for state in self.__life_states:
                 milk_output = self.milk_production(new_days_in_milk)
                 if new_days_in_milk > self.voluntary_waiting_period:
@@ -87,7 +143,7 @@ class DigitalCow:
                                     new_days_in_milk,
                                     new_lactation_number,
                                     new_days_pregnant)
-                                self._total_states.append(new_current_state)
+                                total_states.append(new_current_state)
                                 new_days_pregnant += 1
                             days_pregnant_limit += 1
                         else:
@@ -97,35 +153,39 @@ class DigitalCow:
                                     new_days_in_milk,
                                     new_lactation_number,
                                     new_days_pregnant)
-                                self._total_states.append(new_current_state)
+                                total_states.append(new_current_state)
                                 new_days_pregnant += 1
                             new_days_pregnant = 1
                             days_pregnant_limit += 1
                     else:
                         new_current_state = DairyState.State(state, new_days_in_milk,
                                                              new_lactation_number)
-                        self._total_states.append(new_current_state)
+                        total_states.append(new_current_state)
                 else:
                     new_current_state = DairyState.State(state, new_days_in_milk,
                                                          new_lactation_number, 0,
                                                          milk_output)
-                    self._total_states.append(new_current_state)
-            if new_days_in_milk == dim_limit:
+                    total_states.append(new_current_state)
+            if new_days_in_milk > dim_limit:
                 new_days_in_milk = 0
                 new_lactation_number += 1
-                self.__set_milkbot_variables(new_lactation_number)
             else:
                 new_days_in_milk += 1
         self.total_states = tuple(total_states)
 
-    def milk_production(self, days_in_milk: int):
+    def milk_production(self, days_in_milk=None):
         """
         A mathematical function that calculates/estimates the milk production of a
         cow based on its days in milk and a set of parameters.
         :param days_in_milk: int - The amount of days since the last calving.
+        Default is None so 'self.current_days_in_milk' is used if no parameter is
+        given.
         :return: Decimal - The estimated milk output of the cow.
         """
-        # precision
+        getcontext().prec = 5
+
+        if days_in_milk is None:
+            days_in_milk = self.current_days_in_milk
         scale = self._milkbot_variables[0]
         ramp = self._milkbot_variables[1]
         offset = self._milkbot_variables[2]
@@ -177,7 +237,7 @@ class DigitalCow:
                 match current_state.lactation_number:
                     case 0:
                         return Decimal("0.7")
-                    case range(1, 9):
+                    case ln if 0 < ln < 9:
                         return Decimal("0.5")
 
         def __probability_pregnancy():
@@ -185,7 +245,7 @@ class DigitalCow:
             match current_state.lactation_number:
                 case 0:
                     return Decimal("0.45")
-                case range(1, 9):
+                case ln if 0 < ln < 9:
                     return Decimal("0.35")
 
         def __probability_birth():
@@ -319,6 +379,7 @@ class DigitalCow:
         number of the state.
         :param lactation_number: int - The amount of lactation cycles completed.
         """
+        getcontext().prec = 7
         match lactation_number:
             case 0:
                 # !!!!!!! linear regression from ln = 1 and ln >= 2
@@ -329,7 +390,7 @@ class DigitalCow:
                 decay = Decimal("0.693") / Decimal("358")
                 self.milkbot_variables = (
                     Decimal("34.8"), Decimal("29.6"), Decimal("0"), decay)
-            case range(2, 9):
+            case ln if 1 < ln < 9:
                 decay = Decimal("0.693") / Decimal("240")
                 self.milkbot_variables = (
                     Decimal("47.7"), Decimal("22.1"), Decimal("0"), decay)
@@ -426,7 +487,7 @@ class DigitalCow:
 
     @milkbot_variables.setter
     def milkbot_variables(self, var):
-        if type(var) == tuple[Decimal] and len(var) == 4:
+        if type(var) == tuple and len(var) == 4:
             self._milkbot_variables = var
 
     @property

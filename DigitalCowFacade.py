@@ -1,3 +1,12 @@
+# $Id:
+# Author: Gabe van den Hoeven
+# Copyright:
+"""
+
+
+"""
+
+
 from DigitalCow import DigitalCow
 from DairyState import State
 from chain_simulator import AbstractDigitalTwinFacade
