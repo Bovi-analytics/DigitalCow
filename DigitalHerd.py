@@ -30,14 +30,13 @@ class DigitalHerd:
         _herd (list): A list of DigitalCow objects representing the cows in the herd.
         _days_in_milk_limit (int): The maximum number of days a cow can be in milk
             before being culled.
-        _lactation_number_limit (int): The maximum number of lactations a cow can have
+        _lactation_number_limit (int): The maximum number of lactation cycles a cow can have
             before being culled.
     """
     def __init__(self, mu_age_at_first_heat=365, sigma_age_at_first_heat=0, vwp=40,
-                 insemination_cutoff=300, milk_threshold=Decimal("30"),
+                 insemination_cutoff=300, milk_threshold=Decimal("5"),
                  days_in_milk_limit=1000, lactation_number_limit=9):
-        """
-        Initializes a instance of a DigitalHerd object.
+        """Initializes an instance of a DigitalHerd object.
 
         :param mu_age_at_first_heat: The mean age in days at which a cow
             will experience its first estrus.
@@ -111,7 +110,7 @@ class DigitalHerd:
         its standard deviation.
         :returns: A random age at first heat based on the mean age at first heat and
         its standard deviation.
-        :rtype: int
+            :rtype: int
         """
         self.calculate_mu_age_at_first_heat()
         return np.random.normal(self.mu_age_at_first_heat,
