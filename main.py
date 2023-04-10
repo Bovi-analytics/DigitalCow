@@ -63,6 +63,32 @@ def test():
             print(probability)
 
 
+def test2():
+    cow = DigitalCow()
+    new_herd = DigitalHerd()
+    new_herd.add_to_herd([cow])
+    start = time.perf_counter()
+    cow.generate_total_states(300, 3)
+    end = time.perf_counter()
+    print(end - start)
+
+    start = time.perf_counter()
+    print(cow.node_count)
+    end = time.perf_counter()
+    print(end - start)
+
+    start = time.perf_counter()
+    print(cow.edge_count)
+    end = time.perf_counter()
+    print(end - start)
+
+    start = time.perf_counter()
+    # print(cow.initial_state_vector)
+    end = time.perf_counter()
+    print(end - start)
+    print(len(cow.total_states) / 300 / 3)
+
+
 def chain_simulator_test():
     just_another_herd = DigitalHerd()
     just_another_cow = DigitalCow()
@@ -82,5 +108,6 @@ def chain_simulator_test():
 if __name__ == '__main__':
     # make_herd()
     # new_herd_example()
-    test()
+    # test()
+    test2()
     # chain_simulator_test()

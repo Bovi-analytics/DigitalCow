@@ -48,10 +48,12 @@ class State:
         :type days_pregnant: int
         :param milk_output: The amount of milk the cow produces in this state.
         :type milk_output: Decimal
-        :raises ValueError: If days_pregnant is not equal to 0 and the state is not equal to 'Pregnant'.
+        :raises ValueError: If days_pregnant is not equal to 0 and the state is not equal to 'Pregnant' or days_pregnant is 0 and the state is 'Pregnant'.
         :raises TypeError: If the type of any variable is wrong.
         """
         if days_pregnant != 0 and state != 'Pregnant':
+            raise ValueError
+        if days_pregnant == 0 and state == 'Pregnant':
             raise ValueError
         self._state = state
         if not type(self._state) == str:

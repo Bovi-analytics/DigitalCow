@@ -130,6 +130,8 @@ class DigitalCow:
         self._total_states = None
         self._milkbot_variables = None
         self.__set_milkbot_variables(lactation_number)
+        self.__generated_days_in_milk = None
+        self.__generated_lactation_numbers = None
 
     def generate_total_states(self, dim_limit=None, ln_limit=None) -> None:
         """
@@ -188,6 +190,8 @@ class DigitalCow:
             else:
                 new_days_in_milk += 1
         self.total_states = tuple(total_states)
+        self.__generated_days_in_milk = dim_limit
+        self.__generated_lactation_numbers = ln_limit
 
     def milk_production(self, days_in_milk=None) -> Decimal:
         """
@@ -583,6 +587,14 @@ class DigitalCow:
         edge_count = 0
         for state in self.total_states:
             edge_count += len(self.possible_new_states(state))
+        # for life_state in self.__life_states:
+        #     if life_state == 'Pregnant':
+        #         new_state = DairyState.State(life_state, 0, 0, 1)
+        #     else:
+        #         new_state = DairyState.State(life_state, 0, 0, 0)
+        #     edge_count += len(self.possible_new_states(new_state))
+        # edge_count = edge_count * self.__generated_days_in_milk * self.__generated_lactation_numbers
+
         return edge_count
 
     @property
