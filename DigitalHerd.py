@@ -70,7 +70,7 @@ class DigitalHerd:
         self._lactation_number_limit = lactation_number_limit
         # other general properties shared between the entities in the _herd
 
-    def add_to_herd(self, cows=list[DigitalCow.DigitalCow]) -> None:
+    def add_to_herd(self, cows=list) -> None:
         """
         Takes a list of DigitalCow objects and adds each cow to the herd if they
         are not already.

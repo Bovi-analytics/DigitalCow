@@ -404,7 +404,7 @@ class DigitalCow:
         match lactation_number:
             case 0:
                 self.milkbot_variables = (
-                    Decimal("0"), Decimal("0"), Decimal("0"), Decimal("0"))
+                    Decimal("0"), Decimal("1"), Decimal("1"), Decimal("1"))
             case 1:
                 decay = Decimal("0.693") / Decimal("358")
                 self.milkbot_variables = (
@@ -578,6 +578,8 @@ class DigitalCow:
 
     @property
     def edge_count(self) -> int:
+        # Maybe since the amount of transitions for O P DNB and E are set,
+        # we can add the length for 1 day and multiply with amount of days.
         edge_count = 0
         for state in self.total_states:
             edge_count += len(self.possible_new_states(state))
@@ -586,4 +588,11 @@ class DigitalCow:
     @property
     def node_count(self) -> int:
         return len(self.total_states)
+
+    @property
+    def initial_state_vector(self):
+        index = self.total_states.index(self.current_state)
+        vector = len(self.total_states) * [0]
+        vector[index] = 1
+        return tuple(vector)
 
