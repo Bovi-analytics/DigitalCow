@@ -118,8 +118,10 @@ class DigitalCow:
         apply to all cows in the herd.
         :type herd: DigitalHerd.DigitalHerd
         :param state: The life state of the cow. This state should be one of the
-        states defined in self.__life_states.
+        states defined in self.__life_states. Defaults to 'Open'.
         :type state: str
+        :param precision: The amount of decimal places used for calculating transition probabilities. Defaults to 10.
+        :type precision: int
         """
         self._herd = herd
         self._age_at_first_heat = age_at_first_heat
@@ -190,13 +192,9 @@ class DigitalCow:
                                                      lactation_number, 0,
                                                      milk_output)
                         total_states.append(new_state)
-                        print(f"dim open: {days_in_milk}")
-                    else:
-                        print(f"dim not open: {days_in_milk}")
 
                 elif state == 'Pregnant':
                     if vwp < days_in_milk < vwp + self.herd.insemination_dim_cutoff + dp_limit:
-                        print(f"dim pregnant: {days_in_milk}")
                         if start_as_pregnant:
                             while days_pregnant < simulated_dp_limit:
                                 new_state = DairyState.State(state,
@@ -223,19 +221,14 @@ class DigitalCow:
                             days_pregnant = days_pregnant_start
                             if simulated_dp_limit != dp_limit:
                                 simulated_dp_limit += 1
-                    else:
-                        print(f"dim not pregnant: {days_in_milk}")
 
                 elif state == 'DoNotBreed':
                     if days_in_milk > vwp + self.herd.insemination_dim_cutoff:
-                        print(f"dim dnb: {days_in_milk}")
                         # !!!!!!!!!!! milk_output > self.herd.milk_threshold and
                         new_state = DairyState.State(state, days_in_milk,
                                                      lactation_number, 0,
                                                      milk_output)
                         total_states.append(new_state)
-                    else:
-                        print(f"dim not dnb: {days_in_milk}")
 
                 elif state == 'Exit':
                     new_state = DairyState.State(state, days_in_milk,
@@ -477,7 +470,7 @@ class DigitalCow:
                                       Decimal("0"))]
         self.__set_milkbot_variables(state_from.lactation_number)
         temp_state = DairyState.State(state_from.state,
-                                      state_from.days_in_milk,
+                                      state_from.days_in_milk + 1,
                                       state_from.lactation_number,
                                       state_from.days_pregnant,
                                       Decimal("0"))

@@ -97,7 +97,7 @@ def chain_simulator_test():
     just_another_cow = DigitalCow()
     just_another_cow.herd = just_another_herd
     start = time.perf_counter()
-    just_another_cow.generate_total_states(dim_limit=40, ln_limit=2)
+    just_another_cow.generate_total_states(dim_limit=45, ln_limit=9)
     end = time.perf_counter()
     print(just_another_cow.node_count)
     print(just_another_cow.edge_count)
