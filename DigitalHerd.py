@@ -35,7 +35,8 @@ class DigitalHerd:
     """
     def __init__(self, mu_age_at_first_heat=365, sigma_age_at_first_heat=0, vwp=40,
                  insemination_cutoff=300, milk_threshold=Decimal("5"),
-                 days_in_milk_limit=1000, lactation_number_limit=9):
+                 days_in_milk_limit=1000, lactation_number_limit=9,
+                 days_pregnant_limit=282):
         """Initializes an instance of a DigitalHerd object.
 
         :param mu_age_at_first_heat: The mean age in days at which a cow
@@ -59,6 +60,8 @@ class DigitalHerd:
         :param lactation_number_limit: The maximum number of lactations a cow can have
             before being culled.
         :type lactation_number_limit: int
+        :param days_pregnant_limit: The maximum number of days a cow can be pregnant.
+        :type days_pregnant_limit: int
         """
         self._mu_age_at_first_heat = mu_age_at_first_heat
         self._sigma_age_at_first_heat = sigma_age_at_first_heat
@@ -68,6 +71,7 @@ class DigitalHerd:
         self._herd = []
         self._days_in_milk_limit = days_in_milk_limit
         self._lactation_number_limit = lactation_number_limit
+        self._days_pregnant_limit = days_pregnant_limit
         # other general properties shared between the entities in the _herd
 
     def add_to_herd(self, cows=list) -> None:
@@ -188,3 +192,11 @@ class DigitalHerd:
     @lactation_number_limit.setter
     def lactation_number_limit(self, limit):
         self._lactation_number_limit = limit
+
+    @property
+    def days_pregnant_limit(self):
+        return self._days_pregnant_limit
+
+    @days_pregnant_limit.setter
+    def days_pregnant_limit(self, limit):
+        self._days_pregnant_limit = limit
