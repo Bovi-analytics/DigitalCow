@@ -21,9 +21,9 @@ class DigitalCowFacade(AbstractDigitalTwinFacade[DigitalCow]):
         """Overwrites the method from the base class.
 
         :param state_from: The state that the transition starts from.
-        :type state_from: State obj
+        :type state_from: DairyState.State
         :param state_to: The state that the transition ends in.
-        :type state_to: State obj
+        :type state_to: DairyState.State
         :return: The probability of transitioning from state_from to state_to.
         :rtype: Decimal
         """

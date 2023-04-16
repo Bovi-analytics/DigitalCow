@@ -67,11 +67,11 @@ def test():
 
 def test2():
     new_herd = DigitalHerd()
-    # cow = DigitalCow(100, 1, 40, 365, state='Pregnant')
-    cow = DigitalCow()
-    new_herd.add_to_herd([cow])
+    cow = DigitalCow(100, 1, 40, 365, state='Pregnant', herd=new_herd)
+    # cow = DigitalCow(herd=new_herd)
+    # new_herd.add_to_herd([cow])
     start = time.perf_counter()
-    cow.generate_total_states(950, 3)
+    cow.generate_total_states(950, 2)
     end = time.perf_counter()
     print(end - start)
 
