@@ -1,11 +1,15 @@
 # This is a sample Python script.
-import chain_simulator
-
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-from DigitalCow import DigitalCow, possible_new_states
+import DairyState
+from DigitalCow import DigitalCow
 from DigitalHerd import DigitalHerd
 from DigitalCowFacade import DigitalCowFacade
+import chain_simulator
+from chain_simulator.utilities import validate_matrix_sum, validate_matrix_positive
+import time
+from decimal import Decimal
+import logging
 
 
 def make_herd():
@@ -17,9 +21,7 @@ def make_herd():
     new_herd.add_to_herd(cows=[cow1, cow2])
     print(new_herd.herd)
     another_herd = DigitalHerd(360, 1, 32)
-    DigitalHerd.add_to_herd(another_herd, dim_cows=[82, 15, 157],
-                            lns_cows=[2, 3, 1], dp_cows=[31, 0, 120])
-    cow3 = another_herd.herd[0]
+    cow3 = DigitalCow(41, 0, 0)
     cow4 = DigitalCow(39, 0, 0)
     cow5 = DigitalCow(200, 3, 74)
     another_herd.add_to_herd(cows=[cow4, cow5])
@@ -45,30 +47,75 @@ def new_herd_example():
 
 
 def test():
-    a_cow = DigitalCow(0, 0, 0)
-    print(a_cow._total_states)
-    a_cow.generate_total_states(dim_limit=600, ln_limit=6)
+    a_cow = DigitalCow(100, 2, 30, state='Pregnant')
     print(a_cow._total_states)
     a_herd = DigitalHerd()
-    a_herd.add_to_herd([a_cow])
+    a_cow.herd = a_herd
+    a_cow.generate_total_states(dim_limit=450, ln_limit=3)
+    print(a_cow._total_states)
     facade = DigitalCowFacade(a_cow, a_cow.total_states)
+    probability_exit = a_cow.probability_state_change(
+        DairyState.State('Open', 100, 2, 0, Decimal("35")),
+        DairyState.State('Exit', 101, 2, 0, Decimal("0")))
+    print(probability_exit)
     for state in a_cow.total_states:
-        new_states = possible_new_states(state)
+        new_states = a_cow.possible_new_states(state)
         for new_state in new_states:
             probability = facade.probability(state, new_state)
             print(probability)
 
 
+def test2():
+    new_herd = DigitalHerd()
+    cow = DigitalCow(100, 1, 40, 365, state='Pregnant', herd=new_herd)
+    # cow = DigitalCow(herd=new_herd)
+    # new_herd.add_to_herd([cow])
+    start = time.perf_counter()
+    cow.generate_total_states(950, 2)
+    end = time.perf_counter()
+    print(end - start)
+
+    start = time.perf_counter()
+    print(cow.node_count)
+    end = time.perf_counter()
+    print(end - start)
+
+    start = time.perf_counter()
+    print(cow.edge_count)
+    end = time.perf_counter()
+    print(end - start)
+
+    start = time.perf_counter()
+    v = cow.initial_state_vector
+    end = time.perf_counter()
+    print(end - start)
+
+
 def chain_simulator_test():
+    logging.basicConfig()
     just_another_herd = DigitalHerd()
     just_another_cow = DigitalCow()
     just_another_cow.herd = just_another_herd
-    just_another_cow.generate_total_states(400, 0)
+    start = time.perf_counter()
+    just_another_cow.generate_total_states(dim_limit=45, ln_limit=9)
+    end = time.perf_counter()
+    print(just_another_cow.node_count)
+    print(just_another_cow.edge_count)
+    print(f"duration for generating states: {end - start}")
+    start = time.perf_counter()
     facade = DigitalCowFacade(just_another_cow, just_another_cow.total_states)
+    end = time.perf_counter()
+    print(f"duration making facade: {end - start}")
+    start = time.perf_counter()
     assembler = chain_simulator.ScipyCSRAssembler(facade)
+    end = time.perf_counter()
+    print(f"duration making assembler: {end - start}")
+    start = time.perf_counter()
     tm = assembler.assemble()
-    tm2 = tm.toarray()
-    print(tm)
+    end = time.perf_counter()
+    print(f"duration making TM: {end - start}")
+    print(validate_matrix_sum(tm))
+    print(validate_matrix_positive(tm))
 
 
 # Press the green button in the gutter to run the script.
@@ -76,4 +123,5 @@ if __name__ == '__main__':
     # make_herd()
     # new_herd_example()
     # test()
+    # test2()
     chain_simulator_test()
