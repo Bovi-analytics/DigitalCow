@@ -711,4 +711,4 @@ def state_probability_generator(digital_cow: DigitalCow) -> Generator[tuple[int,
             probability = digital_cow.probability_state_change(state_from, state_to)
             yield digital_cow.total_states.index(state_from), \
                 digital_cow.total_states.index(state_to), \
-                probability
+                float(probability)
