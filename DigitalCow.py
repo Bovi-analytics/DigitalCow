@@ -1,5 +1,5 @@
 """
-:module: digitalcow
+:module: DigitalCow
    :synopsis: This module contains the DigitalCow class which represents a cow in a dairy herd.
 
 :module author: Gabe van den Hoeven
@@ -71,6 +71,7 @@ from decimal import Decimal
 import DigitalHerd
 import DairyState
 import math
+from typing import Generator
 
 
 class DigitalCow:
@@ -241,6 +242,10 @@ class DigitalCow:
                     total_states.append(new_state)
 
             if days_in_milk == dim_limit:
+                new_state = DairyState.State('Exit', days_in_milk + 1,
+                                             lactation_number, 0,
+                                             Decimal("0"))
+                total_states.append(new_state)
                 days_in_milk = 0
                 days_pregnant = 1
                 lactation_number += 1
@@ -288,10 +293,14 @@ class DigitalCow:
         if state_to.state not in self.__life_states or state_from.state not in self.__life_states:
             raise ValueError("State variables of a State object must be defined in "
                              "self.__life_states")
-        if state_from.days_in_milk == self._generated_days_in_milk and state_from == state_to:
-            return Decimal("1")
+
         if state_to not in self.possible_new_states(state_from):
             return Decimal("0")
+        if state_from.days_in_milk == self._generated_days_in_milk and \
+                state_to == DairyState.State('Exit', state_from.days_in_milk + 1,
+                                             state_from.lactation_number, 0,
+                                             Decimal("0")):
+            return Decimal("1")
         vwp = self.voluntary_waiting_period(state_from.lactation_number)
 
         def __probability_insemination():
@@ -443,14 +452,14 @@ class DigitalCow:
         :rtype: tuple
         :raises ValueError: If the state of state_from is not valid.
         """
-        if state_from.days_in_milk == self._generated_days_in_milk:
-            return (state_from,)
         if state_from is None:
             state_from = self.current_state
         states_to = [DairyState.State('Exit',
                                       state_from.days_in_milk + 1,
                                       state_from.lactation_number, 0,
                                       Decimal("0"))]
+        if state_from.days_in_milk == self._generated_days_in_milk:
+            return tuple(states_to)
         self.__set_milkbot_variables(state_from.lactation_number)
         temp_state = DairyState.State(state_from.state,
                                       state_from.days_in_milk + 1,
@@ -598,6 +607,8 @@ class DigitalCow:
     @current_days_in_milk.setter
     def current_days_in_milk(self, dim):
         self._current_state = self._current_state.mutate(days_in_milk=dim)
+        milk_output = self.milk_production(self._current_state)
+        self.current_milk_output = milk_output
 
     @property
     def current_days_pregnant(self) -> int:
@@ -635,6 +646,14 @@ class DigitalCow:
         self._current_state = self._current_state.mutate(state=state)
 
     @property
+    def current_milk_output(self) -> Decimal:
+        return self._current_state.milk_output
+
+    @current_milk_output.setter
+    def current_milk_output(self, mo):
+        self._current_state = self._current_state.mutate(milk_output=mo)
+
+    @property
     def current_state(self) -> DairyState.State:
         return self._current_state
 
@@ -660,7 +679,6 @@ class DigitalCow:
         edge_count = 0
         for state in self.total_states:
             edge_count += len(self.possible_new_states(state))
-
         return edge_count
 
     @property
@@ -673,3 +691,24 @@ class DigitalCow:
         vector = len(self.total_states) * [0]
         vector[index] = 1
         return tuple(vector)
+
+
+def state_probability_generator(digital_cow: DigitalCow) -> Generator[tuple[int, int, Decimal], None, None]:
+    """
+    A generator that iterates over a tuple of states. It determines the states each
+    state can transition into, and calculates the probability of the state change for
+    each pair. It returns the indexes of the state pair in the tuple of states and
+    their probability.
+
+    :param digital_cow: A DigitalCow object for which the states are generated and
+        transition probabilities must be calculated.
+    :type digital_cow: DigitalCow
+    :return: index(state_from), index(state_to), probability
+    """
+    for state_from in digital_cow.total_states:
+        new_states = digital_cow.possible_new_states(state_from)
+        for state_to in new_states:
+            probability = digital_cow.probability_state_change
+            yield digital_cow.total_states.index(state_from), \
+                digital_cow.total_states.index(state_to), \
+                probability
