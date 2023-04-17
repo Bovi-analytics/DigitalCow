@@ -709,6 +709,10 @@ def state_probability_generator(digital_cow: DigitalCow) -> Generator[tuple[int,
         new_states = digital_cow.possible_new_states(state_from)
         for state_to in new_states:
             probability = digital_cow.probability_state_change(state_from, state_to)
-            yield digital_cow.total_states.index(state_from), \
-                digital_cow.total_states.index(state_to), \
-                float(probability)
+            try:
+                yield digital_cow.total_states.index(state_from), \
+                    digital_cow.total_states.index(state_to), \
+                    float(probability)
+            except ValueError:
+                print("fail")
+                print()

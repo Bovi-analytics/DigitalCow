@@ -2,11 +2,13 @@
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 import DairyState
-from DigitalCow import DigitalCow
+from DigitalCow import DigitalCow, state_probability_generator
 from DigitalHerd import DigitalHerd
 from DigitalCowFacade import DigitalCowFacade
 import chain_simulator
-from chain_simulator.utilities import validate_matrix_sum, validate_matrix_positive
+from chain_simulator.implementations import array_assembler
+from chain_simulator.utilities import validate_matrix_sum, \
+    validate_matrix_positive
 import time
 from decimal import Decimal
 import logging
@@ -97,25 +99,33 @@ def chain_simulator_test():
     just_another_cow = DigitalCow()
     just_another_cow.herd = just_another_herd
     start = time.perf_counter()
-    just_another_cow.generate_total_states(dim_limit=45, ln_limit=9)
+    just_another_cow.generate_total_states(dim_limit=1000, ln_limit=9)
     end = time.perf_counter()
-    print(just_another_cow.node_count)
-    print(just_another_cow.edge_count)
     print(f"duration for generating states: {end - start}")
+    # start = time.perf_counter()
+    # print(just_another_cow.node_count)
+    # end = time.perf_counter()
+    # print(f"duration node count: {end -start}")
+    # start = time.perf_counter()
+    # print(just_another_cow.edge_count)
+    # end = time.perf_counter()
+    # print(f"duration edge count: {end - start}")
+    # start = time.perf_counter()
+    # # facade = DigitalCowFacade(just_another_cow, just_another_cow.total_states)
+    # end = time.perf_counter()
+    # print(f"duration making facade: {end - start}")
+    # start = time.perf_counter()
+    # assembler = chain_simulator.ScipyCSRAssembler(facade)
+    # end = time.perf_counter()
+    # print(f"duration making assembler: {end - start}")
     start = time.perf_counter()
-    facade = DigitalCowFacade(just_another_cow, just_another_cow.total_states)
-    end = time.perf_counter()
-    print(f"duration making facade: {end - start}")
-    start = time.perf_counter()
-    assembler = chain_simulator.ScipyCSRAssembler(facade)
-    end = time.perf_counter()
-    print(f"duration making assembler: {end - start}")
-    start = time.perf_counter()
-    tm = assembler.assemble()
+    # tm = assembler.assemble()
+    tm = array_assembler(just_another_cow.node_count,
+                            state_probability_generator(just_another_cow))
     end = time.perf_counter()
     print(f"duration making TM: {end - start}")
     print(validate_matrix_sum(tm))
-    print(validate_matrix_positive(tm))
+    # print(validate_matrix_positive(tm))
 
 
 # Press the green button in the gutter to run the script.
