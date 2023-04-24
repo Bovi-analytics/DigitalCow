@@ -44,7 +44,7 @@ class DigitalHerd:
             :type _days_pregnant_limit: int
     """
     def __init__(self, mu_age_at_first_heat=365, sigma_age_at_first_heat=0, vwp=40,
-                 insemination_cutoff=300, milk_threshold=Decimal("5"),
+                 insemination_cutoff=50, milk_threshold=Decimal("5"),
                  days_in_milk_limit=1000, lactation_number_limit=9,
                  days_pregnant_limit=282):
         """Initializes an instance of a DigitalHerd object.
