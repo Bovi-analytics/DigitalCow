@@ -25,13 +25,13 @@ class DigitalHerd:
             :type _sigma_age_at_first_heat: int
         _voluntary_waiting_period: The voluntary waiting period in days before a
         cow can be inseminated.
-            :type _voluntary_waiting_period: int
+            :type _voluntary_waiting_period: list[int]
         _milk_threshold: The minimum milk production in liters
         to be considered as a productive cow.
             :type _milk_threshold: decimal.Decimal
-        _insemination_days_in_milk_cutoff: The number of days in milk after
+        _insemination_window: The number of days in milk after
         which a cow is no longer eligible for insemination.
-            :type _insemination_days_in_milk_cutoff: int
+            :type _insemination_window: list[int]
         _herd: A list of DigitalCow objects representing the cows in the herd.
             :type _herd: list
         _days_in_milk_limit: The maximum number of days a cow can be in milk
@@ -41,12 +41,12 @@ class DigitalHerd:
         before being culled.
             :type _lactation_number_limit: int
         _days_pregnant_limit: The maximum number of days a cow can be pregnant.
-            :type _days_pregnant_limit: int
+            :type _days_pregnant_limit: list[int]
     """
-    def __init__(self, mu_age_at_first_heat=365, sigma_age_at_first_heat=0, vwp=40,
-                 insemination_cutoff=50, milk_threshold=Decimal("5"),
+    def __init__(self, mu_age_at_first_heat=365, sigma_age_at_first_heat=0, vwp=None,
+                 insemination_window=None, milk_threshold=Decimal("10"),
                  days_in_milk_limit=1000, lactation_number_limit=9,
-                 days_pregnant_limit=282):
+                 days_pregnant_limit=None):
         """Initializes an instance of a DigitalHerd object.
 
         :param mu_age_at_first_heat: The mean age in days at which a cow
@@ -57,10 +57,10 @@ class DigitalHerd:
         :type sigma_age_at_first_heat: int
         :param vwp: The voluntary waiting period in days before a
             cow can be inseminated.
-        :type vwp: int
-        :param insemination_cutoff: The insemination window in days after
+        :type vwp: None | list[int]
+        :param insemination_window: The insemination window in days after
             which a cow is no longer eligible for insemination.
-        :type insemination_cutoff: int
+        :type insemination_window: None | list[int]
         :param milk_threshold: The minimum milk production in liters
             to be considered as a productive cow.
         :type milk_threshold: decimal.Decimal
@@ -71,17 +71,27 @@ class DigitalHerd:
             before being culled.
         :type lactation_number_limit: int
         :param days_pregnant_limit: The maximum number of days a cow can be pregnant.
-        :type days_pregnant_limit: int
+        :type days_pregnant_limit: None | list[int]
         """
         self._mu_age_at_first_heat = mu_age_at_first_heat
         self._sigma_age_at_first_heat = sigma_age_at_first_heat
-        self._voluntary_waiting_period = vwp
+        if vwp is None:
+            self._voluntary_waiting_period = [365, 80, 60]
+        else:
+            self._voluntary_waiting_period = vwp
         self._milk_threshold = milk_threshold
-        self._insemination_days_in_milk_cutoff = insemination_cutoff
+        if insemination_window is None:
+            self._insemination_window = [100, 100, 100]
+        else:
+            self._insemination_window = insemination_window
+        self._insemination_window = insemination_window
         self._herd = []
         self._days_in_milk_limit = days_in_milk_limit
         self._lactation_number_limit = lactation_number_limit
-        self._days_pregnant_limit = days_pregnant_limit
+        if days_pregnant_limit is None:
+            self._days_pregnant_limit = [279, 280, 282]
+        else:
+            self._days_pregnant_limit = days_pregnant_limit
         # other general properties shared between the entities in the _herd
 
     def add_to_herd(self, cows=list) -> None:
@@ -161,12 +171,13 @@ class DigitalHerd:
             else:
                 raise TypeError("Herd property has to be a list of DigitalCow objects")
 
-    @property
-    def voluntary_waiting_period(self) -> int:
-        return self._voluntary_waiting_period
+    def get_voluntary_waiting_period(self, lactation_number) -> int:
+        return self._voluntary_waiting_period[lactation_number]
 
-    @voluntary_waiting_period.setter
-    def voluntary_waiting_period(self, vwp):
+    def set_voluntary_waiting_period(self, vwp):
+        for i in vwp:
+            if not type(i) == int:
+                raise TypeError
         self._voluntary_waiting_period = vwp
 
     @property
@@ -178,14 +189,14 @@ class DigitalHerd:
         if type(mt) == Decimal:
             self._milk_threshold = mt
 
-    @property
-    def insemination_dim_cutoff(self) -> int:
-        return self._insemination_days_in_milk_cutoff
+    def get_insemination_window(self, lactation_number) -> int:
+        return self._insemination_window[lactation_number]
 
-    @insemination_dim_cutoff.setter
-    def insemination_dim_cutoff(self, cutoff):
-        if type(cutoff) == int:
-            self._insemination_days_in_milk_cutoff = cutoff
+    def set_insemination_window(self, dim_window):
+        for i in dim_window:
+            if not type(i) == int:
+                raise TypeError
+        self._insemination_window = dim_window
 
     @property
     def days_in_milk_limit(self) -> int:
@@ -203,10 +214,11 @@ class DigitalHerd:
     def lactation_number_limit(self, limit):
         self._lactation_number_limit = limit
 
-    @property
-    def days_pregnant_limit(self) -> int:
-        return self._days_pregnant_limit
+    def get_days_pregnant_limit(self, lactation_number) -> int:
+        return self._days_pregnant_limit[lactation_number]
 
-    @days_pregnant_limit.setter
-    def days_pregnant_limit(self, limit):
+    def set_days_pregnant_limit(self, limit):
+        for i in limit:
+            if not type(i) == int:
+                raise TypeError
         self._days_pregnant_limit = limit
