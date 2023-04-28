@@ -329,7 +329,7 @@ class DigitalCow:
                 match state_from.lactation_number:
                     case 0:
                         return Decimal("0.7")
-                    case ln if 0 < ln < self.herd.lactation_number_limit:
+                    case ln if 0 < ln:
                         return Decimal("0.5")
 
         def __probability_pregnancy():
@@ -337,7 +337,7 @@ class DigitalCow:
             match state_from.lactation_number:
                 case 0:
                     return Decimal("0.45")
-                case ln if 0 < ln < self.herd.lactation_number_limit:
+                case ln if 0 < ln:
                     return Decimal("0.35")
 
         def __probability_birth():
@@ -355,12 +355,11 @@ class DigitalCow:
             if state_from.days_pregnant < 30:
                 return Decimal("0")
             elif 29 < state_from.days_pregnant < 46:
-                return Decimal("1") - (Decimal("12.5") / Decimal("15"))
+                return Decimal("0.125") / Decimal("15")
             elif 45 < state_from.days_pregnant < 181:
-                return Decimal("1") - (Decimal("9.9") / Decimal("135"))
+                return Decimal("0.099") / Decimal("135")
             elif 180 < state_from.days_pregnant < dp_limit + 1:
-                return Decimal("1") - (Decimal("2") / Decimal(
-                    f"{dp_limit - 180}"))
+                return Decimal("0.02") / Decimal(f"{dp_limit - 180}")
 
         def __probability_above_insemination_cutoff():
             """Returns 1 if the days in milk is above the cutoff for insemination."""
@@ -442,7 +441,7 @@ class DigitalCow:
                             # culling
                         elif state_from.days_pregnant == dp_limit and state_from.lactation_number == 0:
                             return __probability_death().quantize(self._precision)
-                        elif state_from.days_in_milk > vwp + insemination_window and state_from.lactation_number == 0:
+                        elif state_from.days_in_milk >= vwp + insemination_window and state_from.lactation_number == 0:
                             return ((__probability_abortion() * not_death_) + __probability_death()).quantize(self._precision)
                         else:
                             return __probability_death().quantize(self._precision)
@@ -630,7 +629,7 @@ class DigitalCow:
                 decay = Decimal("0.693") / Decimal("358")
                 self.milkbot_variables = (
                     Decimal("34.8"), Decimal("29.6"), Decimal("0"), decay)
-            case ln if 1 < ln < self.herd.lactation_number_limit:
+            case ln if 1 < ln < self.herd.lactation_number_limit + 2:
                 decay = Decimal("0.693") / Decimal("240")
                 self.milkbot_variables = (
                     Decimal("47.7"), Decimal("22.1"), Decimal("0"), decay)
@@ -785,66 +784,14 @@ def state_probability_generator(digital_cow: DigitalCow) -> Generator[tuple[int,
     :type digital_cow: DigitalCow
     :return: index(state_from), index(state_to), probability
     """
-    l = [
-        DairyState.State(state='Open', days_in_milk=0, lactation_number=0,
-                         days_pregnant=0, milk_output=Decimal('0')),
-        DairyState.State(state='Open', days_in_milk=365, lactation_number=0,
-                         days_pregnant=0, milk_output=Decimal('0')),
-        DairyState.State(state='Exit', days_in_milk=365, lactation_number=0,
-                         days_pregnant=0, milk_output=Decimal('0')),
-        DairyState.State(state='Pregnant', days_in_milk=366, lactation_number=0,
-                         days_pregnant=1, milk_output=Decimal('0')),
-        DairyState.State(state='Open', days_in_milk=390, lactation_number=0,
-                         days_pregnant=0, milk_output=Decimal('0')),
-        DairyState.State(state='Pregnant', days_in_milk=390, lactation_number=0,
-                         days_pregnant=1, milk_output=Decimal('0')),
-        DairyState.State(state='Pregnant', days_in_milk=395, lactation_number=0,
-                         days_pregnant=30, milk_output=Decimal('0')),
-        DairyState.State(state='Pregnant', days_in_milk=411, lactation_number=0,
-                         days_pregnant=46, milk_output=Decimal('0')),
-        DairyState.State(state='Pregnant', days_in_milk=546, lactation_number=0,
-                         days_pregnant=181, milk_output=Decimal('0')),
-        DairyState.State(state='Pregnant', days_in_milk=644, lactation_number=0,
-                         days_pregnant=279, milk_output=Decimal('0')),
-        DairyState.State(state='Exit', days_in_milk=670, lactation_number=0,
-                         days_pregnant=0, milk_output=Decimal('0')),
-        DairyState.State(state='Open', days_in_milk=0, lactation_number=1,
-                         days_pregnant=0, milk_output=Decimal('17.4000000000')),
-        DairyState.State(state='Open', days_in_milk=80, lactation_number=1,
-                         days_pregnant=0, milk_output=Decimal('28.8085031667')),
-        DairyState.State(state='Exit', days_in_milk=80, lactation_number=1,
-                         days_pregnant=0, milk_output=Decimal('0')),
-        DairyState.State(state='Pregnant', days_in_milk=81, lactation_number=1,
-                         days_pregnant=1, milk_output=Decimal('28.7859099545')),
-        DairyState.State(state='Open', days_in_milk=105, lactation_number=1,
-                         days_pregnant=0, milk_output=Decimal('27.9902799103')),
-        DairyState.State(state='Pregnant', days_in_milk=105, lactation_number=1,
-                         days_pregnant=1, milk_output=Decimal('27.9902799103')),
-        DairyState.State(state='DoNotBreed', days_in_milk=106, lactation_number=1,
-                         days_pregnant=0, milk_output=Decimal('27.9497099524')),
-        DairyState.State(state='Pregnant', days_in_milk=110, lactation_number=1,
-                         days_pregnant=30, milk_output=Decimal('27.7836281976')),
-        DairyState.State(state='Pregnant', days_in_milk=126, lactation_number=1,
-                         days_pregnant=46, milk_output=Decimal('27.0747905824')),
-        DairyState.State(state='Pregnant', days_in_milk=261, lactation_number=1,
-                         days_pregnant=181, milk_output=Decimal('20.9955704888')),
-        DairyState.State(state='Pregnant', days_in_milk=360, lactation_number=1,
-                         days_pregnant=280, milk_output=Decimal('17.3352719369')),
-        DairyState.State(state='DoNotBreed', days_in_milk=361, lactation_number=1,
-                         days_pregnant=0, milk_output=Decimal('17.3017490710')),
-        DairyState.State(state='DoNotBreed', days_in_milk=361, lactation_number=2,
-                         days_pregnant=0, milk_output=Decimal('16.8195829212')),
-        DairyState.State(state='Exit', days_in_milk=1000, lactation_number=1,
-                         days_pregnant=0, milk_output=Decimal('0')),
-        DairyState.State(state='Exit', days_in_milk=1000, lactation_number=2,
-                         days_pregnant=0, milk_output=Decimal('0'))
-    ]
-    for state_from in digital_cow.total_states:
+
+    state_index = {
+        state: index for index, state in enumerate(digital_cow.total_states)
+    }
+    for state_from in state_index:
         new_states = digital_cow.possible_new_states(state_from)
         for state_to in new_states:
             probability = digital_cow.probability_state_change(state_from, state_to)
-            if state_from in l:
-                print(f'{state_from}\n{state_to}\n{probability}')
-            yield digital_cow.total_states.index(state_from), \
-                digital_cow.total_states.index(state_to), \
+            yield state_index[state_from], \
+                state_index[state_to], \
                 float(probability)

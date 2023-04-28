@@ -172,6 +172,8 @@ class DigitalHerd:
                 raise TypeError("Herd property has to be a list of DigitalCow objects")
 
     def get_voluntary_waiting_period(self, lactation_number) -> int:
+        if lactation_number > 2:
+            lactation_number = 2
         return self._voluntary_waiting_period[lactation_number]
 
     def set_voluntary_waiting_period(self, vwp):
@@ -190,6 +192,8 @@ class DigitalHerd:
             self._milk_threshold = mt
 
     def get_insemination_window(self, lactation_number) -> int:
+        if lactation_number > 2:
+            lactation_number = 2
         return self._insemination_window[lactation_number]
 
     def set_insemination_window(self, dim_window):
@@ -215,6 +219,8 @@ class DigitalHerd:
         self._lactation_number_limit = limit
 
     def get_days_pregnant_limit(self, lactation_number) -> int:
+        if lactation_number > 2:
+            lactation_number = 2
         return self._days_pregnant_limit[lactation_number]
 
     def set_days_pregnant_limit(self, limit):

@@ -95,19 +95,16 @@ def test2():
 
 def chain_simulator_test():
     logging.basicConfig()
-    just_another_herd = DigitalHerd(insemination_window=[25, 25, 25])
+    just_another_herd = DigitalHerd(insemination_window=[100, 100, 100])
     # just_another_cow = DigitalCow(days_in_milk=364, lactation_number=0,
     #                               current_days_pregnant=0, state='Open')
     just_another_cow = DigitalCow(days_in_milk=650, lactation_number=0,
                                   current_days_pregnant=275, state='Pregnant')
     just_another_cow.herd = just_another_herd
     start = time.perf_counter()
-    just_another_cow.generate_total_states(dim_limit=1000, ln_limit=1)
+    just_another_cow.generate_total_states(dim_limit=1000, ln_limit=9)
     end = time.perf_counter()
     print(f"duration for generating states: {end - start}")
-    with open("states.txt", "w") as file:
-        for state in just_another_cow.total_states:
-            file.write(f"{state}\n")
     start = time.perf_counter()
     print(just_another_cow.node_count)
     end = time.perf_counter()
