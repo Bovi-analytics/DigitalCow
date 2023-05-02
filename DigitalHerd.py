@@ -1,8 +1,24 @@
 # $Id:
-# Author: Gabe van den Hoeven
 # Copyright:
 """
+:module: DigitalHerd
+:module author: Gabe van den Hoeven
+    :synopsis: This module contains the DigitalHerd class representing a dairy herd.
 
+======================
+How To Use This Module
+======================
+(See the individual classes, methods, and attributes for details.)\n
+This module is to be used in conjunction with the DigitalCow class.
+The DigitalHerd contains certain variables used by the DigitalCow class for
+simulation purposes. These variables are the same for all DigitalCow instances
+in the herd.\n
+Since default values are provided for the DigitalHerd class, it can be created as
+follows:\n
+1. Import the class DigitalHerd: \n
+``import DigitalHerd.DigitalHerd`` or ``from DigitalHerd import DigitalHerd``.\n
+2. Create a DigitalHerd instance. \n
+``new_herd = DigitalHerd()``
 
 """
 
@@ -17,31 +33,32 @@ class DigitalHerd:
     A class to represent a digital herd of cows and manage their properties.
 
     Attributes:
-        _mu_age_at_first_heat: The mean age in days at which a cow
-        will experience its first estrus.
-            :type _mu_age_at_first_heat: int
-        _sigma_age_at_first_heat: The standard deviation in days of the age
-        at which a cow will experience its first estrus.
-            :type _sigma_age_at_first_heat: int
-        _voluntary_waiting_period: The voluntary waiting period in days before a
-        cow can be inseminated.
-            :type _voluntary_waiting_period: list[int]
-        _milk_threshold: The minimum milk production in liters
-        to be considered as a productive cow.
-            :type _milk_threshold: decimal.Decimal
-        _insemination_window: The number of days in milk after
-        which a cow is no longer eligible for insemination.
-            :type _insemination_window: list[int]
-        _herd: A list of DigitalCow objects representing the cows in the herd.
-            :type _herd: list
-        _days_in_milk_limit: The maximum number of days a cow can be in milk
+        _mu_age_at_first_heat : int
+            The mean age in days at which a cow
+            will experience its first estrus.
+        _sigma_age_at_first_heat : int
+            The standard deviation in days of the age
+            at which a cow will experience its first estrus.
+        _voluntary_waiting_period : list[int]
+            The voluntary waiting period in days before a
+            cow can be inseminated.
+        _milk_threshold : decimal.Decimal
+            The minimum milk production in liters
+            to be considered as a productive cow.
+        _insemination_window : list[int]
+            The number of days in milk since the voluntary waiting period after
+            which a cow is no longer eligible for insemination.
+        _herd : list[DigitalCow.DigitalCow]
+            A list of DigitalCow objects representing the cows in the herd.
+        _days_in_milk_limit : int
+            The maximum number of days a cow can be in milk
+            before being culled.
+        _lactation_number_limit : int
+            The maximum number of lactation cycles a cow can have
         before being culled.
-            :type _days_in_milk_limit: int
-        _lactation_number_limit: The maximum number of lactation cycles a cow can have
-        before being culled.
-            :type _lactation_number_limit: int
-        _days_pregnant_limit: The maximum number of days a cow can be pregnant.
-            :type _days_pregnant_limit: list[int]
+        _days_pregnant_limit : list[int]
+            The maximum number of days a cow can be pregnant.
+
     """
     def __init__(self, mu_age_at_first_heat=365, sigma_age_at_first_heat=0, vwp=None,
                  insemination_window=None, milk_threshold=Decimal("10"),
@@ -57,21 +74,21 @@ class DigitalHerd:
         :type sigma_age_at_first_heat: int
         :param vwp: The voluntary waiting period in days before a
             cow can be inseminated.
-        :type vwp: None | list[int]
+        :type vwp: list[int] | None
         :param insemination_window: The insemination window in days after
             which a cow is no longer eligible for insemination.
-        :type insemination_window: None | list[int]
+        :type insemination_window: list[int] | None
         :param milk_threshold: The minimum milk production in liters
             to be considered as a productive cow.
         :type milk_threshold: decimal.Decimal
         :param days_in_milk_limit: The maximum number of days a cow can be in milk
             before being culled.
         :type days_in_milk_limit: int
-        :param lactation_number_limit: The maximum number of lactation cycles a cow can have
-            before being culled.
+        :param lactation_number_limit: The maximum number of lactation cycles a cow
+            can have before being culled.
         :type lactation_number_limit: int
         :param days_pregnant_limit: The maximum number of days a cow can be pregnant.
-        :type days_pregnant_limit: None | list[int]
+        :type days_pregnant_limit: list[int] | None
         """
         self._mu_age_at_first_heat = mu_age_at_first_heat
         self._sigma_age_at_first_heat = sigma_age_at_first_heat
@@ -101,7 +118,8 @@ class DigitalHerd:
 
         :param cows: A list of DigitalCow objects which are to be added to the herd.
         :type cows: list[DigitalCow.DigitalCow]
-        :raises TypeError: If the list given does not solely consist of DigitalCow objects.
+        :raises TypeError: If the list given does not solely consist of DigitalCow
+            objects.
         """
         if cows is not None:
             for cow in cows:
@@ -128,9 +146,10 @@ class DigitalHerd:
 
     def generate_age_at_first_heat(self) -> int:
         """
-        Returns a random age at first heat based on the mean age at first heat and its standard deviation.
-            :returns: A random age at first heat based on the mean age at first heat and
-                its standard deviation.
+        Returns a random age at first heat based on the mean age at first heat
+        and its standard deviation.
+            :returns: A random age at first heat based on the mean age at first heat
+                and its standard deviation.
             :rtype: int
         """
         self.calculate_mu_age_at_first_heat()
@@ -169,7 +188,8 @@ class DigitalHerd:
                 for cow in self._herd:
                     cow.herd = self
             else:
-                raise TypeError("Herd property has to be a list of DigitalCow objects")
+                raise TypeError(
+                    "Herd property has to be a list of DigitalCow objects")
 
     def get_voluntary_waiting_period(self, lactation_number) -> int:
         if lactation_number > 2:
