@@ -86,6 +86,6 @@ class State:
             :rtype: DairyState.State
         """
         var = asdict(self)
-        for key, value in kwargs:
+        for key, value in kwargs.items():
             var[key] = value
         return State(**var)

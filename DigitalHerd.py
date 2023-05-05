@@ -63,7 +63,7 @@ class DigitalHerd:
     def __init__(self, mu_age_at_first_heat=365, sigma_age_at_first_heat=0, vwp=None,
                  insemination_window=None, milk_threshold=Decimal("10"),
                  days_in_milk_limit=1000, lactation_number_limit=9,
-                 days_pregnant_limit=None):
+                 days_pregnant_limit=None, duration_dry=None):
         """Initializes an instance of a DigitalHerd object.
 
         :param mu_age_at_first_heat: The mean age in days at which a cow
@@ -89,6 +89,9 @@ class DigitalHerd:
         :type lactation_number_limit: int
         :param days_pregnant_limit: The maximum number of days a cow can be pregnant.
         :type days_pregnant_limit: list[int] | None
+        :param duration_dry: The number of days before calving, when a cow is not
+            being milked.
+        :type duration_dry: list[int] | None
         """
         self._mu_age_at_first_heat = mu_age_at_first_heat
         self._sigma_age_at_first_heat = sigma_age_at_first_heat
@@ -109,6 +112,10 @@ class DigitalHerd:
             self._days_pregnant_limit = [279, 280, 282]
         else:
             self._days_pregnant_limit = days_pregnant_limit
+        if duration_dry is None:
+            self._duration_dry = [60, 60]
+        else:
+            self._duration_dry = duration_dry
         # other general properties shared between the entities in the _herd
 
     def add_to_herd(self, cows=list) -> None:
@@ -248,3 +255,14 @@ class DigitalHerd:
             if not type(i) == int:
                 raise TypeError
         self._days_pregnant_limit = limit
+
+    def get_duration_dry(self, lactation_number) -> int:
+        if lactation_number > 1:
+            lactation_number = 1
+        return self._duration_dry[lactation_number]
+
+    def set_duration_dry(self, duration_dry):
+        for i in duration_dry:
+            if not type(i) == int:
+                raise TypeError
+        self._duration_dry = duration_dry
