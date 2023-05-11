@@ -27,20 +27,20 @@ class State:
     """
     A class representing the state of a dairy cow.
 
-    Attributes:
-        state : str
-            The life state of the dairy cow.
-        days_in_milk : int
-            The amount of days since the cow's last calving,
+    :Attributes:
+        :var state: The life state of the dairy cow.
+        :type state: str
+        :var days_in_milk: The amount of days since the cow's last calving,
             or it's birth if it has not calved yet.
-        lactation_number : int
-            The amount of lactation cycles the cow has completed.
-        days_pregnant : int
-            The amount of days that the cow is pregnant.
-        milk_output : decimal.Decimal
-            The amount of milk the cow produces in this state.
+        :type days_in_milk: int
+        :var lactation_number: The amount of lactation cycles the cow has completed.
+        :type lactation_number: int
+        :var days_pregnant: The amount of days that the cow is pregnant.
+        :type days_pregnant: int
+        :var milk_output: The amount of milk the cow produces in this state.
+        :type milk_output: Decimal
 
-    Methods:
+    :Methods:
         __post_init__()
         mutate(**kwargs)
     """
@@ -57,8 +57,7 @@ class State:
 
         :raises TypeError: If the type of any variable is wrong.
         :raises ValueError: If days_pregnant is not equal to 0 and the state
-            is not equal to 'Pregnant' or
-            days_pregnant is 0 and the state is 'Pregnant'.
+            is not 'Pregnant' or days_pregnant is 0 and the state is 'Pregnant'.
         """
         if self.days_pregnant != 0 and self.state != 'Pregnant':
             raise ValueError
@@ -77,11 +76,13 @@ class State:
 
     def mutate(self, **kwargs):
         """
-        Takes an argument of the state class and returns a new instance with the changed value.
-        This function can be used to change values in a state object by having the returned instance overwrite
-        the original instance.
+        Takes an argument of the state class and returns a new instance with
+        the changed value.
+        This function can be used to change values in a state object by having
+        the returned instance overwrite the original instance.
 
-        :param kwargs: The keyword and value pairs of the new state that need to be changed.
+        :param kwargs: The keyword and value pairs of the new state that
+            need to be changed.
         :return: The new state with the changed values.
             :rtype: DairyState.State
         """

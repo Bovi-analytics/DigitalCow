@@ -15,11 +15,21 @@ simulation purposes. These variables are the same for all DigitalCow instances
 in the herd.\n
 Since default values are provided for the DigitalHerd class, it can be created as
 follows:\n
-1. Import the class DigitalHerd: \n
-``import DigitalHerd.DigitalHerd`` or ``from DigitalHerd import DigitalHerd``.\n
-2. Create a DigitalHerd instance. \n
-``new_herd = DigitalHerd()``
+1. Import the class DigitalHerd:
+********************************
+Import the class with:\n
+``import DigitalHerd.DigitalHerd``\n
+or\n
+``from DigitalHerd import DigitalHerd``.\n
 
+2. Create a DigitalHerd instance:
+*********************************
+Create a new instance with default values:\n
+``new_herd = DigitalHerd()``\n
+Alternatively, parameters can be given to set instance values different from the
+default values. For example:\n
+``new_herd = DigitalHerd(milk_threshold=Decimal("5"))``\n
+For details about the parameters, look at the ``__init__`` method.
 """
 
 
@@ -32,39 +42,60 @@ class DigitalHerd:
     """
     A class to represent a digital herd of cows and manage their properties.
 
-    Attributes:
-        _mu_age_at_first_heat : int
-            The mean age in days at which a cow
+    :Attributes:
+        :var _mu_age_at_first_heat: The mean age in days at which a cow
             will experience its first estrus.
-        _sigma_age_at_first_heat : int
-            The standard deviation in days of the age
+        :type _mu_age_at_first_heat: int
+        :var _sigma_age_at_first_heat: The standard deviation in days of the age
             at which a cow will experience its first estrus.
-        _voluntary_waiting_period : list[int]
-            The voluntary waiting period in days before a
-            cow can be inseminated.
-        _milk_threshold : decimal.Decimal
-            The minimum milk production in liters
+        :type _sigma_age_at_first_heat: int
+        :var _voluntary_waiting_period: The voluntary waiting period in days before a
+            cow can be inseminated. Values in the list are for lactation 0, 1, and 2+.
+        :type _voluntary_waiting_period: list[int]
+        :var _milk_threshold: The minimum milk production in liters
             to be considered as a productive cow.
-        _insemination_window : list[int]
-            The number of days in milk since the voluntary waiting period after
-            which a cow is no longer eligible for insemination.
-        _herd : list[DigitalCow.DigitalCow]
-            A list of DigitalCow objects representing the cows in the herd.
-        _days_in_milk_limit : int
-            The maximum number of days a cow can be in milk
+        :type _milk_threshold: Decimal
+        :var _insemination_window: The number of days in milk since the
+            voluntary waiting period after which a cow is no longer eligible for
+            insemination. Values in the list are for lactation 0, 1, and 2+.
+        :type _insemination_window: list[int]
+        :var _herd: A list of DigitalCow objects representing the cows in the herd.
+        :type _herd: list[DigitalCow.DigitalCow]
+        :var _days_in_milk_limit: The maximum number of days a cow can be in milk
             before being culled.
-        _lactation_number_limit : int
-            The maximum number of lactation cycles a cow can have
-        before being culled.
-        _days_pregnant_limit : list[int]
-            The maximum number of days a cow can be pregnant.
+        :type _days_in_milk_limit: int
+        :var _lactation_number_limit: The maximum number of lactation cycles
+            a cow can have before being culled.
+        :type _lactation_number_limit: int
+        :var _days_pregnant_limit: The maximum number of days a cow can be
+            pregnant. Values in the list are for lactation 0, 1, and 2+.
+        :type _days_pregnant_limit: list[int]
+        :var _duration_dry: The number of days before calving, when a cow is not
+            being milked. Values in the list are for lactation 1 and 2+.
+        :type _duration_dry: list[int] | None
 
+    :Methods:
+        __init__(mu_age_at_first_heat, sigma_age_at_first_heat, vwp,
+        insemination_window, milk_threshold, days_in_milk_limit,
+        lactation_number_limit, days_pregnant_limit, duration_dry)
+        add_to_herd(cows)
+        calculate_mu_age_at_first_heat()
+        generate_age_at_first_heat()
+        get_voluntary_waiting_period(lactation_number)
+        set_voluntary_waiting_period(vwp)
+        get_insemination_window(lactation_number)
+        set_insemination_window(dim_window)
+        get_days_pregnant_limit(lactation_number)
+        set_days_pregnant_limit(limit)
+        get_duration_dry(lactation_number)
+        set_duration_dry(duration_dry)
     """
     def __init__(self, mu_age_at_first_heat=365, sigma_age_at_first_heat=0, vwp=None,
                  insemination_window=None, milk_threshold=Decimal("10"),
                  days_in_milk_limit=1000, lactation_number_limit=9,
                  days_pregnant_limit=None, duration_dry=None):
-        """Initializes an instance of a DigitalHerd object.
+        """
+        Initializes an instance of a DigitalHerd object.
 
         :param mu_age_at_first_heat: The mean age in days at which a cow
             will experience its first estrus.
@@ -118,7 +149,7 @@ class DigitalHerd:
             self._duration_dry = duration_dry
         # other general properties shared between the entities in the _herd
 
-    def add_to_herd(self, cows=list) -> None:
+    def add_to_herd(self, cows: list) -> None:
         """
         Takes a list of DigitalCow objects and adds each cow to the herd if they
         are not in the herd already.
@@ -196,7 +227,8 @@ class DigitalHerd:
                     cow.herd = self
             else:
                 raise TypeError(
-                    "Herd property has to be a list of DigitalCow objects")
+                    "Herd property must be a list containing only DigitalCow "
+                    "objects.")
 
     def get_voluntary_waiting_period(self, lactation_number) -> int:
         if lactation_number > 2:
@@ -221,7 +253,11 @@ class DigitalHerd:
     def get_insemination_window(self, lactation_number) -> int:
         if lactation_number > 2:
             lactation_number = 2
-        return self._insemination_window[lactation_number]
+        return self._insemination_window[lactation_number] - 1
+        # TODO CHECK
+        # While creating the states, there would be 1 extra day pregnant state
+        # making the insemination window one day longer.
+        # The - 1 solves this issue without interfering with other parts of the code.
 
     def set_insemination_window(self, dim_window):
         for i in dim_window:
