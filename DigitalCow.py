@@ -8,35 +8,47 @@
 ======================
 How To Use This Module
 ======================
-(See the individual classes, methods, and attributes for details.)
+(See the individual classes, methods, and attributes for details.)\n
+*Values in this HowTo are examples, see documentation of each class or function
+for details on the default values.*
 
-1. Import the class DigitalCow: \n
-``import DigitalCow.DigitalCow`` or ``from
-DigitalCow import DigitalCow``.
+1. Import the class DigitalCow:
+*******************************
+
+``import DigitalCow.DigitalCow``\n
+or\n
+``from DigitalCow import DigitalCow``.
 
 You will also need the DigitalHerd class from the DigitalHerd module.
 
-2. Create a DigitalCow object:
+*******************************************************
 
-a) `Without a DigitalHerd object`:
+2. Create a DigitalCow object:
+******************************
+
+a) **Without a DigitalHerd object**:
         1) Without parameters:\n
         ``cow = DigitalCow()``\n
         2) With parameters:\n
         ``cow = DigitalCow(days_in_milk=245, lactation_number=3,
         days_pregnant=165, age_at_first_heat=371, state='Pregnant')``\n
+    *These parameters may not be all available parameters. Look at each class'
+    documentation for details.*
 
-b) `With a DigitalHerd object`:
+b) **With a DigitalHerd object**:
     1) Without parameters\n
     a_herd = DigitalHerd()\n
     cow = DigitalCow(herd=a_herd)\n
 
     2) With parameters\n
-    a_herd = DigitalHerd(vwp=50, insemination_window=300,
-    milk_threshold=Decimal("30"))\n
+    a_herd = DigitalHerd(vwp=[365, 90, 70], insemination_window=[110, 100, 90],
+    milk_threshold=Decimal("12"), duration_dry=[70, 50])\n
     cow = DigitalCow(days_in_milk=67, lactation_number=1,
-    days_pregnant=0, herd=a_herd, state='Open')\n
+    days_pregnant=0, age=767, herd=a_herd, state='Open')\n
+    *These parameters may not be all available parameters. Look at each class'
+    documentation for details.*
 
-c) `Set the herd of the DigitalCow`:
+c) **Set the herd of the DigitalCow**:
     1) Sets the DigitalHerd as the herd of the DigitalCow\n
 
     ``a_herd = DigitalHerd()``\n
@@ -64,7 +76,17 @@ c) `Set the herd of the DigitalCow`:
     ``cow2 = DigitalCow()``\n
     ``a_herd.herd = [cow, cow2]``\n
 
-3.
+********************************************************
+
+3. Generate states for the DigitalCow object:
+*********************************************
+Generate states for the cow with:\n
+``cow.generate_total_states(dim_limit=750, ln_limit=9)``
+
+********************************************************
+
+4. Create a transition matrix using the ``chain_simulator`` package:
+********************************************************************
 
 """
 
