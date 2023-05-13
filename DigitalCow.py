@@ -69,6 +69,9 @@ c) `Set the herd of the DigitalCow`:
 """
 
 from decimal import Decimal
+
+import numpy
+
 import DigitalHerd
 import DairyState
 import math
@@ -951,11 +954,11 @@ class DigitalCow:
         return len(self.total_states)
 
     @property
-    def initial_state_vector(self) -> tuple:
+    def initial_state_vector(self) -> numpy.array:
         index = self.total_states.index(self.current_state)
         vector = len(self.total_states) * [0]
         vector[index] = 1
-        return tuple(vector)
+        return np.asarray(vector)
 
     @property
     def precision(self):

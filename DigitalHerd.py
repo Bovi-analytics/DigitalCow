@@ -135,7 +135,6 @@ class DigitalHerd:
             self._insemination_window = [100, 100, 100]
         else:
             self._insemination_window = insemination_window
-        self._insemination_window = insemination_window
         self._herd = []
         self._days_in_milk_limit = days_in_milk_limit
         self._lactation_number_limit = lactation_number_limit
