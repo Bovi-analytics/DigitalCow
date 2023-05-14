@@ -4046,16 +4046,16 @@ if __name__ == '__main__':
         try:
             dim = (datetime.datetime.today() - datetime.datetime.strptime(
                 cow["LastCalvingDate"], '%Y-%m-%dT%H:%M:%S')).days
-        except KeyError as err:
-            if err.args[0] == "LastCalvingDate":
+        except KeyError as error:
+            if error.args[0] == "LastCalvingDate":
                 dim = (datetime.datetime.today() - datetime.datetime.strptime(
                     cow["BirthDate"], '%Y-%m-%dT%H:%M:%S')).days
         age = (datetime.datetime.today() - datetime.datetime.strptime(
             cow["BirthDate"], '%Y-%m-%dT%H:%M:%S')).days
         try:
             ln = cow["Parity"]
-        except KeyError as err:
-            if err.args[0] == "Parity":
+        except KeyError as error:
+            if error.args[0] == "Parity":
                 ln = 0
         match cow["CurrentStatus"]:
             # 0: None

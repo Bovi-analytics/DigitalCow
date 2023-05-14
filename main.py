@@ -2,7 +2,7 @@
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 import DairyState
-from DigitalCow import DigitalCow, state_probability_generator
+from DigitalCow import DigitalCow, state_probability_generator, convert_final_state_vector
 from DigitalHerd import DigitalHerd
 from chain_simulator.simulation import state_vector_processor
 from chain_simulator.utilities import validate_matrix_sum, \
@@ -20,7 +20,7 @@ def chain_simulator_test():
                                   days_pregnant=275, age=650, herd=just_another_herd,
                                   state='Pregnant')
     start = time.perf_counter()
-    just_another_cow.generate_total_states(dim_limit=1000, ln_limit=9)
+    just_another_cow.generate_total_states(dim_limit=1000, ln_limit=2)
     end = time.perf_counter()
     print(f"duration for generating states: {end - start}")
     # start = time.perf_counter()
@@ -48,6 +48,8 @@ def chain_simulator_test():
     for day in simulation:
         end1 = time.perf_counter()
         print(day)
+        vector_1d = convert_final_state_vector(day, just_another_cow.total_states, 0)
+        print(vector_1d)
         print(f"duration of above simulation: {end1 - start1}")
         start1 = time.perf_counter()
 

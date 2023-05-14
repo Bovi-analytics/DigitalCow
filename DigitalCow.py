@@ -1096,21 +1096,21 @@ def convert_final_state_vector(day: tuple, total_states: tuple, group_by: int):
                 try:
                     one_dimensional_vector[days_in_milk] = one_dimensional_vector[
                         days_in_milk] + probability
-                except KeyError:
+                except KeyError as error:
                     one_dimensional_vector.update({days_in_milk: probability})
             case 1:
                 lactation_number = state.lactation_number
                 try:
                     one_dimensional_vector[lactation_number] = one_dimensional_vector[
                         lactation_number] + probability
-                except KeyError:
+                except KeyError as error:
                     one_dimensional_vector.update({lactation_number: probability})
             case 2:
                 life_state = state.state
                 try:
                     one_dimensional_vector[life_state] = one_dimensional_vector[
                                                              life_state] + probability
-                except KeyError:
+                except KeyError as error:
                     one_dimensional_vector.update({life_state: probability})
 
     return one_dimensional_vector
