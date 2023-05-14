@@ -21,7 +21,7 @@ or\n
 
 You will also need the DigitalHerd class from the DigitalHerd module.
 
-*******************************************************
+************************************************************
 
 2. Create a DigitalCow object:
 ******************************
@@ -76,17 +76,50 @@ c) **Set the herd of the DigitalCow**:
     ``cow2 = DigitalCow()``\n
     ``a_herd.herd = [cow, cow2]``\n
 
-********************************************************
+************************************************************
 
 3. Generate states for the DigitalCow object:
 *********************************************
-Generate states for the cow with:\n
-``cow.generate_total_states(dim_limit=750, ln_limit=9)``
+a) **Generate states for the cow with**:
+    ``cow.generate_total_states(dim_limit=750, ln_limit=9)``\n
 
-********************************************************
+************************************************************
 
 4. Create a transition matrix using the ``chain_simulator`` package:
 ********************************************************************
+To create a transition matrix from the states of the DigitalCow object the
+``chain_simulator`` package must be used.\n
+a) **Import ``array_assembler`` from the ``chain_simulator`` package**:
+    ``from chain_simulator.assembly import array_assembler``\n
+
+b) **Use ``array_assembler`` to create a transition matrix**:
+    ``tm = array_assembler(cow.node_count, state_probability_generator(cow))``\n
+*For details on the parameters of functions from the ``chain_simulator`` package,
+see the corresponding documentation of the ``chain_simulator`` package:*
+TODO LINK
+
+************************************************************
+
+5. Perform a simulation using the ``chain_simulator`` package to get a final state vector:
+******************************************************************************************
+a) **Import ``state_vector_processor`` from the ``chain_simulator`` package**:
+    ``from chain_simulator.simulation import state_vector_processor``\n
+
+b) **Use the transition matrix and the cow's initial state vector to simulate the cow over a given number of days**:
+    ``simulation = state_vector_processor(cow.initial_state_vector, tm, 140, 7)``\n
+
+c) **``simulation`` here is a generator. Iterate over ``simulation`` to get the final state vectors**:
+    ``final_state_vector, day = next(simulation)``\n
+    or\n
+    ``for final_state_vector, day in simulation:``\n
+*For details on the parameters of functions from the ``chain_simulator`` package,
+see the corresponding documentation of the ``chain_simulator`` package:*
+TODO LINK
+
+************************************************************
+
+6. Get phenotypes from the final state vector:
+**********************************************
 
 """
 
@@ -1036,8 +1069,51 @@ def state_probability_generator(digital_cow: DigitalCow) -> \
                 float(probability)
 
 
-def convert_final_state_vector(final_state_vector, cow: DigitalCow, ):
-    return
+def convert_final_state_vector(day: tuple, total_states: tuple, group_by: int):
+    """
+
+    :param day:
+    :param total_states:
+    :param group_by:
+    :return:
+    """
+    final_state_vector, day = day
+    state_index = {
+        state: index for index, state in enumerate(total_states)
+    }
+    vector_index = {
+        index: probability for index, probability in enumerate(final_state_vector)
+    }
+    # final_state_vector = [0.7, 0, 0, 0, 0, 0, ...]   -> all states?
+    # assuming length of final_state_vector == total_states
+    one_dimensional_vector = {}
+    for state in state_index:
+        index = state_index[state]
+        probability = vector_index[index]
+        match group_by:
+            case 0:
+                days_in_milk = state.days_in_milk
+                try:
+                    one_dimensional_vector[days_in_milk] = one_dimensional_vector[
+                        days_in_milk] + probability
+                except KeyError:
+                    one_dimensional_vector.update({days_in_milk: probability})
+            case 1:
+                lactation_number = state.lactation_number
+                try:
+                    one_dimensional_vector[lactation_number] = one_dimensional_vector[
+                        lactation_number] + probability
+                except KeyError:
+                    one_dimensional_vector.update({lactation_number: probability})
+            case 2:
+                life_state = state.state
+                try:
+                    one_dimensional_vector[life_state] = one_dimensional_vector[
+                                                             life_state] + probability
+                except KeyError:
+                    one_dimensional_vector.update({life_state: probability})
+
+    return one_dimensional_vector
 
 
 def decimalize_precision(dec=10) -> Decimal:
