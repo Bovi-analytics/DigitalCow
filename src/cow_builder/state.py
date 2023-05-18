@@ -1,10 +1,10 @@
 # $Id:
 # Copyright:
 """
-:module: DairyState
+:module: state
 :module author: Gabe van den Hoeven
-    :synopsis: This module contains the State dataclass representing a state of a cow.
-        This class is used by the DigitalCow class.
+:synopsis: This module contains the State dataclass representing a state of a cow.
+    This class is used by the DigitalCow class.
 
 ======================
 How To Use This Module
@@ -41,8 +41,8 @@ class State:
         :type milk_output: Decimal
 
     :Methods:
-        __post_init__()
-        mutate(**kwargs)
+        __post_init__()\n
+        mutate(**kwargs)\n
     """
 
     state: str
@@ -84,7 +84,7 @@ class State:
         :param kwargs: The keyword and value pairs of the new state that
             need to be changed.
         :return: The new state with the changed values.
-            :rtype: DairyState.State
+        :rtype: DairyState.State
         """
         var = asdict(self)
         for key, value in kwargs.items():

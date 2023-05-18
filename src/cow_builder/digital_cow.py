@@ -1,8 +1,8 @@
 """
-:module: DigitalCow
+:module: digital_cow
 :module author: Gabe van den Hoeven
-   :synopsis: This module contains the DigitalCow class which represents a cow in a
-   dairy herd, as well as some functions that it uses
+:synopsis: This module contains the DigitalCow class which represents a cow in a
+   dairy herd, as well as some functions that it uses.
 
 
 ======================
@@ -12,76 +12,84 @@ How To Use This Module
 *Values in this HowTo are examples, see documentation of each class or function
 for details on the default values.*
 
-1. Import the class DigitalCow:
-*******************************
+1. Import the classes DigitalCow and DigitalHerd:
+*************************************************
+First import the DigitalCow class:
 
-``import DigitalCow.DigitalCow``\n
-or\n
-``from DigitalCow import DigitalCow``.
+    ``from cow_builder.digital_cow import DigitalCow``
 
-You will also need the DigitalHerd class from the DigitalHerd module.
+You will also need to import the DigitalHerd class from the digital_herd module:
+
+    ``from cow_builder.digital_herd import DigitalHerd``
 
 ************************************************************
 
-2. Create a DigitalCow object:
-******************************
+2. Create a DigitalCow and DigitalHerd object:
+**********************************************
+A DigitalCow object can be made without a DigitalHerd object,
+however it won't have full functionality until a DigitalHerd is added as its herd.
 
-a) **Without a DigitalHerd object**:
-        1) Without parameters:\n
+a) Without a DigitalHerd object:
+    1) Without parameters:
+
         ``cow = DigitalCow()``\n
-        2) With parameters:\n
+
+    2) With parameters:
+
         ``cow = DigitalCow(days_in_milk=245, lactation_number=3,
-        days_pregnant=165, age_at_first_heat=371, state='Pregnant')``\n
+        days_pregnant=165, age_at_first_heat=371, age=2079, state='Pregnant')``\n
+
     *These parameters may not be all available parameters. Look at each class'
     documentation for details.*
 
-b) **With a DigitalHerd object**:
-    1) Without parameters\n
-    a_herd = DigitalHerd()\n
-    cow = DigitalCow(herd=a_herd)\n
+b) With a DigitalHerd object:
+    1) Without parameters:
 
-    2) With parameters\n
-    a_herd = DigitalHerd(vwp=[365, 90, 70], insemination_window=[110, 100, 90],
-    milk_threshold=Decimal("12"), duration_dry=[70, 50])\n
-    cow = DigitalCow(days_in_milk=67, lactation_number=1,
-    days_pregnant=0, age=767, herd=a_herd, state='Open')\n
+        ``a_herd = DigitalHerd()``\n
+        ``cow = DigitalCow(herd=a_herd)``\n
+
+    2) With parameters:
+
+        ``a_herd = DigitalHerd(vwp=[365, 90, 70], insemination_window=[110, 100, 90],
+        milk_threshold=Decimal("12"), duration_dry=[70, 50])``\n
+        ``cow = DigitalCow(days_in_milk=67, lactation_number=1,
+        days_pregnant=0, age=767, herd=a_herd, state='Open')``\n
+
     *These parameters may not be all available parameters. Look at each class'
     documentation for details.*
 
-c) **Set the herd of the DigitalCow**:
-    1) Sets the DigitalHerd as the herd of the DigitalCow\n
+c) Set the herd of the DigitalCow:
+    1) Sets the DigitalHerd as the herd of the DigitalCow:
 
-    ``a_herd = DigitalHerd()``\n
-    ``cow = DigitalCow(herd=a_herd)``\n
+        ``a_herd = DigitalHerd()``\n
+        ``cow = DigitalCow(herd=a_herd)``\n
 
-    2) Overwrites the DigitalHerd as the herd of the DigitalCow\n
+    2) Overwrites the DigitalHerd as the herd of the DigitalCow:
 
-    ``a_herd = DigitalHerd()``\n
-    ``another_herd = DigitalHerd()``\n
-    ``cow = DigitalCow(herd=a_herd)``\n
-    ``cow.herd = another_herd``\n
+        ``a_herd = DigitalHerd()``\n
+        ``another_herd = DigitalHerd()``\n
+        ``cow = DigitalCow(herd=a_herd)``\n
+        ``cow.herd = another_herd``\n
 
-    3) Adds the DigitalCow objects to the DigitalHerd and sets the DigitalHerd as
-    the herd of each DigitalCow
-
-    ``a_herd = DigitalHerd()``\n
-    ``cow = DigitalCow()``\n
-    ``cow2 = DigitalCow()``\n
-    ``a_herd.add_to_herd(cows=[cow, cow2])``\n
-
-    4) Overwrites the list of DigitalCow objects as the herd of the DigitalHerd
-
-    ``a_herd = DigitalHerd()``\n
-    ``cow = DigitalCow()``\n
-    ``cow2 = DigitalCow()``\n
-    ``a_herd.herd = [cow, cow2]``\n
+    *There are other methods that alter the herd of the cow using functions from the
+    DigitalHerd class. These are described in the digital_herd module.*
 
 ************************************************************
 
 3. Generate states for the DigitalCow object:
 *********************************************
-a) **Generate states for the cow with**:
-    ``cow.generate_total_states(dim_limit=750, ln_limit=9)``\n
+Generate states for the cow with using the ``generate_total_states()`` function:
+
+a) without parameters:
+
+    ``cow.generate_total_state()``
+
+Here the ``days_in_milk_limit`` and ``lactation_number_limit`` variables from the
+herd are used.\n
+
+b) with parameters:
+
+    ``cow.generate_total_states(dim_limit=750, ln_limit=9)``
 
 ************************************************************
 
@@ -89,32 +97,44 @@ a) **Generate states for the cow with**:
 ********************************************************************
 To create a transition matrix from the states of the DigitalCow object the
 ``chain_simulator`` package must be used.\n
-a) **Import ``array_assembler`` from the ``chain_simulator`` package**:
-    ``from chain_simulator.assembly import array_assembler``\n
+1) Import ``array_assembler`` from the ``chain_simulator`` package:
 
-b) **Use ``array_assembler`` to create a transition matrix**:
-    ``tm = array_assembler(cow.node_count, state_probability_generator(cow))``\n
-*For details on the parameters of functions from the ``chain_simulator`` package,
-see the corresponding documentation of the ``chain_simulator`` package:*
+    ``from chain_simulator.assembly import array_assembler``
+
+2) Import the ``state_probability_generator`` function from this module:
+
+    ``from cow_builder.digital_cow import state_probability_generator``
+
+3) Use ``array_assembler`` to create a transition matrix:
+
+    ``tm = array_assembler(cow.node_count, state_probability_generator(cow))``
+
+*For details on the parameters of functions from the* \ ``chain_simulator``\  *package,
+see the corresponding documentation of the* \ ``chain_simulator``\  *package:*
 TODO LINK
 
 ************************************************************
 
 5. Perform a simulation using the ``chain_simulator`` package to get a final state vector:
 ******************************************************************************************
-a) **Import ``state_vector_processor`` from the ``chain_simulator`` package**:
-    ``from chain_simulator.simulation import state_vector_processor``\n
+1) Import ``state_vector_processor`` from the ``chain_simulator`` package:
 
-b) **Use the transition matrix and the cow's initial state vector to simulate the cow over a given number of days**:
-    ``simulation = state_vector_processor(cow.initial_state_vector, tm, 140, 7)``\n
+    ``from chain_simulator.simulation import state_vector_processor``
 
-c) **``simulation`` here is a generator. Iterate over ``simulation`` to get the final state vectors**:
-    ``final_state_vector, day = next(simulation)``\n
-    or\n
-    ``for final_state_vector, day in simulation:``\n
-*For details on the parameters of functions from the ``chain_simulator`` package,
-see the corresponding documentation of the ``chain_simulator`` package:*
+2) Use the transition matrix and the cow's initial state vector to simulate the cow over a given number of days:
+
+    ``simulation = state_vector_processor(cow.initial_state_vector, tm, 140, 7)``
+
+3) ``simulation`` here is a generator. Iterate over ``simulation`` to get the final state vectors:
+
+``final_state_vector, day = next(simulation)``\n
+or\n
+``for final_state_vector, day in simulation:``\n
+
+*For details on the parameters of functions from the* \ ``chain_simulator``\  *package,
+see the corresponding documentation of the* \ ``chain_simulator``\  *package:*
 TODO LINK
+
 
 ************************************************************
 
@@ -126,9 +146,8 @@ TODO LINK
 from decimal import Decimal
 
 import numpy
-
-import DigitalHerd
-import DairyState
+from cow_builder.digital_herd import DigitalHerd
+from cow_builder.state import State
 import math
 from typing import Generator
 import numpy as np
@@ -141,34 +160,34 @@ class DigitalCow:
     :Attributes:
         :var _herd: The DigitalHerd instance representing the herd that the cow
             belongs to.
-        :type _herd: DigitalHerd.DigitalHerd
+        :type _herd: digital_herd.DigitalHerd
         :var _current_state: The State instance representing the current state of
             the cow.
-        :type _current_state: DairyState.State
+        :type _current_state: State
         :var _age_at_first_heat: The age in days, at which the cow had her first
-            heat. Defaults to None if it has not happened yet.
+            estrus. Defaults to None if it has not happened yet.
         :type _age_at_first_heat: int | None
         :var __life_states: A list of all possible life states the cow can be in.
         :type __life_states: list[str, str, str, str]
         :var _total_states: A tuple of 'State' objects containing all possible
             states this cow can be in or transition to. Filled by
-            'self.generate_total_states()'.
-        :type _total_states: tuple[DairyState.State, ...]
+            ``self.generate_total_states()``.
+        :type _total_states: tuple[State]
         :var _milkbot_variables: A tuple of 4 'Decimal' numbers used for the
             'self.milk_production' function.
             index = 0: scale,
             index = 1: ramp,
             index = 2: offset,
             index = 3: decay.
-            Filled by 'self.__set_milkbot_variables()'.
+            Filled by ``self.__set_milkbot_variables()``.
         :type _milkbot_variables: tuple[Decimal, Decimal, Decimal, Decimal]
 
     :Methods:
         __init__(days_in_milk, lactation_number, days_pregnant, age_at_first_heat,
-            herd, state, precision)
-        generate_total_states(dim_limit, ln_limit)
-        probability_state_change(state_from, state_to)
-        possible_new_states(state_from)
+        herd, state, precision)\n
+        generate_total_states(dim_limit, ln_limit)\n
+        probability_state_change(state_from, state_to)\n
+        possible_new_states(state_from)\n
     """
 
     def __init__(self, days_in_milk=0, lactation_number=0, days_pregnant=0,
@@ -186,13 +205,13 @@ class DigitalCow:
             Defaults to 0.
         :type days_pregnant: int
         :param age_at_first_heat: The age in days, at which the cow had her first
-            heat. Defaults to None.
+            estrus. Defaults to None.
         :type age_at_first_heat: int | None
-        :param age: The age of the cow in days.
+        :param age: The age of the cow in days. Defaults to 0.
         :type age: int
         :param herd: The herd to which the cow belongs.
-            Contains variables that apply to all cows in the herd.
-        :type herd: DigitalHerd.DigitalHerd | None
+            Contains variables that apply to all cows in the herd. Defaults to None.
+        :type herd: digital_herd.DigitalHerd | None
         :param state: The life state of the cow.
             This state should be one of the states defined in self.__life_states.
             Defaults to 'Open'.
@@ -206,8 +225,8 @@ class DigitalCow:
         self._generated_lactation_numbers = None
         self._precision = decimalize_precision()
         self._age = age
-        temp_state = DairyState.State(state, days_in_milk, lactation_number,
-                                      days_pregnant, Decimal("0"))
+        temp_state = State(state, days_in_milk, lactation_number,
+                           days_pregnant, Decimal("0"))
         if herd is not None:
             self.milkbot_variables = set_milkbot_variables(
                 lactation_number,
@@ -219,16 +238,16 @@ class DigitalCow:
                                           self.herd.get_duration_dry(
                                               temp_state.lactation_number),
                                           self.precision)
-            self._current_state = DairyState.State(state, days_in_milk,
-                                                   lactation_number,
-                                                   days_pregnant, milk_output)
+            self._current_state = State(state, days_in_milk,
+                                        lactation_number,
+                                        days_pregnant, milk_output)
             self.herd = herd
         else:
             self._current_state = temp_state
 
     def generate_total_states(self, dim_limit=None, ln_limit=None) -> None:
         """
-        Generates a tuple of DairyState.State objects that represent all possible
+        Generates a tuple of State objects that represent all possible
         states of the DigitalCow instance.
 
         :param dim_limit: The limit of days in milk for which states should
@@ -262,8 +281,8 @@ class DigitalCow:
                 if life_state == 'Pregnant':
                     milk_output = Decimal("0")
                 else:
-                    temp_state = DairyState.State(life_state, days_in_milk,
-                                                  lactation_number, 0, Decimal("0"))
+                    temp_state = State(life_state, days_in_milk,
+                                       lactation_number, 0, Decimal("0"))
                     milk_output = milk_production(self.milkbot_variables,
                                                   temp_state,
                                                   self.herd.get_days_pregnant_limit(
@@ -278,20 +297,20 @@ class DigitalCow:
                         if days_in_milk <= vwp + insemination_window + 1:
                             if milk_output >= self.herd.milk_threshold or \
                                     lactation_number == 0:
-                                new_state = DairyState.State(life_state, days_in_milk,
-                                                             lactation_number, 0,
-                                                             milk_output)
+                                new_state = State(life_state, days_in_milk,
+                                                  lactation_number, 0,
+                                                  milk_output)
                                 total_states.append(new_state)
 
                     case 'Pregnant':
                         if vwp < days_in_milk <= vwp + insemination_window + dp_limit:
                             if not stop_pregnant_state:
                                 while days_pregnant <= simulated_dp_limit:
-                                    temp_state = DairyState.State(life_state,
-                                                                  days_in_milk,
-                                                                  lactation_number,
-                                                                  days_pregnant,
-                                                                  Decimal("0"))
+                                    temp_state = State(life_state,
+                                                       days_in_milk,
+                                                       lactation_number,
+                                                       days_pregnant,
+                                                       Decimal("0"))
                                     milk_output = milk_production(
                                         self.milkbot_variables,
                                         temp_state,
@@ -300,11 +319,11 @@ class DigitalCow:
                                         self.herd.get_duration_dry(
                                             temp_state.lactation_number),
                                         self._precision)
-                                    new_state = DairyState.State(life_state,
-                                                                 days_in_milk,
-                                                                 lactation_number,
-                                                                 days_pregnant,
-                                                                 milk_output)
+                                    new_state = State(life_state,
+                                                      days_in_milk,
+                                                      lactation_number,
+                                                      days_pregnant,
+                                                      milk_output)
                                     total_states.append(new_state)
                                     days_pregnant += 1
                                 if vwp + insemination_window < days_in_milk < vwp + \
@@ -323,18 +342,18 @@ class DigitalCow:
                                 lactation_number != 0:
                             if milk_output >= self.herd.milk_threshold or \
                                     lactation_number == 0:
-                                new_state = DairyState.State(life_state, days_in_milk,
-                                                             lactation_number, 0,
-                                                             milk_output)
+                                new_state = State(life_state, days_in_milk,
+                                                  lactation_number, 0,
+                                                  milk_output)
                                 total_states.append(new_state)
                             if last_pregnancy:
                                 self.milkbot_variables = set_milkbot_variables(
                                     lactation_number + 1,
                                     self.herd.lactation_number_limit)
-                                temp_state = DairyState.State(life_state,
-                                                              days_in_milk,
-                                                              lactation_number + 1, 0,
-                                                              Decimal("0"))
+                                temp_state = State(life_state,
+                                                   days_in_milk,
+                                                   lactation_number + 1, 0,
+                                                   Decimal("0"))
                                 milk_output = milk_production(
                                     self.milkbot_variables,
                                     temp_state,
@@ -345,32 +364,32 @@ class DigitalCow:
                                     self._precision)
                                 if milk_output >= self.herd.milk_threshold or \
                                         lactation_number == 0:
-                                    new_state = DairyState.State(life_state,
-                                                                 days_in_milk,
-                                                                 lactation_number + 1,
-                                                                 0,
-                                                                 milk_output)
+                                    new_state = State(life_state,
+                                                      days_in_milk,
+                                                      lactation_number + 1,
+                                                      0,
+                                                      milk_output)
                                     total_states.append(new_state)
                     case 'Exit':
-                        new_state = DairyState.State(life_state, days_in_milk,
-                                                     lactation_number, 0,
-                                                     milk_output)
+                        new_state = State(life_state, days_in_milk,
+                                          lactation_number, 0,
+                                          milk_output)
                         total_states.append(new_state)
                         if last_pregnancy:
-                            new_state = DairyState.State(life_state, days_in_milk,
-                                                         lactation_number + 1, 0,
-                                                         milk_output)
+                            new_state = State(life_state, days_in_milk,
+                                              lactation_number + 1, 0,
+                                              milk_output)
                             total_states.append(new_state)
 
             if days_in_milk == dim_limit - 1 and not_heifer:
-                new_state = DairyState.State('Exit', dim_limit,
-                                             lactation_number, 0,
-                                             Decimal("0"))
+                new_state = State('Exit', dim_limit,
+                                  lactation_number, 0,
+                                  Decimal("0"))
                 total_states.append(new_state)
                 if lactation_number == ln_limit:
-                    new_state = DairyState.State('Exit', dim_limit,
-                                                 lactation_number + 1, 0,
-                                                 Decimal("0"))
+                    new_state = State('Exit', dim_limit,
+                                      lactation_number + 1, 0,
+                                      Decimal("0"))
                     total_states.append(new_state)
                 days_in_milk = 0
                 days_pregnant = 1
@@ -384,8 +403,8 @@ class DigitalCow:
             else:
                 days_in_milk += 1
 
-            temp_state = DairyState.State('DoNotBreed', days_in_milk - 1,
-                                          lactation_number, 0, Decimal("0"))
+            temp_state = State('DoNotBreed', days_in_milk - 1,
+                               lactation_number, 0, Decimal("0"))
             milk_output = milk_production(self.milkbot_variables,
                                           temp_state,
                                           self.herd.get_days_pregnant_limit(
@@ -421,18 +440,19 @@ class DigitalCow:
         self._generated_days_in_milk = dim_limit
         self._generated_lactation_numbers = ln_limit
 
-    def probability_state_change(self, state_from: DairyState.State,
-                                 state_to: DairyState.State) -> Decimal:
+    def probability_state_change(self, state_from: State, state_to: State) -> Decimal:
         """
-        Calculates the probability of transitioning from state_from to state_to.
+        Calculates the probability of transitioning from ``state_from`` to
+        ``state_to``.
 
         :param state_from: The state from which to transition.
-        :type state_from: DairyState.State
+        :type state_from: State
         :param state_to: The state to transition into.
-        :type state_to: DairyState.State
-        :returns: The probability of transitioning from state_from to state_to.
+        :type state_to: State
+        :returns: The probability of transitioning from ``state_from`` to
+            ``state_to``.
         :rtype: Decimal
-        :raises ValueError: If the state is not defined in self.__life_states.
+        :raises ValueError: If the state is not defined in ``self.__life_states``.
         """
         if state_to.state not in self.__life_states or state_from.state not \
                 in self.__life_states:
@@ -448,9 +468,9 @@ class DigitalCow:
         if state_from.days_in_milk == self._generated_days_in_milk or \
                 (state_from.days_in_milk == vwp + insemination_window +
                  dp_limit and state_from.lactation_number == 0) and \
-                state_to == DairyState.State('Exit', state_from.days_in_milk,
-                                             state_from.lactation_number, 0,
-                                             Decimal("0")):
+                state_to == State('Exit', state_from.days_in_milk,
+                                  state_from.lactation_number, 0,
+                                  Decimal("0")):
             return Decimal("1")
 
         def __probability_ovulation():
@@ -640,28 +660,28 @@ class DigitalCow:
             case 'Exit':
                 match state_to.state:
                     case 'Open':
-                        if state_to == DairyState.State('Open', 0, 0, 0,
-                                                        Decimal("0")):
+                        if state_to == State('Open', 0, 0, 0,
+                                             Decimal("0")):
                             return Decimal("1")
                     case _:
                         return Decimal("0")
 
-    def possible_new_states(self, state_from: DairyState.State) -> tuple:
+    def possible_new_states(self, state_from: State) -> tuple:
         """
-        Returns a tuple with all states state_from can transition into.
+        Returns a tuple with all states ``state_from`` can transition into.
 
         :param state_from: The state from which to transition.
-        :type state_from: DairyState.State
-        :returns states_to: A tuple containing all states that state_from can
+        :type state_from: State
+        :returns states_to: A tuple containing all states that ``state_from`` can
             transition into.
-        :rtype: tuple[DairyState.State, ...]
-        :raises ValueError: If the state of state_from is not valid.
+        :rtype: tuple[State]
+        :raises ValueError: If the state of ``state_from`` is not valid.
         """
 
-        states_to = [DairyState.State('Exit',
-                                      state_from.days_in_milk + 1,
-                                      state_from.lactation_number, 0,
-                                      Decimal("0"))]
+        states_to = [State('Exit',
+                           state_from.days_in_milk + 1,
+                           state_from.lactation_number, 0,
+                           Decimal("0"))]
         if state_from.days_in_milk == self._generated_days_in_milk - 1 and \
                 state_from.state != 'Exit':
             return tuple(states_to)
@@ -678,11 +698,11 @@ class DigitalCow:
                         self.milkbot_variables = set_milkbot_variables(
                             state_from.lactation_number,
                             self.herd.lactation_number_limit)
-                        temp_state = DairyState.State('Pregnant',
-                                                      state_from.days_in_milk + 1,
-                                                      state_from.lactation_number,
-                                                      1,
-                                                      Decimal("0"))
+                        temp_state = State('Pregnant',
+                                           state_from.days_in_milk + 1,
+                                           state_from.lactation_number,
+                                           1,
+                                           Decimal("0"))
                         milk_output = milk_production(
                             self.milkbot_variables,
                             temp_state,
@@ -691,7 +711,7 @@ class DigitalCow:
                             self.herd.get_duration_dry(
                                 temp_state.lactation_number),
                             self._precision)
-                        states_to.append(DairyState.State(
+                        states_to.append(State(
                             'Pregnant',
                             state_from.days_in_milk + 1,
                             state_from.lactation_number, 1, milk_output))
@@ -700,11 +720,11 @@ class DigitalCow:
                         self.milkbot_variables = set_milkbot_variables(
                             state_from.lactation_number,
                             self.herd.lactation_number_limit)
-                        temp_state = DairyState.State('DoNotBreed',
-                                                      state_from.days_in_milk + 1,
-                                                      state_from.lactation_number,
-                                                      0,
-                                                      Decimal("0"))
+                        temp_state = State('DoNotBreed',
+                                           state_from.days_in_milk + 1,
+                                           state_from.lactation_number,
+                                           0,
+                                           Decimal("0"))
                         milk_output = milk_production(
                             self.milkbot_variables,
                             temp_state,
@@ -714,7 +734,7 @@ class DigitalCow:
                                 temp_state.lactation_number),
                             self._precision)
 
-                        states_to.append(DairyState.State(
+                        states_to.append(State(
                             'DoNotBreed',
                             state_from.days_in_milk + 1,
                             state_from.lactation_number, 0, milk_output))
@@ -722,11 +742,11 @@ class DigitalCow:
                         self.milkbot_variables = set_milkbot_variables(
                             state_from.lactation_number,
                             self.herd.lactation_number_limit)
-                        temp_state = DairyState.State('Open',
-                                                      state_from.days_in_milk + 1,
-                                                      state_from.lactation_number,
-                                                      0,
-                                                      Decimal("0"))
+                        temp_state = State('Open',
+                                           state_from.days_in_milk + 1,
+                                           state_from.lactation_number,
+                                           0,
+                                           Decimal("0"))
                         milk_output = milk_production(
                             self.milkbot_variables,
                             temp_state,
@@ -735,7 +755,7 @@ class DigitalCow:
                             self.herd.get_duration_dry(
                                 temp_state.lactation_number),
                             self._precision)
-                        states_to.append(DairyState.State(
+                        states_to.append(State(
                             'Open',
                             state_from.days_in_milk + 1,
                             state_from.lactation_number, 0, milk_output))
@@ -752,7 +772,7 @@ class DigitalCow:
                         # !!!!!!!!
                         if state_from.lactation_number == \
                                 self._generated_lactation_numbers:
-                            temp_state = DairyState.State(
+                            temp_state = State(
                                 'DoNotBreed', state_from.days_in_milk + 1,
                                 state_from.lactation_number + 1, 0,
                                 Decimal("0"))
@@ -764,12 +784,12 @@ class DigitalCow:
                                 self.herd.get_duration_dry(
                                     temp_state.lactation_number),
                                 self._precision)
-                            states_to.append(DairyState.State(
+                            states_to.append(State(
                                 'DoNotBreed', state_from.days_in_milk + 1,
                                 state_from.lactation_number + 1, 0,
                                 milk_output))
                         else:
-                            temp_state = DairyState.State(
+                            temp_state = State(
                                 'Open', 0,
                                 state_from.lactation_number + 1, 0,
                                 Decimal("0"))
@@ -781,7 +801,7 @@ class DigitalCow:
                                 self.herd.get_duration_dry(
                                     temp_state.lactation_number),
                                 self._precision)
-                            states_to.append(DairyState.State(
+                            states_to.append(State(
                                 'Open',
                                 0, state_from.lactation_number + 1,
                                 0, milk_output))
@@ -789,11 +809,11 @@ class DigitalCow:
                         self.milkbot_variables = set_milkbot_variables(
                             state_from.lactation_number,
                             self.herd.lactation_number_limit)
-                        temp_state = DairyState.State('Pregnant',
-                                                      state_from.days_in_milk + 1,
-                                                      state_from.lactation_number,
-                                                      state_from.days_pregnant + 1,
-                                                      Decimal("0"))
+                        temp_state = State('Pregnant',
+                                           state_from.days_in_milk + 1,
+                                           state_from.lactation_number,
+                                           state_from.days_pregnant + 1,
+                                           Decimal("0"))
                         milk_output = milk_production(
                             self.milkbot_variables,
                             temp_state,
@@ -802,7 +822,7 @@ class DigitalCow:
                             self.herd.get_duration_dry(
                                 temp_state.lactation_number),
                             self._precision)
-                        states_to.append(DairyState.State(
+                        states_to.append(State(
                             'Pregnant',
                             state_from.days_in_milk + 1,
                             state_from.lactation_number,
@@ -811,11 +831,11 @@ class DigitalCow:
                             self.milkbot_variables = set_milkbot_variables(
                                 state_from.lactation_number,
                                 self.herd.lactation_number_limit)
-                            temp_state = DairyState.State('Open',
-                                                          state_from.days_in_milk + 1,
-                                                          state_from.lactation_number,
-                                                          0,
-                                                          Decimal("0"))
+                            temp_state = State('Open',
+                                               state_from.days_in_milk + 1,
+                                               state_from.lactation_number,
+                                               0,
+                                               Decimal("0"))
                             milk_output = milk_production(
                                 self.milkbot_variables,
                                 temp_state,
@@ -824,7 +844,7 @@ class DigitalCow:
                                 self.herd.get_duration_dry(
                                     temp_state.lactation_number),
                                 self._precision)
-                            states_to.append(DairyState.State(
+                            states_to.append(State(
                                 'Open',
                                 state_from.days_in_milk + 1,
                                 state_from.lactation_number, 0, milk_output))
@@ -833,11 +853,11 @@ class DigitalCow:
                             self.milkbot_variables = set_milkbot_variables(
                                 state_from.lactation_number,
                                 self.herd.lactation_number_limit)
-                            temp_state = DairyState.State('DoNotBreed',
-                                                          state_from.days_in_milk + 1,
-                                                          state_from.lactation_number,
-                                                          0,
-                                                          Decimal("0"))
+                            temp_state = State('DoNotBreed',
+                                               state_from.days_in_milk + 1,
+                                               state_from.lactation_number,
+                                               0,
+                                               Decimal("0"))
                             milk_output = milk_production(
                                 self.milkbot_variables,
                                 temp_state,
@@ -846,7 +866,7 @@ class DigitalCow:
                                 self.herd.get_duration_dry(
                                     temp_state.lactation_number),
                                 self._precision)
-                            states_to.append(DairyState.State(
+                            states_to.append(State(
                                 'DoNotBreed',
                                 state_from.days_in_milk + 1,
                                 state_from.lactation_number, 0, milk_output))
@@ -855,11 +875,11 @@ class DigitalCow:
                     self.milkbot_variables = set_milkbot_variables(
                         state_from.lactation_number,
                         self.herd.lactation_number_limit)
-                    temp_state = DairyState.State('DoNotBreed',
-                                                  state_from.days_in_milk + 1,
-                                                  state_from.lactation_number,
-                                                  0,
-                                                  Decimal("0"))
+                    temp_state = State('DoNotBreed',
+                                       state_from.days_in_milk + 1,
+                                       state_from.lactation_number,
+                                       0,
+                                       Decimal("0"))
                     milk_output = milk_production(
                         self.milkbot_variables,
                         temp_state,
@@ -869,12 +889,12 @@ class DigitalCow:
                             temp_state.lactation_number),
                         self._precision)
                     if milk_output >= self.herd.milk_threshold:
-                        states_to.append(DairyState.State(
+                        states_to.append(State(
                             'DoNotBreed',
                             state_from.days_in_milk + 1,
                             state_from.lactation_number, 0, milk_output))
             case 'Exit':
-                states_to[0] = DairyState.State('Open', 0, 0, 0, Decimal("0"))
+                states_to[0] = State('Open', 0, 0, 0, Decimal("0"))
             case _:
                 raise ValueError('The current state given is invalid.')
         return tuple(states_to)
@@ -898,14 +918,16 @@ class DigitalCow:
                f"state={self.current_life_state})"
 
     @property
-    def herd(self) -> DigitalHerd.DigitalHerd:
+    def herd(self) -> DigitalHerd:
+        """The herd object representing the herd of the cow."""
         return self._herd
 
     @herd.setter
     def herd(self, herd):
-        if isinstance(herd, DigitalHerd.DigitalHerd):
-            self._herd = herd
-            self._herd.add_to_herd([self])
+        if isinstance(herd, DigitalHerd):
+            if self._herd is not None:
+                self._herd.remove_from_herd([self])
+            herd.add_to_herd([self])
             self.milkbot_variables = set_milkbot_variables(
                 self.current_lactation_number, herd.lactation_number_limit)
             milk_output = milk_production(
@@ -920,6 +942,8 @@ class DigitalCow:
 
     @property
     def current_days_in_milk(self) -> int:
+        """The current number of days since last calving, or the cow's birth if it
+        has not calved yet."""
         return self._current_state.days_in_milk
 
     @current_days_in_milk.setter
@@ -935,6 +959,7 @@ class DigitalCow:
 
     @property
     def current_days_pregnant(self) -> int:
+        """The current number of days in pregnancy of the cow."""
         return self._current_state.days_pregnant
 
     @current_days_pregnant.setter
@@ -943,6 +968,7 @@ class DigitalCow:
 
     @property
     def current_lactation_number(self) -> int:
+        """The current number of lactation cycles the cow has completed."""
         return self._current_state.lactation_number
 
     @current_lactation_number.setter
@@ -951,6 +977,7 @@ class DigitalCow:
 
     @property
     def age_at_first_heat(self) -> int | None:
+        """The age in days at which the cow experienced its first heat."""
         if self._age_at_first_heat is None:
             return self._age_at_first_heat
         else:
@@ -962,6 +989,7 @@ class DigitalCow:
 
     @property
     def current_life_state(self) -> str:
+        """The current life_state the cow is in."""
         return self._current_state.state
 
     @current_life_state.setter
@@ -970,6 +998,7 @@ class DigitalCow:
 
     @property
     def current_milk_output(self) -> Decimal:
+        """The current milk output of the cow."""
         return self._current_state.milk_output
 
     @current_milk_output.setter
@@ -977,11 +1006,13 @@ class DigitalCow:
         self._current_state = self._current_state.mutate(milk_output=mo)
 
     @property
-    def current_state(self) -> DairyState.State:
+    def current_state(self) -> State:
+        """The current state of the cow, as a State object."""
         return self._current_state
 
     @property
     def total_states(self) -> tuple:
+        """A generated tuple of State objects that the cow can be in."""
         return self._total_states
 
     @total_states.setter
@@ -990,6 +1021,7 @@ class DigitalCow:
 
     @property
     def milkbot_variables(self) -> tuple:
+        """A tuple containing parameters used to calculate milk output."""
         return self._milkbot_variables
 
     @milkbot_variables.setter
@@ -999,6 +1031,7 @@ class DigitalCow:
 
     @property
     def edge_count(self) -> int:
+        """The total number of possible transitions."""
         edge_count = 0
         for state in self.total_states:
             edge_count += len(self.possible_new_states(state))
@@ -1006,17 +1039,22 @@ class DigitalCow:
 
     @property
     def node_count(self) -> int:
+        """The total number of States in ``total_states``."""
         return len(self.total_states)
 
     @property
     def initial_state_vector(self) -> numpy.array:
+        """A numpy array indicating which state of all states in ``total_states``
+        the cow is in."""
         index = self.total_states.index(self.current_state)
         vector = len(self.total_states) * [0]
         vector[index] = 1
         return np.asarray(vector)
 
     @property
-    def precision(self):
+    def precision(self) -> Decimal:
+        """The Decimal object indicating the amount of decimal places used in
+        calculations."""
         return self._precision
 
     @precision.setter
@@ -1024,7 +1062,8 @@ class DigitalCow:
         self._precision = decimalize_precision(precision)
 
     @property
-    def age(self):
+    def age(self) -> int:
+        """The age of the cow in days."""
         return self._age
 
     @age.setter
@@ -1069,23 +1108,35 @@ def state_probability_generator(digital_cow: DigitalCow) -> \
                 float(probability)
 
 
-def convert_final_state_vector(day: tuple, total_states: tuple, group_by: int):
+def convert_final_state_vector(vector: tuple, total_states: tuple, group_by: int):
     """
+    Converts a final state vector to 1 dimension by adding the probabilities
+    different states with the same value on the chosen dimension together. Which
+    dimension this is depends on the ``group_by`` parameter.
 
-    :param day:
-    :param total_states:
-    :param group_by:
-    :return:
+    :param vector: A tuple that contains a vector as well as the day in
+        simulation that the vector is from.
+    :type vector: tuple
+    :param total_states: A generated tuple of State objects that the cow can be in.
+    :type total_states: tuple
+    :param group_by: An int that indicates what dimension to group the states by.
+        TODO
+        0: days_in_milk
+        1: lactation_number
+        2: days_pregnant
+        3: life_state
+    :type group_by: int
+    :returns: The value of the chosen dimension with the corresponding probability
+        of being in a state with that specific value
+    :rtype: dict
     """
-    final_state_vector, day = day
+    final_state_vector, day = vector
     state_index = {
         state: index for index, state in enumerate(total_states)
     }
     vector_index = {
         index: probability for index, probability in enumerate(final_state_vector)
     }
-    # final_state_vector = [0.7, 0, 0, 0, 0, 0, ...]   -> all states?
-    # assuming length of final_state_vector == total_states
     one_dimensional_vector = {}
     for state in state_index:
         index = state_index[state]
@@ -1106,6 +1157,13 @@ def convert_final_state_vector(day: tuple, total_states: tuple, group_by: int):
                 except KeyError as error:
                     one_dimensional_vector.update({lactation_number: probability})
             case 2:
+                days_pregnant = state.days_pregnant
+                try:
+                    one_dimensional_vector[days_pregnant] = one_dimensional_vector[
+                        days_pregnant] + probability
+                except KeyError as error:
+                    one_dimensional_vector.update({days_pregnant: probability})
+            case 3:
                 life_state = state.state
                 try:
                     one_dimensional_vector[life_state] = one_dimensional_vector[
@@ -1130,9 +1188,12 @@ def decimalize_precision(dec=10) -> Decimal:
     """
     precision = "."
     dec = dec * [0]
-    dec[-1] = 1
-    for decimal in dec:
-        precision += str(decimal)
+    if not dec:
+        precision = "1"
+    else:
+        dec[-1] = 1
+        for decimal in dec:
+            precision += str(decimal)
     return Decimal(precision)
 
 
@@ -1198,14 +1259,14 @@ def set_korver_function_variables(lactation_number: int):
         max_decrease_live_weight, duration_minimum_live_weight
 
 
-def calculate_body_weight(state: DairyState.State, age: int, vwp: int,
+def calculate_body_weight(state: State, age: int, vwp: int,
                           precision: Decimal) -> Decimal:
     """
     Calculates the body weight of a cow for a specific state.
     
     :param state: The State object that represents the specific day for which the
         body weight must be calculated.
-    :type state: DairyState.State
+    :type state: State
     :param age: The age of the cow in days.
     :type age: int
     :param vwp: The voluntary waiting period of the cow for the specific lactation 
@@ -1214,9 +1275,11 @@ def calculate_body_weight(state: DairyState.State, age: int, vwp: int,
     :param precision: A Decimal number that determines the number of decimal places
         to be used.
     :type precision: Decimal
-    :return: The body weight of the cow in the state that is given.
+    :return: The body weight of the cow in kg in the state that is given.
     :rtype: Decimal
     """
+    # Source
+    #
     birth_weight, mature_live_weight, growth_rate, pregnancy_parameter, \
         max_decrease_live_weight, duration_minimum_live_weight = \
         set_korver_function_variables(state.lactation_number)
@@ -1261,26 +1324,34 @@ def set_milkbot_variables(lactation_number: int,
     :raises ValueError: If the lactation number is larger than the lactation
         number limit.
     """
+    # TODO Source
     match lactation_number:
         case 0:
             milkbot_variables = (
                 Decimal("0"), Decimal("1"), Decimal("1"), Decimal("1"))
         case 1:
             decay = Decimal("0.693") / Decimal("358")
+            decay = Decimal(f"{np.random.normal(float(decay), 0)}")
             milkbot_variables = (
-                Decimal("34.8"), Decimal("29.6"), Decimal("0"), decay)
+                Decimal(f"{np.random.normal(34.8, 0)}"),
+                Decimal(f"{np.random.normal(29.6, 0)}"),
+                Decimal(f"{np.random.normal(0, 0)}"),
+                decay)
         case ln if 1 < ln < lactation_number_limit + 2:
             # +2 ensures that if the cow calves in its last lactation cycle,
             # it won't cause a ValueError.
             decay = Decimal("0.693") / Decimal("240")
+            decay = Decimal(f"{np.random.normal(float(decay), 0)}")
             milkbot_variables = (
-                Decimal("47.7"), Decimal("22.1"), Decimal("0"), decay)
+                Decimal(f"{np.random.normal(47.7, 0)}"),
+                Decimal(f"{np.random.normal(22.1, 0)}"),
+                Decimal(f"{np.random.normal(0, 0)}"), decay)
         case _:
             raise ValueError
     return milkbot_variables
 
 
-def milk_production(milkbot_variables: tuple, state: DairyState.State, dp_limit: int,
+def milk_production(milkbot_variables: tuple, state: State, dp_limit: int,
                     duration_dry: int, precision: Decimal) -> Decimal:
     """
     Calculates milk production for a given state using the MilkBot algorithm.
@@ -1288,7 +1359,7 @@ def milk_production(milkbot_variables: tuple, state: DairyState.State, dp_limit:
     :param milkbot_variables: A tuple containing parameters for the MilkBot algorithm.
     :type: tuple
     :param state: A state object for which milk production must be calculated.
-    :type state: DairyState.State
+    :type state: State
     :param dp_limit: The maximum number of days a cow can be pregnant.
     :type dp_limit: int
     :param duration_dry: The number of days before calving, when a cow is not
@@ -1297,9 +1368,10 @@ def milk_production(milkbot_variables: tuple, state: DairyState.State, dp_limit:
     :param precision: A Decimal number that determines the number of decimal places
         to be used.
     :type: Decimal
-    :returns: The milk production for the given days in milk.
+    :returns: The milk production for the given days in milk in kg.
     :rtype: Decimal
     """
+    # Source (Hostens M., et al., 2012)
     if state.lactation_number == 0 or state.state == 'Exit' \
             or state.days_pregnant >= dp_limit - duration_dry:
         return Decimal("0")
@@ -1313,21 +1385,23 @@ def milk_production(milkbot_variables: tuple, state: DairyState.State, dp_limit:
                      -decay * Decimal(state.days_in_milk))).quantize(precision)
 
 
-def calculate_dmi(state: DairyState.State, body_weight: Decimal, precision: Decimal):
+def calculate_dmi(state: State, body_weight: Decimal, precision: Decimal):
     """
     Calculates the dry matter intake of a cow for a specific state.
 
     :param state: The State object that represents the specific day for which the
         dry matter intake must be calculated.
-    :type state: DairyState.State
-    :param body_weight: The body weight of the cow on the specific day for which
+    :type state: State
+    :param body_weight: The body weight of the cow in kg on the specific day for which
         the dry matter intake must be calculated.
     :param precision: A decimal number that determines the number of decimal places
         to be used.
     :type precision: Decimal
-    :return: The dry matter intake for the specific state that is given.
+    :return: The dry matter intake in kg for the specific state that is given.
     :rtype: Decimal
     """
+    # Source: (Giordano J.O., et al., 2012) (Cabrera)
+    # doi: http://dx.doi.org/10.3168/jds.2011-4972
     fcm_dim = Decimal(state.milk_output * Decimal(
         "0.04"))  # kg (fat corrected milk) 4% FCM production
     dmi = Decimal((Decimal("0.372") * fcm_dim + Decimal("0.0968") *
@@ -1382,9 +1456,9 @@ def urine_nitrogen_output(lactation_number: int, nitrogen_intake: Decimal,
         to be used.
     :type precision: Decimal
     :return:
-        - mu_n_output: The mean nitrogen output.
-        - min_n_output: The minimum nitrogen output.
-        - max_n_output: The maximum nitrogen output.
+        - mu_n_output: The mean nitrogen output in g.
+        - min_n_output: The minimum nitrogen output in g.
+        - max_n_output: The maximum nitrogen output in g.
     :rtype:
         - mu_n_output: Decimal
         - min_n_output: Decimal
@@ -1427,9 +1501,9 @@ def fecal_nitrogen_output(lactation_number, dmi, nitrogen_intake, precision):
         to be used.
     :type precision: Decimal
     :return:
-        - mu_n_output: The mean nitrogen output.
-        - min_n_output: The minimum nitrogen output.
-        - max_n_output: The maximum nitrogen output.
+        - mu_n_output: The mean nitrogen output in g.
+        - min_n_output: The minimum nitrogen output in g.
+        - max_n_output: The maximum nitrogen output in g.
     :rtype:
         - mu_n_output: Decimal
         - min_n_output: Decimal
@@ -1472,9 +1546,9 @@ def total_manure_nitrogen_output(lactation_number, nitrogen_intake, precision):
         to be used.
     :type precision: Decimal
     :return:
-        - mu_n_output: The mean nitrogen output.
-        - min_n_output: The minimum nitrogen output.
-        - max_n_output: The maximum nitrogen output.
+        - mu_n_output: The mean nitrogen output in g.
+        - min_n_output: The minimum nitrogen output in g.
+        - max_n_output: The maximum nitrogen output in g.
     :rtype:
         - mu_n_output: Decimal
         - min_n_output: Decimal
@@ -1511,9 +1585,9 @@ def milk_nitrogen_output(dmi, precision):
         to be used.
     :type precision: Decimal
     :return:
-        - mu_n_output: The mean nitrogen output.
-        - min_n_output: The minimum nitrogen output.
-        - max_n_output: The maximum nitrogen output.
+        - mu_n_output: The mean nitrogen output in g.
+        - min_n_output: The minimum nitrogen output in g.
+        - max_n_output: The maximum nitrogen output in g.
     :rtype:
         - mu_n_output: Decimal
         - min_n_output: Decimal
@@ -1540,9 +1614,9 @@ def fecal_phosphor_output(phosphor_intake, milk_yield, precision):
         to be used.
     :type precision: Decimal
     :return:
-        - mu_p_output: The mean phosphor output.
-        - min_p_output: The minimum phosphor output.
-        - max_p_output: The maximum phosphor output.
+        - mu_p_output: The mean phosphor output in g.
+        - min_p_output: The minimum phosphor output in g.
+        - max_p_output: The maximum phosphor output in g.
     :rtype:
         - mu_p_output: Decimal
         - min_p_output: Decimal

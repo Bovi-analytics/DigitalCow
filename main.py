@@ -3,15 +3,13 @@
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 import numpy as np
 
-import DairyState
-from DigitalCow import DigitalCow, state_probability_generator, convert_final_state_vector
-from DigitalHerd import DigitalHerd
+from cow_builder.digital_cow import DigitalCow, state_probability_generator, convert_final_state_vector
+from cow_builder.digital_herd import DigitalHerd
 from chain_simulator.simulation import state_vector_processor
 from chain_simulator.utilities import validate_matrix_sum, \
     validate_matrix_positive
 from chain_simulator.assembly import array_assembler
 import time
-from decimal import Decimal
 import logging
 import matplotlib.pyplot as plt
 
@@ -23,7 +21,7 @@ def chain_simulator_test():
                                   days_pregnant=275, age=650, herd=just_another_herd,
                                   state='Pregnant')
     start = time.perf_counter()
-    just_another_cow.generate_total_states(dim_limit=1000, ln_limit=3)
+    just_another_cow.generate_total_states(dim_limit=1000, ln_limit=2)
     end = time.perf_counter()
     print(f"duration for generating states: {end - start}")
     # start = time.perf_counter()
@@ -46,7 +44,7 @@ def chain_simulator_test():
     print(f"validation of the sum of rows being equal to 1: {validate_matrix_sum(tm)}")
     print(f"validation of the probabilities in the matrix being positive: {validate_matrix_positive(tm)}")
     simulation = state_vector_processor(just_another_cow.initial_state_vector, tm,
-                                        560, 21)
+                                        7, 1)
     start = time.perf_counter()
     start1 = start
     for day in simulation:

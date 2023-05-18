@@ -1,9 +1,6 @@
-import requests
-from requests_oauthlib import OAuth1Session, OAuth1
 import datetime
 
-import DigitalCow
-import DigitalHerd
+from cow_builder import digital_cow, digital_herd
 
 if __name__ == '__main__':
     herd_id = 1329
@@ -4039,7 +4036,7 @@ if __name__ == '__main__':
         }
     ]
     print(f"number of cows on farm: {len(data)}")
-    herd = DigitalHerd.DigitalHerd()
+    herd = digital_herd.DigitalHerd()
     dim = None
     ln = None
     for cow in data:
@@ -4098,7 +4095,7 @@ if __name__ == '__main__':
                 state = None
                 dp = 0
 
-        new_cow = DigitalCow.DigitalCow(dim, ln, dp, None, age, herd, state)
+        new_cow = digital_cow.DigitalCow(dim, ln, dp, None, age, herd, state)
 
     for cow in herd.herd:
         print(str(cow))
