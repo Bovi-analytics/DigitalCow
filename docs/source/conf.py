@@ -14,8 +14,15 @@ release = '0.1'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ['sphinx.ext.autodoc']
+extensions = ['sphinx.ext.autodoc',
+              'sphinx.ext.intersphinx']
 
+intersphinx_mapping = {
+    'chain_simulator': ('base_url_for_documentation-objects.inv', None),
+    # TODO: fix url
+    'numpy': ('https://docs.scipy.org/doc/numpy/', None),
+    'matplotlib': ('https://matplotlib.org/', None)
+}
 templates_path = ['_templates']
 exclude_patterns = []
 

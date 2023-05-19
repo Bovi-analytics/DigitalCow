@@ -10,12 +10,34 @@
 How To Use This Module
 ======================
 (See the individual classes, methods, and attributes for details.)\n
-As a dataclass, the State class is purely used as a collection of variables.\n
-An instance, once created, cannot be altered except by using the mutate method,
-which returns a new altered instance of the class.\n
-If two State instances with the same instance values are compared, they will be
-considered equal.
+As a dataclass, the State class is purely used as a collection of variables. An
+instance, once created, cannot be altered except by using the ``mutate`` method,
+which returns a new altered instance of the class. If two ``State`` instances with the
+same instance values are compared, they will be considered equal.\n
+*Values in this HowTo are examples, see documentation of each class or function
+for details on the default values.*
 
+1. Import the State class:
+**************************
+First import the class from the module.
+
+    ``from cow_builder.state import State``
+
+************************************************************
+
+2. Create a State instance:
+***************************
+
+    ``new_state = State('Open', 300, 1, 200, Decimal("20"))``
+
+************************************************************
+
+3. Return variables from the State instance:
+********************************************
+
+    ``days_in_milk = new_state.days_in_milk``
+
+************************************************************
 """
 
 from dataclasses import dataclass, asdict
@@ -30,12 +52,12 @@ class State:
     :Attributes:
         :var state: The life state of the dairy cow.
         :type state: str
-        :var days_in_milk: The amount of days since the cow's last calving,
+        :var days_in_milk: The number of days since the cow's last calving,
             or it's birth if it has not calved yet.
         :type days_in_milk: int
-        :var lactation_number: The amount of lactation cycles the cow has completed.
+        :var lactation_number: The number of lactation cycles the cow has completed.
         :type lactation_number: int
-        :var days_pregnant: The amount of days that the cow is pregnant.
+        :var days_pregnant: The number of days that the cow is pregnant.
         :type days_pregnant: int
         :var milk_output: The amount of milk the cow produces in this state.
         :type milk_output: Decimal
@@ -43,6 +65,8 @@ class State:
     :Methods:
         __post_init__()\n
         mutate(**kwargs)\n
+
+    ************************************************************
     """
 
     state: str
@@ -56,7 +80,7 @@ class State:
         Post-init check for illegal variable types and value-combinations.
 
         :raises TypeError: If the type of any variable is wrong.
-        :raises ValueError: If days_pregnant is not equal to 0 and the state
+        :raises ValueError: If days_pregnant is not 0 and the state
             is not 'Pregnant' or days_pregnant is 0 and the state is 'Pregnant'.
         """
         if self.days_pregnant != 0 and self.state != 'Pregnant':
@@ -76,15 +100,15 @@ class State:
 
     def mutate(self, **kwargs):
         """
-        Takes an argument of the state class and returns a new instance with
+        Takes an argument of the ``State`` class and returns a new instance with
         the changed value.
-        This function can be used to change values in a state object by having
+        This function can be used to change values in a ``State`` object by having
         the returned instance overwrite the original instance.
 
         :param kwargs: The keyword and value pairs of the new state that
             need to be changed.
         :return: The new state with the changed values.
-        :rtype: DairyState.State
+        :rtype: State
         """
         var = asdict(self)
         for key, value in kwargs.items():

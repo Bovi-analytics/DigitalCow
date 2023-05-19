@@ -93,10 +93,10 @@ b) with parameters:
 
 ************************************************************
 
-4. Create a transition matrix using the ``chain_simulator`` package:
-********************************************************************
+4. Create a transition matrix using the :py:mod:`chain_simulator` package:
+**************************************************************************
 To create a transition matrix from the states of the DigitalCow object the
-``chain_simulator`` package must be used.\n
+:py:mod:`chain_simulator` package must be used.\n
 1) Import ``array_assembler`` from the ``chain_simulator`` package:
 
     ``from chain_simulator.assembly import array_assembler``
@@ -109,9 +109,10 @@ To create a transition matrix from the states of the DigitalCow object the
 
     ``tm = array_assembler(cow.node_count, state_probability_generator(cow))``
 
-*For details on the parameters of functions from the* \ ``chain_simulator``\  *package,
-see the corresponding documentation of the* \ ``chain_simulator``\  *package:*
-TODO LINK
+*For details on the parameters of functions from the* :py:mod:`chain_simulator`
+*package, see the corresponding documentation of the* :py:mod:`chain_simulator`
+*package here:* :py:mod:`chain_simulator`
+:py:mod:`matplotlib`
 
 ************************************************************
 
@@ -131,9 +132,9 @@ TODO LINK
 or\n
 ``for final_state_vector, day in simulation:``\n
 
-*For details on the parameters of functions from the* \ ``chain_simulator``\  *package,
-see the corresponding documentation of the* \ ``chain_simulator``\  *package:*
-TODO LINK
+*For details on the parameters of functions from the chain_simulator package,
+see the corresponding documentation of the chain_simulator package here:*
+:py:mod:`chain_simulator`
 
 
 ************************************************************
@@ -158,29 +159,31 @@ class DigitalCow:
     A digital twin representing a dairy cow.
 
     :Attributes:
-        :var _herd: The DigitalHerd instance representing the herd that the cow
+        :var _herd: The ``DigitalHerd`` instance representing the herd that the cow
             belongs to.
-        :type _herd: digital_herd.DigitalHerd
-        :var _current_state: The State instance representing the current state of
+        :type _herd: DigitalHerd
+        :var _current_state: The ``State`` instance representing the current state of
             the cow.
         :type _current_state: State
         :var _age_at_first_heat: The age in days, at which the cow had her first
             estrus. Defaults to None if it has not happened yet.
         :type _age_at_first_heat: int | None
         :var __life_states: A list of all possible life states the cow can be in.
-        :type __life_states: list[str, str, str, str]
-        :var _total_states: A tuple of 'State' objects containing all possible
+        :type __life_states: list[str]
+        :var _total_states: A tuple of ``State`` objects containing all possible
             states this cow can be in or transition to. Filled by
             ``self.generate_total_states()``.
-        :type _total_states: tuple[State]
-        :var _milkbot_variables: A tuple of 4 'Decimal' numbers used for the
-            'self.milk_production' function.
-            index = 0: scale,
-            index = 1: ramp,
-            index = 2: offset,
-            index = 3: decay.
+        :type _total_states: tuple[State] | None
+        :var _milkbot_variables: A tuple of 4 ``Decimal`` objects used for the
+            ``self.milk_production`` function.
+
+            * index = 0: scale
+            * index = 1: ramp
+            * index = 2: offset
+            * index = 3: decay
+
             Filled by ``self.__set_milkbot_variables()``.
-        :type _milkbot_variables: tuple[Decimal, Decimal, Decimal, Decimal]
+        :type _milkbot_variables: tuple[Decimal]
 
     :Methods:
         __init__(days_in_milk, lactation_number, days_pregnant, age_at_first_heat,
@@ -188,6 +191,8 @@ class DigitalCow:
         generate_total_states(dim_limit, ln_limit)\n
         probability_state_change(state_from, state_to)\n
         possible_new_states(state_from)\n
+
+    ************************************************************
     """
 
     def __init__(self, days_in_milk=0, lactation_number=0, days_pregnant=0,
@@ -211,9 +216,9 @@ class DigitalCow:
         :type age: int
         :param herd: The herd to which the cow belongs.
             Contains variables that apply to all cows in the herd. Defaults to None.
-        :type herd: digital_herd.DigitalHerd | None
+        :type herd: DigitalHerd | None
         :param state: The life state of the cow.
-            This state should be one of the states defined in self.__life_states.
+            This state should be one of the states defined in ``self.__life_states``.
             Defaults to 'Open'.
         :type state: str
         """
@@ -247,8 +252,8 @@ class DigitalCow:
 
     def generate_total_states(self, dim_limit=None, ln_limit=None) -> None:
         """
-        Generates a tuple of State objects that represent all possible
-        states of the DigitalCow instance.
+        Generates a tuple of ``State`` objects that represent all possible
+        states of the ``DigitalCow`` instance.
 
         :param dim_limit: The limit of days in milk for which states should
             be generated. Defaults to the limit of its herd.
@@ -1007,12 +1012,12 @@ class DigitalCow:
 
     @property
     def current_state(self) -> State:
-        """The current state of the cow, as a State object."""
+        """The current state of the cow, as a ``State`` object."""
         return self._current_state
 
     @property
     def total_states(self) -> tuple:
-        """A generated tuple of State objects that the cow can be in."""
+        """A generated tuple of ``State`` objects that the cow can be in."""
         return self._total_states
 
     @total_states.setter
@@ -1021,7 +1026,7 @@ class DigitalCow:
 
     @property
     def milkbot_variables(self) -> tuple:
-        """A tuple containing parameters used to calculate milk output."""
+        """A tuple containing 4 parameters used to calculate milk output."""
         return self._milkbot_variables
 
     @milkbot_variables.setter
@@ -1039,7 +1044,7 @@ class DigitalCow:
 
     @property
     def node_count(self) -> int:
-        """The total number of States in ``total_states``."""
+        """The total number of ``State`` objects in ``total_states``."""
         return len(self.total_states)
 
     @property
@@ -1053,7 +1058,7 @@ class DigitalCow:
 
     @property
     def precision(self) -> Decimal:
-        """The Decimal object indicating the amount of decimal places used in
+        """The ``Decimal`` object indicating the amount of decimal places used in
         calculations."""
         return self._precision
 
@@ -1084,11 +1089,11 @@ def state_probability_generator(digital_cow: DigitalCow) -> \
         transition probabilities must be calculated.
     :type digital_cow: DigitalCow
     :return:
-        - state_index[state_from]: The index of the 'state_from' state in the tuple of
+        - state_index[state_from]: The index of the ``state_from`` state in the
+            tuple of states.
+        - state_index[state_to]: The index of the ``state_to`` state in the tuple of
             states.
-        - state_index[state_to]: The index of the 'state_to' state in the tuple of
-            states.
-        - probability: The probability of moving from 'state_from' to 'state_to'.
+        - probability: The probability of moving from ``state_from`` to ``state_to``.
     :rtype:
         - state_index[state_from]: int
         - state_index[state_to]: int
@@ -1120,11 +1125,11 @@ def convert_final_state_vector(vector: tuple, total_states: tuple, group_by: int
     :param total_states: A generated tuple of State objects that the cow can be in.
     :type total_states: tuple
     :param group_by: An int that indicates what dimension to group the states by.
-        TODO
-        0: days_in_milk
-        1: lactation_number
-        2: days_pregnant
-        3: life_state
+
+        * index = 0: days_in_milk
+        * index = 1: lactation_number
+        * index = 2: days_pregnant
+        * index = 3: life_state
     :type group_by: int
     :returns: The value of the chosen dimension with the corresponding probability
         of being in a state with that specific value
@@ -1176,13 +1181,13 @@ def convert_final_state_vector(vector: tuple, total_states: tuple, group_by: int
 
 def decimalize_precision(dec=10) -> Decimal:
     """
-    Returns a Decimal number used to set the number of decimal places for
+    Returns a ``Decimal`` object used to set the number of decimal places for
     calculations.
 
     :param dec: The number of decimal places to be used in calculations.
         Defaults to 10. Maximum is 25.
     :type dec: int
-    :return: A Decimal object to be used for setting the number of decimal places
+    :return: A ``Decimal`` object to be used for setting the number of decimal places
         in calculations.
     :rtype: Decimal
     """
@@ -1264,21 +1269,21 @@ def calculate_body_weight(state: State, age: int, vwp: int,
     """
     Calculates the body weight of a cow for a specific state.
     
-    :param state: The State object that represents the specific day for which the
+    :param state: The ``State`` object that represents the specific day for which the
         body weight must be calculated.
     :type state: State
     :param age: The age of the cow in days.
     :type age: int
-    :param vwp: The voluntary waiting period of the cow for the specific lactation 
-        of the state.
+    :param vwp: The voluntary waiting period in days of the cow for the specific
+        lactation of the state.
     :type vwp: int
-    :param precision: A Decimal number that determines the number of decimal places
-        to be used.
+    :param precision: A ``Decimal`` object that determines the number of decimal
+        places to be used.
     :type precision: Decimal
     :return: The body weight of the cow in kg in the state that is given.
     :rtype: Decimal
     """
-    # Source
+    # TODO Source
     #
     birth_weight, mature_live_weight, growth_rate, pregnancy_parameter, \
         max_decrease_live_weight, duration_minimum_live_weight = \
@@ -1315,12 +1320,13 @@ def set_milkbot_variables(lactation_number: int,
     :param lactation_number_limit: The maximum number of lactation cycles the cow
         can complete before culling.
     :type lactation_number_limit: int
-    :return: milkbot_variables: A tuple of parameters for the MilkBot function.
-        1: scale
-        2: ramp
-        3: offset
-        4: decay
-    :rtype: tuple[Decimal, Decimal, Decimal, Decimal]
+    :returns: A tuple of parameters for the MilkBot function.
+
+        * index = 1: scale
+        * index = 2: ramp
+        * index = 3: offset
+        * index= 4: decay
+    :rtype: tuple[Decimal]
     :raises ValueError: If the lactation number is larger than the lactation
         number limit.
     """
@@ -1357,7 +1363,7 @@ def milk_production(milkbot_variables: tuple, state: State, dp_limit: int,
     Calculates milk production for a given state using the MilkBot algorithm.
 
     :param milkbot_variables: A tuple containing parameters for the MilkBot algorithm.
-    :type: tuple
+    :type milkbot_variables: tuple
     :param state: A state object for which milk production must be calculated.
     :type state: State
     :param dp_limit: The maximum number of days a cow can be pregnant.
@@ -1365,9 +1371,9 @@ def milk_production(milkbot_variables: tuple, state: State, dp_limit: int,
     :param duration_dry: The number of days before calving, when a cow is not
         being milked, otherwise known as the Dry period.
     :type duration_dry: int
-    :param precision: A Decimal number that determines the number of decimal places
+    :param precision: A decimal number that determines the number of decimal places
         to be used.
-    :type: Decimal
+    :type precision: Decimal
     :returns: The milk production for the given days in milk in kg.
     :rtype: Decimal
     """
@@ -1389,7 +1395,7 @@ def calculate_dmi(state: State, body_weight: Decimal, precision: Decimal):
     """
     Calculates the dry matter intake of a cow for a specific state.
 
-    :param state: The State object that represents the specific day for which the
+    :param state: The ``State`` object that represents the specific day for which the
         dry matter intake must be calculated.
     :type state: State
     :param body_weight: The body weight of the cow in kg on the specific day for which
@@ -1416,9 +1422,10 @@ def calculate_dmi(state: State, body_weight: Decimal, precision: Decimal):
 def manure_nitrogen_output(dmi: Decimal, diet_cp: Decimal, milk_yield: Decimal,
                            milk_cp: Decimal, precision: Decimal):
     """
-    Returns results from a mass balance equation that estimates nitrogen in manure 
-    for lactating cows when dry-matter intake, dietary crude protein concentration, 
-    milk yield and milk crude protein concentration are known.
+    Returns results from a mass balance equation that estimates daily nitrogen 
+    emission in manure for lactating cows when dry-matter intake, 
+    dietary crude protein concentration, milk yield and 
+    milk crude protein concentration are known.
     
     :param dmi: The dry-matter intake of the cow in kg.
     :type dmi: Decimal
@@ -1444,7 +1451,7 @@ def manure_nitrogen_output(dmi: Decimal, diet_cp: Decimal, milk_yield: Decimal,
 def urine_nitrogen_output(lactation_number: int, nitrogen_intake: Decimal,
                           precision: Decimal):
     """
-    Returns the estimated nitrogen output for a cow's urine based on its
+    Returns the estimated daily nitrogen output for a cow's urine based on its
     nitrogen intake.
 
     :param lactation_number: The lactation number of the cow on the day of the
@@ -1464,7 +1471,6 @@ def urine_nitrogen_output(lactation_number: int, nitrogen_intake: Decimal,
         - min_n_output: Decimal
         - max_n_output: Decimal
     """
-    # TODO: CHECK NOT LACTATING!
     # Johnson et al. (2016) -> Reed et al. (2015)
     if lactation_number < 0:
         # root-mean-square prediction error: 25%
@@ -1487,8 +1493,8 @@ def urine_nitrogen_output(lactation_number: int, nitrogen_intake: Decimal,
 
 def fecal_nitrogen_output(lactation_number, dmi, nitrogen_intake, precision):
     """
-    Returns the estimated nitrogen output for a cow's feces based on its nitrogen
-    intake or dmi.
+    Returns the estimated daily nitrogen output for a cow's feces based on its
+    nitrogen intake or dmi.
 
     :param lactation_number: The lactation number of the cow on the day of the
         calculation.
@@ -1509,7 +1515,6 @@ def fecal_nitrogen_output(lactation_number, dmi, nitrogen_intake, precision):
         - min_n_output: Decimal
         - max_n_output: Decimal
     """
-    # TODO: CHECK NOT LACTATING!
     # Johnson et al. (2016)
     if lactation_number < 0:
         # Reed et al. (2015)
@@ -1534,8 +1539,8 @@ def fecal_nitrogen_output(lactation_number, dmi, nitrogen_intake, precision):
 
 def total_manure_nitrogen_output(lactation_number, nitrogen_intake, precision):
     """
-    Returns estimated nitrogen output of a cow's manure (urine and feces) based on its
-    nitrogen intake.
+    Returns estimated daily nitrogen output of a cow's manure (urine and feces)
+    based on its nitrogen intake.
 
     :param lactation_number: The lactation number of the cow on the day of the
         calculation.
@@ -1554,7 +1559,6 @@ def total_manure_nitrogen_output(lactation_number, nitrogen_intake, precision):
         - min_n_output: Decimal
         - max_n_output: Decimal
     """
-    # TODO: CHECK NOT LACTATING!
     # Johnson et al. 2016 -> Reed et al. (2015)
     if lactation_number < 0:
         # root-mean-square prediction error: 11%
@@ -1577,7 +1581,8 @@ def total_manure_nitrogen_output(lactation_number, nitrogen_intake, precision):
 
 def milk_nitrogen_output(dmi, precision):
     """
-    Calculates the nitrogen output in a cow's milk based on its dry matter intake.
+    Returns the estimated daily nitrogen output in a cow's milk based on its dry
+    matter intake.
 
     :param dmi: The dry matter intake of the cow in kg per day.
     :type dmi: Decimal
@@ -1603,7 +1608,7 @@ def milk_nitrogen_output(dmi, precision):
 
 def fecal_phosphor_output(phosphor_intake, milk_yield, precision):
     """
-    Calculates the phosphor output of a cow's feces based on the cow's
+    Calculates the daily phosphor output of a cow's feces based on the cow's
     phosphor intake and milk production.
 
     :param phosphor_intake: The amount of phosphor consumed by the cow in g per day.
