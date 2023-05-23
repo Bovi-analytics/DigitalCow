@@ -233,9 +233,7 @@ class DigitalCow:
         temp_state = State(state, days_in_milk, lactation_number,
                            days_pregnant, Decimal("0"))
         if herd is not None:
-            self.milkbot_variables = set_milkbot_variables(
-                lactation_number,
-                herd.lactation_number_limit)
+            self.milkbot_variables = set_milkbot_variables(lactation_number)
             milk_output = milk_production(self.milkbot_variables,
                                           temp_state,
                                           self.herd.get_days_pregnant_limit(
@@ -281,8 +279,7 @@ class DigitalCow:
 
         while lactation_number <= ln_limit:
             for life_state in self.__life_states:
-                self.milkbot_variables = set_milkbot_variables(
-                    lactation_number, self.herd.lactation_number_limit)
+                self.milkbot_variables = set_milkbot_variables(lactation_number)
                 if life_state == 'Pregnant':
                     milk_output = Decimal("0")
                 else:
@@ -353,8 +350,7 @@ class DigitalCow:
                                 total_states.append(new_state)
                             if last_pregnancy:
                                 self.milkbot_variables = set_milkbot_variables(
-                                    lactation_number + 1,
-                                    self.herd.lactation_number_limit)
+                                    lactation_number + 1)
                                 temp_state = State(life_state,
                                                    days_in_milk,
                                                    lactation_number + 1, 0,
@@ -623,12 +619,12 @@ class DigitalCow:
                             return (__probability_birth() *
                                     not_below_milk_threshold_ *
                                     not_death_).quantize(self._precision)
-                            # chance calving and becoming DNB !
+                            # chance calving and becoming DNB
                         else:
                             return (__probability_abortion() *
                                     not_below_milk_threshold_ *
                                     not_death_).quantize(self._precision)
-                            # chance aborting and becoming DNB !
+                            # chance aborting and becoming DNB
                     case 'Exit':
                         if __probability_milk_below_threshold() == Decimal("1"):
                             return Decimal("1")
@@ -701,8 +697,7 @@ class DigitalCow:
                         state_from.lactation_number == 0:
                     if vwp <= state_from.days_in_milk <= vwp + insemination_window:
                         self.milkbot_variables = set_milkbot_variables(
-                            state_from.lactation_number,
-                            self.herd.lactation_number_limit)
+                            state_from.lactation_number)
                         temp_state = State('Pregnant',
                                            state_from.days_in_milk + 1,
                                            state_from.lactation_number,
@@ -723,8 +718,7 @@ class DigitalCow:
                     if state_from.days_in_milk >= vwp + insemination_window + 1 and \
                             state_from.lactation_number != 0:
                         self.milkbot_variables = set_milkbot_variables(
-                            state_from.lactation_number,
-                            self.herd.lactation_number_limit)
+                            state_from.lactation_number)
                         temp_state = State('DoNotBreed',
                                            state_from.days_in_milk + 1,
                                            state_from.lactation_number,
@@ -745,8 +739,7 @@ class DigitalCow:
                             state_from.lactation_number, 0, milk_output))
                     elif state_from.days_in_milk < vwp + insemination_window + 1:
                         self.milkbot_variables = set_milkbot_variables(
-                            state_from.lactation_number,
-                            self.herd.lactation_number_limit)
+                            state_from.lactation_number)
                         temp_state = State('Open',
                                            state_from.days_in_milk + 1,
                                            state_from.lactation_number,
@@ -772,9 +765,7 @@ class DigitalCow:
                             and state_from.lactation_number <= \
                             self._generated_lactation_numbers:
                         self.milkbot_variables = set_milkbot_variables(
-                            state_from.lactation_number + 1,
-                            self.herd.lactation_number_limit)
-                        # !!!!!!!!
+                            state_from.lactation_number + 1)
                         if state_from.lactation_number == \
                                 self._generated_lactation_numbers:
                             temp_state = State(
@@ -812,8 +803,7 @@ class DigitalCow:
                                 0, milk_output))
                     elif state_from.days_pregnant < dp_limit:
                         self.milkbot_variables = set_milkbot_variables(
-                            state_from.lactation_number,
-                            self.herd.lactation_number_limit)
+                            state_from.lactation_number)
                         temp_state = State('Pregnant',
                                            state_from.days_in_milk + 1,
                                            state_from.lactation_number,
@@ -834,8 +824,7 @@ class DigitalCow:
                             state_from.days_pregnant + 1, milk_output))
                         if state_from.days_in_milk < vwp + insemination_window + 1:
                             self.milkbot_variables = set_milkbot_variables(
-                                state_from.lactation_number,
-                                self.herd.lactation_number_limit)
+                                state_from.lactation_number)
                             temp_state = State('Open',
                                                state_from.days_in_milk + 1,
                                                state_from.lactation_number,
@@ -856,8 +845,7 @@ class DigitalCow:
                         elif state_from.days_in_milk >= vwp + insemination_window \
                                 + 1 and state_from.lactation_number != 0:
                             self.milkbot_variables = set_milkbot_variables(
-                                state_from.lactation_number,
-                                self.herd.lactation_number_limit)
+                                state_from.lactation_number)
                             temp_state = State('DoNotBreed',
                                                state_from.days_in_milk + 1,
                                                state_from.lactation_number,
@@ -878,8 +866,7 @@ class DigitalCow:
             case 'DoNotBreed':
                 if state_from.milk_output > self.herd.milk_threshold:
                     self.milkbot_variables = set_milkbot_variables(
-                        state_from.lactation_number,
-                        self.herd.lactation_number_limit)
+                        state_from.lactation_number)
                     temp_state = State('DoNotBreed',
                                        state_from.days_in_milk + 1,
                                        state_from.lactation_number,
@@ -934,7 +921,7 @@ class DigitalCow:
                 self._herd.remove_from_herd([self])
             herd.add_to_herd([self])
             self.milkbot_variables = set_milkbot_variables(
-                self.current_lactation_number, herd.lactation_number_limit)
+                self.current_lactation_number)
             milk_output = milk_production(
                 self.milkbot_variables,
                 self.current_state,
@@ -1228,6 +1215,7 @@ def set_korver_function_variables(lactation_number: int):
         - max_decrease_live_weight: Decimal | None
         - duration_minimum_live_weight: Decimal | None
     """
+    # parameter values from (J.A.M. Van Arendonk, 1985):
     # birth_weight = 42
     # mature_live_weight = 600
     # growth_rate = 0.0028
@@ -1235,6 +1223,7 @@ def set_korver_function_variables(lactation_number: int):
     # max_decrease_live_weight = 50
     # duration_minimum_live_weight = 75
 
+    # Source: (A. De Vries, 2006)
     match lactation_number:
         case 0:
             birth_weight = Decimal(np.random.normal(42, 0))
@@ -1283,8 +1272,8 @@ def calculate_body_weight(state: State, age: int, vwp: int,
     :return: The body weight of the cow in kg in the state that is given.
     :rtype: Decimal
     """
-    # TODO Source
-    #
+    # Source: (Giordano J.O., et al., 2012) (Cabrera)
+    # Source: (De Vries A., 2006)
     birth_weight, mature_live_weight, growth_rate, pregnancy_parameter, \
         max_decrease_live_weight, duration_minimum_live_weight = \
         set_korver_function_variables(state.lactation_number)
@@ -1310,16 +1299,12 @@ def calculate_body_weight(state: State, age: int, vwp: int,
     return bw
 
 
-def set_milkbot_variables(lactation_number: int,
-                          lactation_number_limit: int) -> tuple:
+def set_milkbot_variables(lactation_number: int) -> tuple:
     """
     Returns MilkBot variables for a DigitalCow, based on its lactation number.
 
     :param lactation_number: The number of lactation cycles the cow has completed.
     :type lactation_number: int
-    :param lactation_number_limit: The maximum number of lactation cycles the cow
-        can complete before culling.
-    :type lactation_number_limit: int
     :returns: A tuple of parameters for the MilkBot function.
 
         * index = 1: scale
@@ -1337,21 +1322,18 @@ def set_milkbot_variables(lactation_number: int,
                 Decimal("0"), Decimal("1"), Decimal("1"), Decimal("1"))
         case 1:
             decay = Decimal("0.693") / Decimal("358")
-            decay = Decimal(f"{np.random.normal(float(decay), 0)}")
             milkbot_variables = (
                 Decimal(f"{np.random.normal(34.8, 0)}"),
                 Decimal(f"{np.random.normal(29.6, 0)}"),
                 Decimal(f"{np.random.normal(0, 0)}"),
-                decay)
-        case ln if 1 < ln < lactation_number_limit + 2:
-            # +2 ensures that if the cow calves in its last lactation cycle,
-            # it won't cause a ValueError.
+                Decimal(f"{np.random.normal(float(decay), 0)}"))
+        case ln if ln > 1:
             decay = Decimal("0.693") / Decimal("240")
-            decay = Decimal(f"{np.random.normal(float(decay), 0)}")
             milkbot_variables = (
                 Decimal(f"{np.random.normal(47.7, 0)}"),
                 Decimal(f"{np.random.normal(22.1, 0)}"),
-                Decimal(f"{np.random.normal(0, 0)}"), decay)
+                Decimal(f"{np.random.normal(0, 0)}"),
+                Decimal(f"{np.random.normal(float(decay), 0)}"))
         case _:
             raise ValueError
     return milkbot_variables
@@ -1441,7 +1423,7 @@ def manure_nitrogen_output(dmi: Decimal, diet_cp: Decimal, milk_yield: Decimal,
     :return: Manure nitrogen output in g.
     :rtype: Decimal
     """""
-    # TODO: SOURCE
+    # NRC 8th revised edition (2021)
     manure_n_output = Decimal((dmi * diet_cp) / Decimal("0.625") -
                               (milk_yield * milk_cp) / Decimal("0.638") -
                               Decimal("5")).quantize(precision)
@@ -1471,7 +1453,7 @@ def urine_nitrogen_output(lactation_number: int, nitrogen_intake: Decimal,
         - min_n_output: Decimal
         - max_n_output: Decimal
     """
-    # Johnson et al. (2016) -> Reed et al. (2015)
+    # NRC 8th revised edition (2021)
     if lactation_number < 0:
         # root-mean-square prediction error: 25%
         mu_n_output = (Decimal("12.0") + (Decimal("0.333") *
@@ -1515,9 +1497,8 @@ def fecal_nitrogen_output(lactation_number, dmi, nitrogen_intake, precision):
         - min_n_output: Decimal
         - max_n_output: Decimal
     """
-    # Johnson et al. (2016)
+    # NRC 8th revised edition (2021)
     if lactation_number < 0:
-        # Reed et al. (2015)
         # root-mean-square prediction error: 16%
         mu_n_output = (Decimal("-18.5") + (Decimal("10.1") * dmi)).quantize(
             precision)
@@ -1526,7 +1507,6 @@ def fecal_nitrogen_output(lactation_number, dmi, nitrogen_intake, precision):
         max_n_output = (Decimal("-14.91") + (Decimal("10.269") * dmi)).quantize(
             precision)
     else:
-        # TODO: SOURCE
         # root-mean-square prediction error: 17%
         mu_n_output = (Decimal("0.35") + (Decimal("0.32") *
                                           nitrogen_intake)).quantize(precision)
@@ -1559,7 +1539,8 @@ def total_manure_nitrogen_output(lactation_number, nitrogen_intake, precision):
         - min_n_output: Decimal
         - max_n_output: Decimal
     """
-    # Johnson et al. 2016 -> Reed et al. (2015)
+
+    # NRC 8th revised edition (2021)
     if lactation_number < 0:
         # root-mean-square prediction error: 11%
         mu_n_output = (Decimal("20.3") + (Decimal("0.654") *
@@ -1598,7 +1579,7 @@ def milk_nitrogen_output(dmi, precision):
         - min_n_output: Decimal
         - max_n_output: Decimal
     """
-    # Johnson et al. (2016) -> Reed et al. (2015)
+    # NRC 8th revised edition (2021)
     # root-mean-square prediction error: 14%
     mu_n_output = (Decimal("-19.0") + (Decimal("8.13") * dmi)).quantize(precision)
     min_n_output = (Decimal("-22.21") + (Decimal("7.885") * dmi)).quantize(precision)
@@ -1627,7 +1608,7 @@ def fecal_phosphor_output(phosphor_intake, milk_yield, precision):
         - min_p_output: Decimal
         - max_p_output: Decimal
     """
-    # Alvarez-Fuentes et al. (2016)
+    # NRC 8th revised edition (2021)
     mu_p_output = (Decimal("0.73") * phosphor_intake - Decimal("0.37") *
                    milk_yield).quantize(precision)
     min_p_output = (Decimal("0.7") * phosphor_intake - Decimal("0.29") *
