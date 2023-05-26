@@ -197,7 +197,8 @@ class DigitalCow:
     """
 
     def __init__(self, days_in_milk=0, lactation_number=0, days_pregnant=0,
-                 age_at_first_heat=None, age=0, herd=None, state='Open'):
+                 diet_cp=Decimal("16"), milk_cp=Decimal("3.4"), age=0, herd=None,
+                 state='Open', age_at_first_heat=None):
         """
         Initializes a new instance of a DigitalCow object.
 
@@ -231,8 +232,8 @@ class DigitalCow:
         self._generated_lactation_numbers = None
         self._precision = decimalize_precision()
         self._age = age
-        self._diet_cp = None
-        self._milk_cp = None
+        self._diet_cp = diet_cp
+        self._milk_cp = milk_cp
         temp_state = State(state, days_in_milk, lactation_number,
                            days_pregnant, Decimal("0"))
         if herd is not None:
@@ -1252,7 +1253,7 @@ def create_paths(simulation: Iterator[tuple[ndarray[Any, dtype], int]], digital_
                 possible_states = digital_cow.possible_new_states(last_state)
                 for state in possible_states:
                     new_index = state_index[state]
-                    new_path = path.copy()
+                    new_path = [index for index in path]
                     new_path.append(new_index)
                     new_path = tuple(new_path)
                     new_paths.append(new_path)
@@ -1314,13 +1315,7 @@ def path_milk_production(digital_cow: DigitalCow, all_paths: tuple):
         total_milk_production = 0
         for index in path:
             state = index_state[index]
-            milk = milk_production(
-                set_milkbot_variables(state.lactation_number),
-                state,
-                digital_cow.herd.get_days_pregnant_limit(state.lactation_number),
-                digital_cow.herd.get_duration_dry(state.lactation_number),
-                digital_cow.precision)
-            total_milk_production += milk
+            total_milk_production += state.milk_output
         all_path_milk_totals.append(total_milk_production)
     all_path_milk_totals = tuple(all_path_milk_totals)
     return all_path_milk_totals
@@ -1356,12 +1351,7 @@ def path_nitrogen_emission(digital_cow: DigitalCow, all_paths: tuple,
                 digital_cow.herd.get_voluntary_waiting_period(
                     state.lactation_number), digital_cow.precision)
             dmi = calculate_dmi(state, bw, digital_cow.precision)
-            milk = milk_production(
-                set_milkbot_variables(state.lactation_number),
-                state,
-                digital_cow.herd.get_days_pregnant_limit(state.lactation_number),
-                digital_cow.herd.get_duration_dry(state.lactation_number),
-                digital_cow.precision)
+            milk = state.milk_output
             nitrogen = manure_nitrogen_output(dmi, digital_cow.diet_cp, milk,
                                               digital_cow.milk_cp,
                                               digital_cow.precision)
