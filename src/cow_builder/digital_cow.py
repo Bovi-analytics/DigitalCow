@@ -145,13 +145,14 @@ see the corresponding documentation of the chain_simulator package here:*
 """
 
 from decimal import Decimal
-
-import numpy
+from numpy import ndarray, dtype
 from cow_builder.digital_herd import DigitalHerd
 from cow_builder.state import State
 import math
-from typing import Generator
+from typing import Generator, Iterator, Any
 import numpy as np
+
+import matplotlib.pyplot as plt
 
 
 class DigitalCow:
@@ -230,6 +231,8 @@ class DigitalCow:
         self._generated_lactation_numbers = None
         self._precision = decimalize_precision()
         self._age = age
+        self._diet_cp = None
+        self._milk_cp = None
         temp_state = State(state, days_in_milk, lactation_number,
                            days_pregnant, Decimal("0"))
         if herd is not None:
@@ -1035,7 +1038,7 @@ class DigitalCow:
         return len(self.total_states)
 
     @property
-    def initial_state_vector(self) -> numpy.array:
+    def initial_state_vector(self) -> ndarray:
         """A numpy array indicating which state of all states in ``total_states``
         the cow is in."""
         index = self.total_states.index(self.current_state)
@@ -1061,6 +1064,25 @@ class DigitalCow:
     @age.setter
     def age(self, age):
         self._age = age
+
+    @property
+    def diet_cp(self) -> Decimal:
+        """The concentration of crude proteins in the diet of the cow in %."""
+        return self._diet_cp
+
+    @diet_cp.setter
+    def diet_cp(self, cp):
+        self._diet_cp = cp
+
+    @property
+    def milk_cp(self) -> Decimal:
+        """The concentration of crude proteins in the milk produced by the cow in
+        %."""
+        return self._milk_cp
+
+    @milk_cp.setter
+    def milk_cp(self, cp):
+        self._milk_cp = cp
 
 
 def state_probability_generator(digital_cow: DigitalCow) -> \
@@ -1100,15 +1122,15 @@ def state_probability_generator(digital_cow: DigitalCow) -> \
                 float(probability)
 
 
-def convert_final_state_vector(vector: tuple, total_states: tuple, group_by: int):
+def convert_vector_to_1d(simulated_day: tuple, total_states: tuple, group_by: int):
     """
-    Converts a final state vector to 1 dimension by adding the probabilities
-    different states with the same value on the chosen dimension together. Which
-    dimension this is depends on the ``group_by`` parameter.
+    Converts a vector to 1 dimension by adding the probabilities of different states
+    with the same value on the chosen dimension together. Which dimension this is
+    depends on the ``group_by`` parameter.
 
-    :param vector: A tuple that contains a vector as well as the day in
+    :param simulated_day: A tuple that contains a vector as well as the day in
         simulation that the vector is from.
-    :type vector: tuple
+    :type simulated_day: tuple
     :param total_states: A generated tuple of State objects that the cow can be in.
     :type total_states: tuple
     :param group_by: An int that indicates what dimension to group the states by.
@@ -1122,12 +1144,12 @@ def convert_final_state_vector(vector: tuple, total_states: tuple, group_by: int
         of being in a state with that specific value
     :rtype: dict
     """
-    final_state_vector, day = vector
+    vector, day = simulated_day
     state_index = {
         state: index for index, state in enumerate(total_states)
     }
     vector_index = {
-        index: probability for index, probability in enumerate(final_state_vector)
+        index: probability for index, probability in enumerate(vector)
     }
     one_dimensional_vector = {}
     for state in state_index:
@@ -1139,31 +1161,239 @@ def convert_final_state_vector(vector: tuple, total_states: tuple, group_by: int
                 try:
                     one_dimensional_vector[days_in_milk] = one_dimensional_vector[
                         days_in_milk] + probability
-                except KeyError as error:
+                except KeyError:
                     one_dimensional_vector.update({days_in_milk: probability})
             case 1:
                 lactation_number = state.lactation_number
                 try:
                     one_dimensional_vector[lactation_number] = one_dimensional_vector[
                         lactation_number] + probability
-                except KeyError as error:
+                except KeyError:
                     one_dimensional_vector.update({lactation_number: probability})
             case 2:
                 days_pregnant = state.days_pregnant
                 try:
                     one_dimensional_vector[days_pregnant] = one_dimensional_vector[
                         days_pregnant] + probability
-                except KeyError as error:
+                except KeyError:
                     one_dimensional_vector.update({days_pregnant: probability})
             case 3:
                 life_state = state.state
                 try:
                     one_dimensional_vector[life_state] = one_dimensional_vector[
                                                              life_state] + probability
-                except KeyError as error:
+                except KeyError:
                     one_dimensional_vector.update({life_state: probability})
 
+    xpoints = np.asarray([i for i in one_dimensional_vector.keys()])
+    ypoints = np.asarray([i for i in one_dimensional_vector.values()])
+    plt.figure()
+    plt.xlabel('Days in milk')
+    plt.ylabel('Probability')
+    plt.title(f'Probability of cow at each day in milk for day '
+              f'{simulated_day[1]} in simulation')
+    plt.plot(xpoints, ypoints)
+    plt.savefig(f'img/simulated_day_{simulated_day[1]}')
+    plt.close()
     return one_dimensional_vector
+
+
+def create_paths(simulation: Iterator[tuple[ndarray[Any, dtype], int]], digital_cow: DigitalCow, simulated_days: int):
+    """
+    Iterates over the simulation to create all possible paths that may have been
+    taken during the simulation.
+
+    :param simulation: Returns vectors containing probabilities
+    :type simulation: Iterator[tuple[ndarray[Any, dtype], int]]
+    :param digital_cow: The DigitalCow object that was simulated.
+    :type digital_cow: DigitalCow
+    :param simulated_days: The number of days simulated.
+    :type simulated_days: int
+    :returns:
+        - all_paths: A tuple containing all the paths the cow may have taken during
+            the simulation.
+        - all_simulations: A tuple with a dictionary for every day that is
+            simulated. For each dictionary, the key value pair is:
+                key: index of the state
+                value: The probability for being in that state on that day in
+                    the simulation.
+    :rtype:
+        - tuple[tuple[int]]
+        - tuple[dict]
+    """
+    all_paths = []
+    all_simulations = []
+    possible_states = digital_cow.possible_new_states(digital_cow.current_state)
+    index_state = {
+        index: state for index, state in enumerate(digital_cow.total_states)
+    }
+    state_index = {
+        state: index for index, state in enumerate(digital_cow.total_states)
+    }
+    all_simulations.append({state_index[digital_cow.current_state]: 1})
+    for state in possible_states:
+        all_paths.append([state_index[digital_cow.current_state], state_index[state]])
+    for simulated_day in simulation:
+        vector_1d = convert_vector_to_1d(simulated_day,
+                                         digital_cow.total_states, 0)
+
+        i = simulated_day[1] - 1
+        new_paths = []
+        probability_index = {
+            probability: index for index, probability in enumerate(simulated_day[0])
+        }
+        index_sim = {probability_index[probability]: probability for probability in
+                     filter(lambda p: p > 0, probability_index)}
+        all_simulations.append(index_sim)
+        if not i == simulated_days - 1:
+            for path in all_paths:
+                index = path[-1]
+                last_state = index_state[index]
+                possible_states = digital_cow.possible_new_states(last_state)
+                for state in possible_states:
+                    new_index = state_index[state]
+                    new_path = path.copy()
+                    new_path.append(new_index)
+                    new_path = tuple(new_path)
+                    new_paths.append(new_path)
+            all_paths = tuple(new_paths)
+    # Maybe make a graph out of it?
+    all_simulations = tuple(all_simulations)
+    return all_paths, all_simulations
+
+
+def path_probability(all_paths: tuple, all_simulations: tuple):
+    """
+    Calculates the probability of the cow taking a certain path during the
+    simulation for every path in a tuple.
+
+    :param all_paths: A tuple containing all the paths the cow may have taken during
+        the simulation.
+    :type all_paths: tuple[tuple[int]]
+    :param all_simulations: A tuple with a dictionary for every day that is
+        simulated. For each dictionary, the key value pair is:
+            key: index of the state
+            value: The probability for being in that state on that day in
+                the simulation.
+    :type all_simulations: tuple[dict]
+    :returns: A tuple containing the probability of the cow taking a path
+        for every path that it can take.
+    :rtype: tuple[Decimal]
+    """
+    path_probabilities = []
+    for path in all_paths:
+        probability = 1
+        for day in range(len(all_simulations)):
+            p = all_simulations[day][path[day]]
+            probability = probability * p
+        probability = Decimal(f"{probability}")
+        path_probabilities.append(probability)
+    path_probabilities = tuple(path_probabilities)
+    return path_probabilities
+
+
+def path_milk_production(digital_cow: DigitalCow, all_paths: tuple):
+    """
+    Calculates the raw total milk production for each path the cow can take during
+    simulation.
+
+    :param digital_cow: The DigitalCow object that is being simulated.
+    :type digital_cow: DigitalCow
+    :param all_paths: A tuple containing all the paths the cow may have taken during
+        the simulation.
+    :type all_paths: tuple[tuple[int]]
+    :returns: A tuple containing the raw milk production for every path the cow can
+        take during simulation.
+    :rtype tuple[Decimal]
+    """
+    all_path_milk_totals = []
+    index_state = {
+        index: state for index, state in enumerate(digital_cow.total_states)
+    }
+    for path in all_paths:
+        total_milk_production = 0
+        for index in path:
+            state = index_state[index]
+            milk = milk_production(
+                set_milkbot_variables(state.lactation_number),
+                state,
+                digital_cow.herd.get_days_pregnant_limit(state.lactation_number),
+                digital_cow.herd.get_duration_dry(state.lactation_number),
+                digital_cow.precision)
+            total_milk_production += milk
+        all_path_milk_totals.append(total_milk_production)
+    all_path_milk_totals = tuple(all_path_milk_totals)
+    return all_path_milk_totals
+
+
+def path_nitrogen_emission(digital_cow: DigitalCow, all_paths: tuple,
+                           simulated_days: int):
+    """
+    Calculates the raw nitrogen emission for each path the cow can take during
+    simulation, using the mass-balance equation.
+
+    :param digital_cow: The DigitalCow object that is being simulated.
+    :type digital_cow: DigitalCow
+    :param all_paths: A tuple containing all the paths the cow may have taken during
+        the simulation.
+    :type all_paths: tuple[tuple[int]]
+    :param simulated_days: The number of days that is being simulated.
+    :type simulated_days: int
+    :returns: A tuple containing the raw nitrogen emission for every path the cow
+        can take during the simulation.
+    :rtype: tuple[Decimal]
+    """
+    all_path_nitrogen_total = []
+    index_state = {
+        index: state for index, state in enumerate(digital_cow.total_states)
+    }
+    for path in all_paths:
+        total_nitrogen_emission = 0
+        for index in path:
+            state = index_state[index]
+            bw = calculate_body_weight(
+                state, digital_cow.age + simulated_days,
+                digital_cow.herd.get_voluntary_waiting_period(
+                    state.lactation_number), digital_cow.precision)
+            dmi = calculate_dmi(state, bw, digital_cow.precision)
+            milk = milk_production(
+                set_milkbot_variables(state.lactation_number),
+                state,
+                digital_cow.herd.get_days_pregnant_limit(state.lactation_number),
+                digital_cow.herd.get_duration_dry(state.lactation_number),
+                digital_cow.precision)
+            nitrogen = manure_nitrogen_output(dmi, digital_cow.diet_cp, milk,
+                                              digital_cow.milk_cp,
+                                              digital_cow.precision)
+            total_nitrogen_emission += nitrogen
+        all_path_nitrogen_total.append(total_nitrogen_emission)
+    all_path_nitrogen_total = tuple(all_path_nitrogen_total)
+    return all_path_nitrogen_total
+
+
+def phenotype_simulation(path_phenotype_totals: tuple, path_probabilities: tuple):
+    """
+    Multiplies the total of any phenotype for every path the cow can take during
+    simulation with the probability of the cow taking each corresponding path.
+
+    :param path_phenotype_totals:
+    :type path_phenotype_totals: tuple[Decimal]
+    :param path_probabilities: A tuple containing the probability of the cow taking
+        a path for every path that it can take.
+    :type path_probabilities: tuple[Decimal]
+    :return:
+    """
+    path_phenotype_probability = [path_phenotype_totals[i] * path_probabilities[i]
+                                  for i in range(len(path_probabilities))]
+
+    print(f"sum of all path probabilities: {sum(path_probabilities)}")
+    # for i in range(len(path_phenotype_probability)):
+    #     print(f"path {i}: {float(path_phenotype_probability[i])}")
+    print(f"number of paths: {len(path_probabilities)}")
+    # weighted_avg = sum(path_phenotype_probability) / sum(path_probabilities)
+    # TODO
+    weighted_avg = sum(path_phenotype_probability) * sum(path_probabilities)
+    return path_phenotype_probability, weighted_avg
 
 
 def decimalize_precision(dec=10) -> Decimal:

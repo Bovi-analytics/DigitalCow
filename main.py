@@ -3,7 +3,8 @@
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 import numpy as np
 
-from cow_builder.digital_cow import DigitalCow, state_probability_generator, convert_final_state_vector
+from cow_builder.digital_cow import DigitalCow, state_probability_generator, \
+    create_paths, path_probability, path_milk_production, phenotype_simulation
 from cow_builder.digital_herd import DigitalHerd
 from chain_simulator.simulation import state_vector_processor
 from chain_simulator.utilities import validate_matrix_sum, \
@@ -11,7 +12,6 @@ from chain_simulator.utilities import validate_matrix_sum, \
 from chain_simulator.assembly import array_assembler
 import time
 import logging
-import matplotlib.pyplot as plt
 
 
 def chain_simulator_test():
@@ -23,7 +23,7 @@ def chain_simulator_test():
     start = time.perf_counter()
     just_another_cow.generate_total_states(dim_limit=1000, ln_limit=2)
     end = time.perf_counter()
-    print(f"duration for generating states: {end - start}")
+    print(f"duration for generating states: {end - start} seconds.")
     # start = time.perf_counter()
     # print(just_another_cow.node_count)
     # end = time.perf_counter()
@@ -40,27 +40,29 @@ def chain_simulator_test():
     tm = array_assembler(just_another_cow.node_count,
                          state_probability_generator(just_another_cow))
     end = time.perf_counter()
-    print(f"duration making TM: {end - start}")
-    print(f"validation of the sum of rows being equal to 1: {validate_matrix_sum(tm)}")
-    print(f"validation of the probabilities in the matrix being positive: {validate_matrix_positive(tm)}")
+    print(f"duration making TM: {end - start} seconds.")
+    print(
+        f"validation of the sum of rows being equal to 1: {validate_matrix_sum(tm)}")
+    print(
+        f"validation of the probabilities in the matrix being positive: {validate_matrix_positive(tm)}")
+    simulated_days = 7
+    steps = 1
     simulation = state_vector_processor(just_another_cow.initial_state_vector, tm,
-                                        7, 1)
+                                        simulated_days, steps)
     start = time.perf_counter()
-    start1 = start
-    for day in simulation:
-        end1 = time.perf_counter()
-        # print(day)
-        vector_1d = convert_final_state_vector(day, just_another_cow.total_states, 0)
-        # print(vector_1d)
-        xpoints = np.asarray([i for i in vector_1d.keys()])
-        ypoints = np.asarray([i for i in vector_1d.values()])
-        plt.plot(xpoints, ypoints)
-        plt.show()
-        print(f"duration of above simulation: {end1 - start1}")
-        start1 = time.perf_counter()
+    all_paths, all_simulations = create_paths(simulation, just_another_cow,
+                                              simulated_days)
 
+    path_milk_totals = path_milk_production(just_another_cow, all_paths)
+    path_probabilities = path_probability(all_paths, all_simulations)
+    path_milk_probabilities, weighted_avg = phenotype_simulation(path_milk_totals,
+                                                                 path_probabilities)
     end = time.perf_counter()
-    print(f"duration looping through simulation: {end - start}")
+    print(f"The time needed to iterate over the simulation, build paths, "
+          f"and calculate phenotype output: {end - start} seconds.")
+    print(f"The weighted average milk production for this simulation is: "
+          f"{weighted_avg} kg")
+    print("simulation successful.")
 
 
 # Press the green button in the gutter to run the script.
