@@ -1328,11 +1328,11 @@ def find_probabilities(simulation: Iterator[tuple[ndarray[Any, dtype], int]],
     all_simulations = [{state_index[digital_cow.current_state]: 1}]
     for simulated_day in simulation:
         convert_vector_to_1d(simulated_day, digital_cow.total_states, 0)
-        probability_index = {
-            probability: index for index, probability in enumerate(simulated_day[0])
+        index_probability = {
+            index: probability for index, probability in enumerate(simulated_day[0])
         }
-        index_sim = {probability_index[probability]: probability for probability in
-                     filter(lambda p: p > 0, probability_index)}
+        index_sim = {index: index_probability[index] for index in
+                     filter(lambda i: index_probability[i] > 0, index_probability)}
         all_simulations.append(index_sim)
     end = time.perf_counter()
     print(f"duration of looping through the simulation and finding probabilities:"
@@ -1452,22 +1452,41 @@ def path_nitrogen_emission(digital_cow: DigitalCow, path_file: str,
     index_state = {
         index: state for index, state in enumerate(digital_cow.total_states)
     }
+    nitrogen_output_dict = {}
+    simulated_days = [day for day in range(simulated_days + 1)]
     with open(path_file, 'r') as file:
         for line in file:
             line = line.removeprefix('[').removesuffix(']\n')
             path = [int(index) for index in line.split(',')]
             total_nitrogen_emission = 0
+            enumerated_path = {
+                index: path_index for path_index, index in enumerate(path)
+            }
             for index in path:
-                state = index_state[index]
-                milk = state.milk_output
-                bw = calculate_body_weight(
-                    state, digital_cow.age + simulated_days,
-                    digital_cow.herd.get_voluntary_waiting_period(
-                        state.lactation_number), digital_cow.precision)
-                dmi = calculate_dmi(state, bw, digital_cow.precision)
-                nitrogen = manure_nitrogen_output(dmi, digital_cow.diet_cp, milk,
-                                                  digital_cow.milk_cp,
-                                                  digital_cow.precision)
+                try:
+                    nitrogen = nitrogen_output_dict[index]
+                except KeyError:
+                    state = index_state[index]
+                    age = digital_cow.age + simulated_days[enumerated_path[index]]
+                    milk = state.milk_output
+                    bw = calculate_body_weight(
+                        state, age,
+                        digital_cow.herd.get_voluntary_waiting_period(
+                            state.lactation_number), digital_cow.precision)
+                    dmi = calculate_dmi(state, bw, digital_cow.precision)
+                    nitrogen = manure_nitrogen_output(dmi, digital_cow.diet_cp, milk,
+                                                      digital_cow.milk_cp,
+                                                      digital_cow.precision)
+                    nitrogen_output_dict.update({index: nitrogen})
+
+                #
+
+                # nitrogen = urine_nitrogen_output(
+                #     state.lactation_number, Decimal("360"), digital_cow.precision)[0]
+                # nitrogen = total_manure_nitrogen_output(
+                #     state.lactation_number, Decimal("360"), digital_cow.precision)[0]
+
+                #
                 total_nitrogen_emission += nitrogen
             all_path_nitrogen_total.append(total_nitrogen_emission)
     all_path_nitrogen_total = tuple(all_path_nitrogen_total)

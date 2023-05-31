@@ -22,8 +22,8 @@ def chain_simulator_test():
     just_another_cow = DigitalCow(days_in_milk=650, lactation_number=0,
                                   days_pregnant=275, age=650, herd=just_another_herd,
                                   state='Pregnant')
-    # just_another_cow = DigitalCow(days_in_milk=0, lactation_number=0,
-    #                               days_pregnant=0, age=0, herd=just_another_herd,
+    # just_another_cow = DigitalCow(days_in_milk=0, lactation_number=1,
+    #                               days_pregnant=0, age=660, herd=just_another_herd,
     #                               state='Open')
     start = time.perf_counter()
     just_another_cow.generate_total_states(dim_limit=1000, ln_limit=2)
