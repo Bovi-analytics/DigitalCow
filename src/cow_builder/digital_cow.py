@@ -116,8 +116,8 @@ To create a transition matrix from the states of the DigitalCow object the
 
 ************************************************************
 
-5. Perform a simulation using the ``chain_simulator`` package to get a final state vector:
-******************************************************************************************
+5. Perform a simulation using the ``chain_simulator`` package to get the ``simulation`` Iterator:
+*************************************************************************************************
 1) Import ``state_vector_processor`` from the ``chain_simulator`` package:
 
     ``from chain_simulator.simulation import state_vector_processor``
@@ -126,12 +126,6 @@ To create a transition matrix from the states of the DigitalCow object the
 
     ``simulation = state_vector_processor(cow.initial_state_vector, tm, 140, 7)``
 
-3) ``simulation`` here is a generator. Iterate over ``simulation`` to get the final state vectors:
-
-``final_state_vector, day = next(simulation)``\n
-or\n
-``for final_state_vector, day in simulation:``\n
-
 *For details on the parameters of functions from the chain_simulator package,
 see the corresponding documentation of the chain_simulator package here:*
 :py:mod:`chain_simulator`
@@ -139,11 +133,44 @@ see the corresponding documentation of the chain_simulator package here:*
 
 ************************************************************
 
-6. Get phenotypes from the final state vector:
-**********************************************
+6. Create the graph, all possible paths, path phenotype totals, and path probabilities for the simulation:
+**********************************************************************************************************
+1) Import the functions ``create_graph``, ``create_paths``, ``find_probabilities``, ``path_probability``, and ``path_milk_production``:
 
+    ``from cow_builder.digital_cow import create_graph, create_paths, find_probabilities, path_probability, path_milk_production``
+
+2) Create a directed graph using the ``create_graph()`` function:
+
+
+    ``graph_filename = 'Mygraph.graphml.gz'``\n
+    ``create_graph(cow, graph_filename)``\n
+
+3) Create the paths that the cow could take during the simulation using the ``create_paths()`` function:
+
+    ``path_file = 'paths.txt'``\n
+    ``create_paths(cow, simulated_days, graph_filename, path_file)``\n
+
+4) Find the path phenotype totals and the path probabilities:
+
+    ``all_simulations = find_probabilities(simulation, cow)``\n
+    ``path_milk_totals = path_milk_production(cow, path_file)``\n
+    ``path_probabilities = path_probability(path_file, all_simulations)``\n
+
+************************************************************
+
+7. Get phenotypes for the simulation period:
+********************************************
+1) Import the ``phenotype_simulation`` function:
+
+    ``from cow_builder.digital_cow import phenotype_simulation``
+
+2) Get the weighted phenotypes for all paths and the weighted average using the ``phenotype_simulation()`` function:
+
+    ``weighted_path_milk_totals, weighted_avg = phenotype_simulation(path_milk_totals, path_probabilities)``
+
+************************************************************
 """
-
+import time
 from decimal import Decimal
 from numpy import ndarray, dtype
 from cow_builder.digital_herd import DigitalHerd
@@ -151,6 +178,7 @@ from cow_builder.state import State
 import math
 from typing import Generator, Iterator, Any
 import numpy as np
+from networkx import DiGraph, write_graphml, read_graphml
 
 import matplotlib.pyplot as plt
 
@@ -235,7 +263,7 @@ class DigitalCow:
         self._diet_cp = diet_cp
         self._milk_cp = milk_cp
         temp_state = State(state, days_in_milk, lactation_number,
-                           days_pregnant, Decimal("0"))
+                           days_pregnant, Decimal("0"), Decimal("0"))
         if herd is not None:
             self.milkbot_variables = set_milkbot_variables(lactation_number)
             milk_output = milk_production(self.milkbot_variables,
@@ -245,9 +273,17 @@ class DigitalCow:
                                           self.herd.get_duration_dry(
                                               temp_state.lactation_number),
                                           self.precision)
+            bw = calculate_body_weight(
+                temp_state, age,
+                self.herd.get_voluntary_waiting_period(lactation_number),
+                self.precision)
+            dmi = calculate_dmi(temp_state, bw, self.precision)
+            nitrogen = manure_nitrogen_output(
+                dmi, self.diet_cp, milk_output,
+                self.milk_cp, self.precision)
             self._current_state = State(state, days_in_milk,
                                         lactation_number,
-                                        days_pregnant, milk_output)
+                                        days_pregnant, milk_output, nitrogen)
             self.herd = herd
         else:
             self._current_state = temp_state
@@ -270,6 +306,7 @@ class DigitalCow:
             ln_limit = self.herd.lactation_number_limit
         total_states = []
         days_in_milk = 0
+        age = 0
         lactation_number = 0
         days_pregnant_start = 1
         days_pregnant = 1
@@ -285,10 +322,12 @@ class DigitalCow:
             for life_state in self.__life_states:
                 self.milkbot_variables = set_milkbot_variables(lactation_number)
                 if life_state == 'Pregnant':
-                    milk_output = Decimal("0")
+                    milk_output = None
+                    nitrogen_emission = None
                 else:
                     temp_state = State(life_state, days_in_milk,
-                                       lactation_number, 0, Decimal("0"))
+                                       lactation_number, 0, Decimal("0"),
+                                       Decimal("0"))
                     milk_output = milk_production(self.milkbot_variables,
                                                   temp_state,
                                                   self.herd.get_days_pregnant_limit(
@@ -296,6 +335,14 @@ class DigitalCow:
                                                   self.herd.get_duration_dry(
                                                       temp_state.lactation_number),
                                                   self._precision)
+                    bw = calculate_body_weight(
+                        temp_state, age,
+                        self.herd.get_voluntary_waiting_period(lactation_number),
+                        self.precision)
+                    dmi = calculate_dmi(temp_state, bw, self.precision)
+                    nitrogen_emission = manure_nitrogen_output(
+                        dmi, self.diet_cp, milk_output,
+                        self.milk_cp, self.precision)
                 # Calculates the milk output for the cow at every state.
 
                 match life_state:
@@ -305,7 +352,7 @@ class DigitalCow:
                                     lactation_number == 0:
                                 new_state = State(life_state, days_in_milk,
                                                   lactation_number, 0,
-                                                  milk_output)
+                                                  milk_output, nitrogen_emission)
                                 total_states.append(new_state)
 
                     case 'Pregnant':
@@ -316,7 +363,7 @@ class DigitalCow:
                                                        days_in_milk,
                                                        lactation_number,
                                                        days_pregnant,
-                                                       Decimal("0"))
+                                                       Decimal("0"), Decimal("0"))
                                     milk_output = milk_production(
                                         self.milkbot_variables,
                                         temp_state,
@@ -325,11 +372,21 @@ class DigitalCow:
                                         self.herd.get_duration_dry(
                                             temp_state.lactation_number),
                                         self._precision)
+                                    bw = calculate_body_weight(
+                                        temp_state, age,
+                                        self.herd.get_voluntary_waiting_period(
+                                            lactation_number),
+                                        self.precision)
+                                    dmi = calculate_dmi(temp_state, bw,
+                                                        self.precision)
+                                    nitrogen_emission = manure_nitrogen_output(
+                                        dmi, self.diet_cp, milk_output,
+                                        self.milk_cp, self.precision)
                                     new_state = State(life_state,
                                                       days_in_milk,
                                                       lactation_number,
                                                       days_pregnant,
-                                                      milk_output)
+                                                      milk_output, nitrogen_emission)
                                     total_states.append(new_state)
                                     days_pregnant += 1
                                 if vwp + insemination_window < days_in_milk < vwp + \
@@ -350,7 +407,7 @@ class DigitalCow:
                                     lactation_number == 0:
                                 new_state = State(life_state, days_in_milk,
                                                   lactation_number, 0,
-                                                  milk_output)
+                                                  milk_output, nitrogen_emission)
                                 total_states.append(new_state)
                             if last_pregnancy:
                                 self.milkbot_variables = set_milkbot_variables(
@@ -358,7 +415,7 @@ class DigitalCow:
                                 temp_state = State(life_state,
                                                    days_in_milk,
                                                    lactation_number + 1, 0,
-                                                   Decimal("0"))
+                                                   Decimal("0"), Decimal("0"))
                                 milk_output = milk_production(
                                     self.milkbot_variables,
                                     temp_state,
@@ -367,36 +424,46 @@ class DigitalCow:
                                     self.herd.get_duration_dry(
                                         temp_state.lactation_number),
                                     self._precision)
+                                bw = calculate_body_weight(
+                                    temp_state, age,
+                                    self.herd.get_voluntary_waiting_period(
+                                        lactation_number),
+                                    self.precision)
+                                dmi = calculate_dmi(temp_state, bw, self.precision)
+                                nitrogen_emission = manure_nitrogen_output(
+                                    dmi, self.diet_cp, milk_output,
+                                    self.milk_cp, self.precision)
                                 if milk_output >= self.herd.milk_threshold or \
                                         lactation_number == 0:
                                     new_state = State(life_state,
                                                       days_in_milk,
                                                       lactation_number + 1,
                                                       0,
-                                                      milk_output)
+                                                      milk_output, nitrogen_emission)
                                     total_states.append(new_state)
                     case 'Exit':
                         new_state = State(life_state, days_in_milk,
                                           lactation_number, 0,
-                                          milk_output)
+                                          milk_output, nitrogen_emission)
                         total_states.append(new_state)
                         if last_pregnancy:
                             new_state = State(life_state, days_in_milk,
                                               lactation_number + 1, 0,
-                                              milk_output)
+                                              milk_output, nitrogen_emission)
                             total_states.append(new_state)
 
             if days_in_milk == dim_limit - 1 and not_heifer:
                 new_state = State('Exit', dim_limit,
                                   lactation_number, 0,
-                                  Decimal("0"))
+                                  Decimal("0"), Decimal("0"))
                 total_states.append(new_state)
                 if lactation_number == ln_limit:
                     new_state = State('Exit', dim_limit,
                                       lactation_number + 1, 0,
-                                      Decimal("0"))
+                                      Decimal("0"), Decimal("0"))
                     total_states.append(new_state)
                 days_in_milk = 0
+                age += 1
                 days_pregnant = 1
                 days_pregnant_start = 1
                 simulated_dp_limit = 1
@@ -407,9 +474,10 @@ class DigitalCow:
                     lactation_number)
             else:
                 days_in_milk += 1
+                age += 1
 
             temp_state = State('DoNotBreed', days_in_milk - 1,
-                               lactation_number, 0, Decimal("0"))
+                               lactation_number, 0, Decimal("0"), Decimal("0"))
             milk_output = milk_production(self.milkbot_variables,
                                           temp_state,
                                           self.herd.get_days_pregnant_limit(
@@ -419,6 +487,7 @@ class DigitalCow:
                                           self._precision)
             if milk_output < self.herd.milk_threshold and not_heifer:
                 days_in_milk = 0
+                age += 1
                 days_pregnant = 1
                 days_pregnant_start = 1
                 simulated_dp_limit = 1
@@ -431,6 +500,7 @@ class DigitalCow:
             if days_in_milk == vwp + insemination_window + dp_limit + 2 and \
                     lactation_number == 0:
                 days_in_milk = 0
+                age += 1
                 days_pregnant = 1
                 days_pregnant_start = 1
                 simulated_dp_limit = 1
@@ -475,7 +545,7 @@ class DigitalCow:
                  dp_limit and state_from.lactation_number == 0) and \
                 state_to == State('Exit', state_from.days_in_milk,
                                   state_from.lactation_number, 0,
-                                  Decimal("0")):
+                                  Decimal("0"), Decimal("0")):
             return Decimal("1")
 
         def __probability_ovulation():
@@ -665,8 +735,9 @@ class DigitalCow:
             case 'Exit':
                 match state_to.state:
                     case 'Open':
+
                         if state_to == State('Open', 0, 0, 0,
-                                             Decimal("0")):
+                                             Decimal("0"), Decimal("0")):
                             return Decimal("1")
                     case _:
                         return Decimal("0")
@@ -686,7 +757,7 @@ class DigitalCow:
         states_to = [State('Exit',
                            state_from.days_in_milk + 1,
                            state_from.lactation_number, 0,
-                           Decimal("0"))]
+                           Decimal("0"), Decimal("0"))]
         if state_from.days_in_milk == self._generated_days_in_milk - 1 and \
                 state_from.state != 'Exit':
             return tuple(states_to)
@@ -706,7 +777,7 @@ class DigitalCow:
                                            state_from.days_in_milk + 1,
                                            state_from.lactation_number,
                                            1,
-                                           Decimal("0"))
+                                           Decimal("0"), Decimal("0"))
                         milk_output = milk_production(
                             self.milkbot_variables,
                             temp_state,
@@ -715,6 +786,18 @@ class DigitalCow:
                             self.herd.get_duration_dry(
                                 temp_state.lactation_number),
                             self._precision)
+
+                        bw = calculate_body_weight(
+                            temp_state, age,
+                            self.herd.get_voluntary_waiting_period(
+                                state_from.lactation_number),
+                            self.precision)
+                        dmi = calculate_dmi(temp_state, bw, self.precision)
+                        nitrogen = manure_nitrogen_output(
+                            dmi, self.diet_cp, milk_output,
+                            self.milk_cp, self.precision)
+
+                        #
                         states_to.append(State(
                             'Pregnant',
                             state_from.days_in_milk + 1,
@@ -1002,6 +1085,15 @@ class DigitalCow:
         self._current_state = self._current_state.mutate(milk_output=mo)
 
     @property
+    def current_nitrogen_emission(self) -> Decimal:
+        """The current amount of nitrogen the cow emits."""
+        return self._current_state.nitrogen_emission
+
+    @current_nitrogen_emission.setter
+    def current_nitrogen_emission(self, ne):
+        self._current_state = self._current_state.mutate(nitrogen_emission=ne)
+
+    @property
     def current_state(self) -> State:
         """The current state of the cow, as a ``State`` object."""
         return self._current_state
@@ -1199,129 +1291,201 @@ def convert_vector_to_1d(simulated_day: tuple, total_states: tuple, group_by: in
     return one_dimensional_vector
 
 
-def create_paths(simulation: Iterator[tuple[ndarray[Any, dtype], int]], digital_cow: DigitalCow, simulated_days: int):
+def create_paths(digital_cow: DigitalCow, simulated_days: int, graph_file: str,
+                 out_file: str):
     """
-    Iterates over the simulation to create all possible paths that may have been
-    taken during the simulation.
+    Reads a directed graph to find all paths starting from the current state of the
+    DigitalCow object for a given number of simulated days.
 
-    :param simulation: Returns vectors containing probabilities
-    :type simulation: Iterator[tuple[ndarray[Any, dtype], int]]
     :param digital_cow: The DigitalCow object that was simulated.
     :type digital_cow: DigitalCow
     :param simulated_days: The number of days simulated.
     :type simulated_days: int
-    :returns:
-        - all_paths: A tuple containing all the paths the cow may have taken during
-            the simulation.
-        - all_simulations: A tuple with a dictionary for every day that is
-            simulated. For each dictionary, the key value pair is:
-                key: index of the state
-                value: The probability for being in that state on that day in
-                    the simulation.
-    :rtype:
-        - tuple[tuple[int]]
-        - tuple[dict]
+    :param graph_file: The name of a graphml file that contains the graph
+        for which paths are made.
+    :type graph_file: str
+    :param out_file: The name of the file to which the paths should be written.
+    :type out_file: str
+    :returns: The name of a file containing all the paths the cow may have
+        taken during the simulation.
+    :rtype: str
     """
-    all_paths = []
-    all_simulations = []
-    possible_states = digital_cow.possible_new_states(digital_cow.current_state)
-    index_state = {
-        index: state for index, state in enumerate(digital_cow.total_states)
-    }
+    start = time.perf_counter()
     state_index = {
         state: index for index, state in enumerate(digital_cow.total_states)
     }
-    all_simulations.append({state_index[digital_cow.current_state]: 1})
-    for state in possible_states:
-        all_paths.append([state_index[digital_cow.current_state], state_index[state]])
-    for simulated_day in simulation:
-        vector_1d = convert_vector_to_1d(simulated_day,
-                                         digital_cow.total_states, 0)
+    graph = read_graphml(graph_file, node_type=int)
 
-        i = simulated_day[1] - 1
-        new_paths = []
+    def __find_paths(network, node, path, length, filename):
+        """
+        Recursive function that calls itself for as many times as indicated by
+        the parameter length. It finds paths in a graph starting from a node using
+        a 'depth-first' implementation. When it has built a complete path,
+        it writes it to a file.
+
+        :param network: The directed graph for which paths must be calculated.
+        :type network: DiGraph
+        :param node: The (starting) node for which successor nodes are retrieved to
+            build the path.
+        :type node: int
+        :param path: The path that has been build so far.
+        :type path: list[int]
+        :param length: The number of days left in the simulation counting from the
+            current recursion level.
+        :type length: int
+        :param filename: The name of a file containing all the paths the cow may have
+            taken during the simulation.
+        :type filename: str
+        :returns: The current path
+        :rtype: list[int]
+        """
+        if length == 0:
+            with open(filename, 'a') as file:
+                file.write(f"{path}\n")
+            path.pop(-1)
+            return path
+        for neighbor in network.neighbors(node):
+            path.append(neighbor)
+            path = __find_paths(network, neighbor, path, length - 1, filename)
+        path.pop(-1)
+        return path
+
+    all_paths = [state_index[digital_cow.current_state]]
+    with open(out_file, 'w') as f:
+        f.flush()
+    __find_paths(graph, state_index[digital_cow.current_state], all_paths,
+                 simulated_days, out_file)
+    end = time.perf_counter()
+    print(f"duration finding paths: {end - start} seconds")
+
+
+def find_probabilities(simulation: Iterator[tuple[ndarray[Any, dtype], int]],
+                       digital_cow: DigitalCow):
+    """
+    Iterates over the simulation to find for every state the probability of being
+    in that state on the day in the simulation if the probability is greater than 0.
+
+    :param simulation: An Iterator object that returns a tuple containing a tuple
+        of a vector with all the probabilities for that day, and the day in
+        simulation.
+    :type simulation: Iterator[tuple[ndarray[Any, dtype], int]]
+    :param digital_cow: The DigitalCow object that was simulated.
+    :type digital_cow: DigitalCow
+    :return: A tuple containing a dictionary for every simulated day. Each
+        dictionary has the index of the state as key and the probability as value.
+    :rtype: tuple[dict]
+    """
+    start = time.perf_counter()
+    state_index = {
+        state: index for index, state in enumerate(digital_cow.total_states)
+    }
+    all_simulations = [{state_index[digital_cow.current_state]: 1}]
+    for simulated_day in simulation:
+        convert_vector_to_1d(simulated_day, digital_cow.total_states, 0)
         probability_index = {
             probability: index for index, probability in enumerate(simulated_day[0])
         }
         index_sim = {probability_index[probability]: probability for probability in
                      filter(lambda p: p > 0, probability_index)}
         all_simulations.append(index_sim)
-        if not i == simulated_days - 1:
-            for path in all_paths:
-                index = path[-1]
-                last_state = index_state[index]
-                possible_states = digital_cow.possible_new_states(last_state)
-                for state in possible_states:
-                    new_index = state_index[state]
-                    new_path = [index for index in path]
-                    new_path.append(new_index)
-                    new_path = tuple(new_path)
-                    new_paths.append(new_path)
-            all_paths = tuple(new_paths)
-    # Maybe make a graph out of it?
-    all_simulations = tuple(all_simulations)
-    return all_paths, all_simulations
+    end = time.perf_counter()
+    print(f"duration of looping through the simulation and finding probabilities:"
+          f" {end - start} seconds")
+    return tuple(all_simulations)
 
 
-def path_probability(all_paths: tuple, all_simulations: tuple):
+def create_graph(digital_cow: DigitalCow, out_file):
+    """
+    Creates a DiGraph object of the `total_states` property of the DigitalCow object.
+    Writes the graph to a graphml file.
+
+    :param digital_cow: The DigitalCow object that was simulated.
+    :type digital_cow: DigitalCow
+    :param out_file: The name of a graphml file that contains the graph
+        for which paths are made.
+    :type out_file: str
+    """
+    start = time.perf_counter()
+    graph = DiGraph()
+    state_index = {
+        state: index for index, state in enumerate(digital_cow.total_states)
+    }
+    for state in digital_cow.total_states:
+        if not graph.has_node(state_index[state]):
+            graph.add_node(state_index[state])
+        possible_states = digital_cow.possible_new_states(state)
+        for new_state in possible_states:
+            graph.add_node(state_index[new_state])
+            graph.add_edge(state_index[state], state_index[new_state])
+    write_graphml(graph, out_file)
+    end = time.perf_counter()
+    print(f"duration creating graph: {end - start} seconds")
+
+
+def path_probability(path_file: str, all_simulations: tuple):
     """
     Calculates the probability of the cow taking a certain path during the
-    simulation for every path in a tuple.
+    simulation for every path in a file.
 
-    :param all_paths: A tuple containing all the paths the cow may have taken during
-        the simulation.
-    :type all_paths: tuple[tuple[int]]
+    :param path_file: The name of a file containing all the paths the cow may have
+        taken during the simulation.
+    :type path_file: str
     :param all_simulations: A tuple with a dictionary for every day that is
         simulated. For each dictionary, the key value pair is:
-            key: index of the state
-            value: The probability for being in that state on that day in
-                the simulation.
+        key: index of the state
+        value: The probability for being in that state on that day in the simulation.
     :type all_simulations: tuple[dict]
     :returns: A tuple containing the probability of the cow taking a path
         for every path that it can take.
     :rtype: tuple[Decimal]
     """
     path_probabilities = []
-    for path in all_paths:
-        probability = 1
-        for day in range(len(all_simulations)):
-            p = all_simulations[day][path[day]]
-            probability = probability * p
-        probability = Decimal(f"{probability}")
-        path_probabilities.append(probability)
+    with open(path_file, 'r') as file:
+        for line in file:
+            line = line.removeprefix('[').removesuffix(']\n')
+            path = [int(index) for index in line.split(',')]
+            probability = 1
+            for day in range(len(all_simulations)):
+                p = all_simulations[day][path[day]]
+                probability = probability * p
+            probability = Decimal(f"{probability}")
+            path_probabilities.append(probability)
     path_probabilities = tuple(path_probabilities)
     return path_probabilities
 
 
-def path_milk_production(digital_cow: DigitalCow, all_paths: tuple):
+def path_milk_production(digital_cow: DigitalCow, path_file: str):
     """
     Calculates the raw total milk production for each path the cow can take during
     simulation.
 
     :param digital_cow: The DigitalCow object that is being simulated.
     :type digital_cow: DigitalCow
-    :param all_paths: A tuple containing all the paths the cow may have taken during
-        the simulation.
-    :type all_paths: tuple[tuple[int]]
+    :param path_file: The name of a file containing all the paths the cow may have
+        taken during the simulation.
+    :type path_file: str
     :returns: A tuple containing the raw milk production for every path the cow can
         take during simulation.
-    :rtype tuple[Decimal]
+    :rtype: tuple[Decimal]
     """
     all_path_milk_totals = []
     index_state = {
         index: state for index, state in enumerate(digital_cow.total_states)
     }
-    for path in all_paths:
-        total_milk_production = 0
-        for index in path:
-            state = index_state[index]
-            total_milk_production += state.milk_output
-        all_path_milk_totals.append(total_milk_production)
+    with open(path_file, 'r') as file:
+        for line in file:
+            line = line.removeprefix('[').removesuffix(']\n')
+            path = [int(index) for index in line.split(',')]
+            total_milk_production = 0
+            for index in path:
+                state = index_state[index]
+                total_milk_production += state.milk_output
+            all_path_milk_totals.append(total_milk_production)
     all_path_milk_totals = tuple(all_path_milk_totals)
     return all_path_milk_totals
 
 
-def path_nitrogen_emission(digital_cow: DigitalCow, all_paths: tuple,
+def path_nitrogen_emission(digital_cow: DigitalCow, path_file: str,
                            simulated_days: int):
     """
     Calculates the raw nitrogen emission for each path the cow can take during
@@ -1329,9 +1493,9 @@ def path_nitrogen_emission(digital_cow: DigitalCow, all_paths: tuple,
 
     :param digital_cow: The DigitalCow object that is being simulated.
     :type digital_cow: DigitalCow
-    :param all_paths: A tuple containing all the paths the cow may have taken during
-        the simulation.
-    :type all_paths: tuple[tuple[int]]
+    :param path_file: The name of a file containing all the paths the cow may have
+        taken during the simulation.
+    :type path_file: str
     :param simulated_days: The number of days that is being simulated.
     :type simulated_days: int
     :returns: A tuple containing the raw nitrogen emission for every path the cow
@@ -1342,21 +1506,24 @@ def path_nitrogen_emission(digital_cow: DigitalCow, all_paths: tuple,
     index_state = {
         index: state for index, state in enumerate(digital_cow.total_states)
     }
-    for path in all_paths:
-        total_nitrogen_emission = 0
-        for index in path:
-            state = index_state[index]
-            bw = calculate_body_weight(
-                state, digital_cow.age + simulated_days,
-                digital_cow.herd.get_voluntary_waiting_period(
-                    state.lactation_number), digital_cow.precision)
-            dmi = calculate_dmi(state, bw, digital_cow.precision)
-            milk = state.milk_output
-            nitrogen = manure_nitrogen_output(dmi, digital_cow.diet_cp, milk,
-                                              digital_cow.milk_cp,
-                                              digital_cow.precision)
-            total_nitrogen_emission += nitrogen
-        all_path_nitrogen_total.append(total_nitrogen_emission)
+    with open(path_file, 'r') as file:
+        for line in file:
+            line = line.removeprefix('[').removesuffix(']\n')
+            path = [int(index) for index in line.split(',')]
+            total_nitrogen_emission = 0
+            for index in path:
+                state = index_state[index]
+                milk = state.milk_output
+                bw = calculate_body_weight(
+                    state, digital_cow.age + simulated_days,
+                    digital_cow.herd.get_voluntary_waiting_period(
+                        state.lactation_number), digital_cow.precision)
+                dmi = calculate_dmi(state, bw, digital_cow.precision)
+                nitrogen = manure_nitrogen_output(dmi, digital_cow.diet_cp, milk,
+                                                  digital_cow.milk_cp,
+                                                  digital_cow.precision)
+                total_nitrogen_emission += nitrogen
+            all_path_nitrogen_total.append(total_nitrogen_emission)
     all_path_nitrogen_total = tuple(all_path_nitrogen_total)
     return all_path_nitrogen_total
 
@@ -1377,8 +1544,6 @@ def phenotype_simulation(path_phenotype_totals: tuple, path_probabilities: tuple
                                   for i in range(len(path_probabilities))]
 
     print(f"sum of all path probabilities: {sum(path_probabilities)}")
-    # for i in range(len(path_phenotype_probability)):
-    #     print(f"path {i}: {float(path_phenotype_probability[i])}")
     print(f"number of paths: {len(path_probabilities)}")
     # weighted_avg = sum(path_phenotype_probability) / sum(path_probabilities)
     # TODO
@@ -1644,8 +1809,8 @@ def manure_nitrogen_output(dmi: Decimal, diet_cp: Decimal, milk_yield: Decimal,
     :rtype: Decimal
     """""
     # NRC 8th revised edition (2021)
-    manure_n_output = Decimal((dmi * diet_cp) / Decimal("0.625") -
-                              (milk_yield * milk_cp) / Decimal("0.638") -
+    manure_n_output = Decimal(((dmi * diet_cp) / Decimal("0.625")) -
+                              ((milk_yield * milk_cp) / Decimal("0.638")) -
                               Decimal("5")).quantize(precision)
     return manure_n_output
 
