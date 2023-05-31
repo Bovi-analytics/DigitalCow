@@ -263,7 +263,7 @@ class DigitalCow:
         self._diet_cp = diet_cp
         self._milk_cp = milk_cp
         temp_state = State(state, days_in_milk, lactation_number,
-                           days_pregnant, Decimal("0"), Decimal("0"))
+                           days_pregnant, Decimal("0"))
         if herd is not None:
             self.milkbot_variables = set_milkbot_variables(lactation_number)
             milk_output = milk_production(self.milkbot_variables,
@@ -273,17 +273,10 @@ class DigitalCow:
                                           self.herd.get_duration_dry(
                                               temp_state.lactation_number),
                                           self.precision)
-            bw = calculate_body_weight(
-                temp_state, age,
-                self.herd.get_voluntary_waiting_period(lactation_number),
-                self.precision)
-            dmi = calculate_dmi(temp_state, bw, self.precision)
-            nitrogen = manure_nitrogen_output(
-                dmi, self.diet_cp, milk_output,
-                self.milk_cp, self.precision)
+
             self._current_state = State(state, days_in_milk,
                                         lactation_number,
-                                        days_pregnant, milk_output, nitrogen)
+                                        days_pregnant, milk_output)
             self.herd = herd
         else:
             self._current_state = temp_state
@@ -424,15 +417,6 @@ class DigitalCow:
                                     self.herd.get_duration_dry(
                                         temp_state.lactation_number),
                                     self._precision)
-                                bw = calculate_body_weight(
-                                    temp_state, age,
-                                    self.herd.get_voluntary_waiting_period(
-                                        lactation_number),
-                                    self.precision)
-                                dmi = calculate_dmi(temp_state, bw, self.precision)
-                                nitrogen_emission = manure_nitrogen_output(
-                                    dmi, self.diet_cp, milk_output,
-                                    self.milk_cp, self.precision)
                                 if milk_output >= self.herd.milk_threshold or \
                                         lactation_number == 0:
                                     new_state = State(life_state,
@@ -787,15 +771,7 @@ class DigitalCow:
                                 temp_state.lactation_number),
                             self._precision)
 
-                        bw = calculate_body_weight(
-                            temp_state, age,
-                            self.herd.get_voluntary_waiting_period(
-                                state_from.lactation_number),
-                            self.precision)
-                        dmi = calculate_dmi(temp_state, bw, self.precision)
-                        nitrogen = manure_nitrogen_output(
-                            dmi, self.diet_cp, milk_output,
-                            self.milk_cp, self.precision)
+
 
                         #
                         states_to.append(State(

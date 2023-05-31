@@ -61,9 +61,6 @@ class State:
         :type days_pregnant: int
         :var milk_output: The amount of milk the cow produces in this state.
         :type milk_output: Decimal
-        :var nitrogen_emission: The amount of nitrogen that the cow emits in this
-            state.
-        :type nitrogen_emission: Decimal
 
     :Methods:
         __post_init__()\n
@@ -77,7 +74,6 @@ class State:
     lactation_number: int
     days_pregnant: int
     milk_output: Decimal
-    nitrogen_emission: Decimal
 
     def __post_init__(self):
         """
@@ -102,8 +98,6 @@ class State:
         if not type(self.days_pregnant) == int:
             raise TypeError
         if not type(self.milk_output) == Decimal:
-            raise TypeError
-        if not type(self.nitrogen_emission) == Decimal:
             raise TypeError
 
     def mutate(self, **kwargs):
