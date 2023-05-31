@@ -316,11 +316,9 @@ class DigitalCow:
                 self.milkbot_variables = set_milkbot_variables(lactation_number)
                 if life_state == 'Pregnant':
                     milk_output = None
-                    nitrogen_emission = None
                 else:
                     temp_state = State(life_state, days_in_milk,
-                                       lactation_number, 0, Decimal("0"),
-                                       Decimal("0"))
+                                       lactation_number, 0, Decimal("0"))
                     milk_output = milk_production(self.milkbot_variables,
                                                   temp_state,
                                                   self.herd.get_days_pregnant_limit(
@@ -328,14 +326,6 @@ class DigitalCow:
                                                   self.herd.get_duration_dry(
                                                       temp_state.lactation_number),
                                                   self._precision)
-                    bw = calculate_body_weight(
-                        temp_state, age,
-                        self.herd.get_voluntary_waiting_period(lactation_number),
-                        self.precision)
-                    dmi = calculate_dmi(temp_state, bw, self.precision)
-                    nitrogen_emission = manure_nitrogen_output(
-                        dmi, self.diet_cp, milk_output,
-                        self.milk_cp, self.precision)
                 # Calculates the milk output for the cow at every state.
 
                 match life_state:
@@ -345,7 +335,7 @@ class DigitalCow:
                                     lactation_number == 0:
                                 new_state = State(life_state, days_in_milk,
                                                   lactation_number, 0,
-                                                  milk_output, nitrogen_emission)
+                                                  milk_output)
                                 total_states.append(new_state)
 
                     case 'Pregnant':
@@ -356,7 +346,7 @@ class DigitalCow:
                                                        days_in_milk,
                                                        lactation_number,
                                                        days_pregnant,
-                                                       Decimal("0"), Decimal("0"))
+                                                       Decimal("0"))
                                     milk_output = milk_production(
                                         self.milkbot_variables,
                                         temp_state,
@@ -365,21 +355,12 @@ class DigitalCow:
                                         self.herd.get_duration_dry(
                                             temp_state.lactation_number),
                                         self._precision)
-                                    bw = calculate_body_weight(
-                                        temp_state, age,
-                                        self.herd.get_voluntary_waiting_period(
-                                            lactation_number),
-                                        self.precision)
-                                    dmi = calculate_dmi(temp_state, bw,
-                                                        self.precision)
-                                    nitrogen_emission = manure_nitrogen_output(
-                                        dmi, self.diet_cp, milk_output,
-                                        self.milk_cp, self.precision)
+
                                     new_state = State(life_state,
                                                       days_in_milk,
                                                       lactation_number,
                                                       days_pregnant,
-                                                      milk_output, nitrogen_emission)
+                                                      milk_output)
                                     total_states.append(new_state)
                                     days_pregnant += 1
                                 if vwp + insemination_window < days_in_milk < vwp + \
@@ -400,7 +381,7 @@ class DigitalCow:
                                     lactation_number == 0:
                                 new_state = State(life_state, days_in_milk,
                                                   lactation_number, 0,
-                                                  milk_output, nitrogen_emission)
+                                                  milk_output)
                                 total_states.append(new_state)
                             if last_pregnancy:
                                 self.milkbot_variables = set_milkbot_variables(
@@ -408,7 +389,7 @@ class DigitalCow:
                                 temp_state = State(life_state,
                                                    days_in_milk,
                                                    lactation_number + 1, 0,
-                                                   Decimal("0"), Decimal("0"))
+                                                   Decimal("0"))
                                 milk_output = milk_production(
                                     self.milkbot_variables,
                                     temp_state,
@@ -423,28 +404,28 @@ class DigitalCow:
                                                       days_in_milk,
                                                       lactation_number + 1,
                                                       0,
-                                                      milk_output, nitrogen_emission)
+                                                      milk_output)
                                     total_states.append(new_state)
                     case 'Exit':
                         new_state = State(life_state, days_in_milk,
                                           lactation_number, 0,
-                                          milk_output, nitrogen_emission)
+                                          milk_output)
                         total_states.append(new_state)
                         if last_pregnancy:
                             new_state = State(life_state, days_in_milk,
                                               lactation_number + 1, 0,
-                                              milk_output, nitrogen_emission)
+                                              milk_output)
                             total_states.append(new_state)
 
             if days_in_milk == dim_limit - 1 and not_heifer:
                 new_state = State('Exit', dim_limit,
                                   lactation_number, 0,
-                                  Decimal("0"), Decimal("0"))
+                                  Decimal("0"))
                 total_states.append(new_state)
                 if lactation_number == ln_limit:
                     new_state = State('Exit', dim_limit,
                                       lactation_number + 1, 0,
-                                      Decimal("0"), Decimal("0"))
+                                      Decimal("0"))
                     total_states.append(new_state)
                 days_in_milk = 0
                 age += 1
@@ -461,7 +442,7 @@ class DigitalCow:
                 age += 1
 
             temp_state = State('DoNotBreed', days_in_milk - 1,
-                               lactation_number, 0, Decimal("0"), Decimal("0"))
+                               lactation_number, 0, Decimal("0"))
             milk_output = milk_production(self.milkbot_variables,
                                           temp_state,
                                           self.herd.get_days_pregnant_limit(
@@ -529,7 +510,7 @@ class DigitalCow:
                  dp_limit and state_from.lactation_number == 0) and \
                 state_to == State('Exit', state_from.days_in_milk,
                                   state_from.lactation_number, 0,
-                                  Decimal("0"), Decimal("0")):
+                                  Decimal("0")):
             return Decimal("1")
 
         def __probability_ovulation():
@@ -721,7 +702,7 @@ class DigitalCow:
                     case 'Open':
 
                         if state_to == State('Open', 0, 0, 0,
-                                             Decimal("0"), Decimal("0")):
+                                             Decimal("0")):
                             return Decimal("1")
                     case _:
                         return Decimal("0")
@@ -741,7 +722,7 @@ class DigitalCow:
         states_to = [State('Exit',
                            state_from.days_in_milk + 1,
                            state_from.lactation_number, 0,
-                           Decimal("0"), Decimal("0"))]
+                           Decimal("0"))]
         if state_from.days_in_milk == self._generated_days_in_milk - 1 and \
                 state_from.state != 'Exit':
             return tuple(states_to)
@@ -761,7 +742,7 @@ class DigitalCow:
                                            state_from.days_in_milk + 1,
                                            state_from.lactation_number,
                                            1,
-                                           Decimal("0"), Decimal("0"))
+                                           Decimal("0"))
                         milk_output = milk_production(
                             self.milkbot_variables,
                             temp_state,
@@ -770,8 +751,6 @@ class DigitalCow:
                             self.herd.get_duration_dry(
                                 temp_state.lactation_number),
                             self._precision)
-
-
 
                         #
                         states_to.append(State(
@@ -1059,15 +1038,6 @@ class DigitalCow:
     @current_milk_output.setter
     def current_milk_output(self, mo):
         self._current_state = self._current_state.mutate(milk_output=mo)
-
-    @property
-    def current_nitrogen_emission(self) -> Decimal:
-        """The current amount of nitrogen the cow emits."""
-        return self._current_state.nitrogen_emission
-
-    @current_nitrogen_emission.setter
-    def current_nitrogen_emission(self, ne):
-        self._current_state = self._current_state.mutate(nitrogen_emission=ne)
 
     @property
     def current_state(self) -> State:
