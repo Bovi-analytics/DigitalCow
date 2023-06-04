@@ -225,7 +225,8 @@ class DigitalCow:
     """
 
     def __init__(self, days_in_milk=0, lactation_number=0, days_pregnant=0,
-                 diet_cp=Decimal("16"), milk_cp=Decimal("3.4"), age=0, herd=None,
+                 diet_cp_cu=Decimal("160"), diet_cp_fo=Decimal("140"),
+                 milk_cp=Decimal("34"), age=0, herd=None,
                  state='Open', age_at_first_heat=None):
         """
         Initializes a new instance of a DigitalCow object.
@@ -260,7 +261,8 @@ class DigitalCow:
         self._generated_lactation_numbers = None
         self._precision = decimalize_precision()
         self._age = age
-        self._diet_cp = diet_cp
+        self._diet_cp_cu = diet_cp_cu
+        self._diet_cp_fo = diet_cp_fo
         self._milk_cp = milk_cp
         temp_state = State(state, days_in_milk, lactation_number,
                            days_pregnant, Decimal("0"))
@@ -299,7 +301,6 @@ class DigitalCow:
             ln_limit = self.herd.lactation_number_limit
         total_states = []
         days_in_milk = 0
-        age = 0
         lactation_number = 0
         days_pregnant_start = 1
         days_pregnant = 1
@@ -428,7 +429,6 @@ class DigitalCow:
                                       Decimal("0"))
                     total_states.append(new_state)
                 days_in_milk = 0
-                age += 1
                 days_pregnant = 1
                 days_pregnant_start = 1
                 simulated_dp_limit = 1
@@ -439,7 +439,6 @@ class DigitalCow:
                     lactation_number)
             else:
                 days_in_milk += 1
-                age += 1
 
             temp_state = State('DoNotBreed', days_in_milk - 1,
                                lactation_number, 0, Decimal("0"))
@@ -452,7 +451,6 @@ class DigitalCow:
                                           self._precision)
             if milk_output < self.herd.milk_threshold and not_heifer:
                 days_in_milk = 0
-                age += 1
                 days_pregnant = 1
                 days_pregnant_start = 1
                 simulated_dp_limit = 1
@@ -465,7 +463,6 @@ class DigitalCow:
             if days_in_milk == vwp + insemination_window + dp_limit + 2 and \
                     lactation_number == 0:
                 days_in_milk = 0
-                age += 1
                 days_pregnant = 1
                 days_pregnant_start = 1
                 simulated_dp_limit = 1
@@ -701,8 +698,7 @@ class DigitalCow:
                 match state_to.state:
                     case 'Open':
 
-                        if state_to == State('Open', 0, 0, 0,
-                                             Decimal("0")):
+                        if state_to == State('Open', 0, 0, 0, Decimal("0")):
                             return Decimal("1")
                     case _:
                         return Decimal("0")
@@ -1105,18 +1101,27 @@ class DigitalCow:
         self._age = age
 
     @property
-    def diet_cp(self) -> Decimal:
-        """The concentration of crude proteins in the diet of the cow in %."""
-        return self._diet_cp
+    def diet_cp_cu(self) -> Decimal:
+        """The concentration of crude proteins in the diet of the cow in g."""
+        return self._diet_cp_cu
 
-    @diet_cp.setter
-    def diet_cp(self, cp):
-        self._diet_cp = cp
+    @diet_cp_cu.setter
+    def diet_cp_cu(self, cp):
+        self._diet_cp_cu = cp
+
+    @property
+    def diet_cp_fo(self) -> Decimal:
+        """The concentration of crude proteins in the diet of the cow in g."""
+        return self._diet_cp_fo
+
+    @diet_cp_fo.setter
+    def diet_cp_fo(self, cp):
+        self._diet_cp_fo = cp
 
     @property
     def milk_cp(self) -> Decimal:
         """The concentration of crude proteins in the milk produced by the cow in
-        %."""
+        g."""
         return self._milk_cp
 
     @milk_cp.setter
@@ -1199,21 +1204,21 @@ def convert_vector_to_1d(simulated_day: tuple, total_states: tuple, group_by: in
                 days_in_milk = state.days_in_milk
                 try:
                     one_dimensional_vector[days_in_milk] = one_dimensional_vector[
-                        days_in_milk] + probability
+                                                               days_in_milk] + probability
                 except KeyError:
                     one_dimensional_vector.update({days_in_milk: probability})
             case 1:
                 lactation_number = state.lactation_number
                 try:
                     one_dimensional_vector[lactation_number] = one_dimensional_vector[
-                        lactation_number] + probability
+                                                                   lactation_number] + probability
                 except KeyError:
                     one_dimensional_vector.update({lactation_number: probability})
             case 2:
                 days_pregnant = state.days_pregnant
                 try:
                     one_dimensional_vector[days_pregnant] = one_dimensional_vector[
-                        days_pregnant] + probability
+                                                                days_pregnant] + probability
                 except KeyError:
                     one_dimensional_vector.update({days_pregnant: probability})
             case 3:
@@ -1431,8 +1436,7 @@ def path_milk_production(digital_cow: DigitalCow, path_file: str):
     return all_path_milk_totals
 
 
-def path_nitrogen_emission(digital_cow: DigitalCow, path_file: str,
-                           simulated_days: int):
+def path_nitrogen_emission(digital_cow: DigitalCow, path_file: str):
     """
     Calculates the raw nitrogen emission for each path the cow can take during
     simulation, using the mass-balance equation.
@@ -1442,8 +1446,6 @@ def path_nitrogen_emission(digital_cow: DigitalCow, path_file: str,
     :param path_file: The name of a file containing all the paths the cow may have
         taken during the simulation.
     :type path_file: str
-    :param simulated_days: The number of days that is being simulated.
-    :type simulated_days: int
     :returns: A tuple containing the raw nitrogen emission for every path the cow
         can take during the simulation.
     :rtype: tuple[Decimal]
@@ -1453,40 +1455,80 @@ def path_nitrogen_emission(digital_cow: DigitalCow, path_file: str,
         index: state for index, state in enumerate(digital_cow.total_states)
     }
     nitrogen_output_dict = {}
-    simulated_days = [day for day in range(simulated_days + 1)]
     with open(path_file, 'r') as file:
         for line in file:
             line = line.removeprefix('[').removesuffix(']\n')
             path = [int(index) for index in line.split(',')]
             total_nitrogen_emission = 0
-            enumerated_path = {
-                index: path_index for path_index, index in enumerate(path)
-            }
+            age = digital_cow.age
             for index in path:
                 try:
+                    state = index_state[index]
                     nitrogen = nitrogen_output_dict[index]
+                    if state.state == 'Exit':
+                        age = 0
+                    else:
+                        age += 1
                 except KeyError:
                     state = index_state[index]
-                    age = digital_cow.age + simulated_days[enumerated_path[index]]
-                    milk = state.milk_output
-                    bw = calculate_body_weight(
-                        state, age,
-                        digital_cow.herd.get_voluntary_waiting_period(
-                            state.lactation_number), digital_cow.precision)
-                    dmi = calculate_dmi(state, bw, digital_cow.precision)
-                    nitrogen = manure_nitrogen_output(dmi, digital_cow.diet_cp, milk,
-                                                      digital_cow.milk_cp,
-                                                      digital_cow.precision)
+                    if state.state == 'Exit':
+                        nitrogen = Decimal("0")
+                        age = 0
+                    else:
+                        dp_limit = digital_cow.herd.get_days_pregnant_limit(
+                            state.lactation_number)
+                        vwp = digital_cow.herd.get_voluntary_waiting_period(
+                            state.lactation_number)
+                        dry_period = digital_cow.herd.get_duration_dry(
+                            state.lactation_number)
+                        close_up = dry_period / 2
+                        milk = state.milk_output
+                        bw = calculate_body_weight(
+                            state, age, vwp, digital_cow.precision)
+                        dmi = calculate_dmi(state, bw, digital_cow.precision)
+                        lactating = True
+                        if state.lactation_number == 0 or state.days_pregnant >= \
+                                dp_limit - dry_period:
+                            lactating = False
+
+                        if state.days_pregnant >= dp_limit - close_up or (
+                                state.lactation_number == 0 and state.days_in_milk < (
+                                vwp / 2)) or (state.lactation_number != 0 and
+                                              state.days_in_milk < 100):
+                            diet_cp = digital_cow.diet_cp_cu / Decimal("1000")
+                            intake = dmi * diet_cp / Decimal("0.625")
+
+                        elif ((dp_limit - dry_period) <= state.days_pregnant <
+                              (dp_limit - close_up)) or (
+                                state.lactation_number == 0 and
+                                state.days_in_milk >= vwp / 2):
+                            diet_cp = digital_cow.diet_cp_fo / Decimal("1000")
+                            intake = dmi * diet_cp / Decimal("0.625")
+
+                        elif state.lactation_number != 0 \
+                                and 100 <= state.days_in_milk:
+                            diet_cp = Decimal(
+                                (digital_cow.diet_cp_fo +
+                                 digital_cow.diet_cp_cu) / 2) / Decimal("1000")
+                            intake = dmi * diet_cp / Decimal("0.625")
+
+                        nitrogen = manure_nitrogen_output(
+                            dmi, diet_cp * Decimal("100"),
+                            milk, digital_cow.milk_cp / Decimal("10"),
+                            digital_cow.precision)
+
+                        # nitrogen = urine_nitrogen_output(
+                        #     lactating, intake, digital_cow.precision)[0]
+                        # nitrogen = fecal_nitrogen_output(
+                        #     lactating, dmi, intake, digital_cow.precision)[0]
+                        # nitrogen = total_manure_nitrogen_output(
+                        #     lactating, intake, digital_cow.precision)[0]
+                        # nitrogen = milk_nitrogen_output(
+                        #     dmi, digital_cow.precision)[0]
+
+                        age += 1
                     nitrogen_output_dict.update({index: nitrogen})
 
-                #
-
-                # nitrogen = urine_nitrogen_output(
-                #     state.lactation_number, Decimal("360"), digital_cow.precision)[0]
-                # nitrogen = total_manure_nitrogen_output(
-                #     state.lactation_number, Decimal("360"), digital_cow.precision)[0]
-
-                #
                 total_nitrogen_emission += nitrogen
             all_path_nitrogen_total.append(total_nitrogen_emission)
     all_path_nitrogen_total = tuple(all_path_nitrogen_total)
@@ -1780,15 +1822,15 @@ def manure_nitrogen_output(dmi: Decimal, diet_cp: Decimal, milk_yield: Decimal,
     return manure_n_output
 
 
-def urine_nitrogen_output(lactation_number: int, nitrogen_intake: Decimal,
+def urine_nitrogen_output(lactating: bool, nitrogen_intake: Decimal,
                           precision: Decimal):
     """
     Returns the estimated daily nitrogen output for a cow's urine based on its
     nitrogen intake.
 
-    :param lactation_number: The lactation number of the cow on the day of the
-        calculation.
-    :type lactation_number: int
+    :param lactating: A boolean deciding which formulas to use based on
+        whether the cow is lactating or not.
+    :type lactating: bool
     :param nitrogen_intake: The amount of nitrogen consumed by the cow in g per day.
     :type nitrogen_intake: Decimal
     :param precision: A decimal number that determines the number of decimal places
@@ -1804,7 +1846,7 @@ def urine_nitrogen_output(lactation_number: int, nitrogen_intake: Decimal,
         - max_n_output: Decimal
     """
     # NRC 8th revised edition (2021)
-    if lactation_number < 0:
+    if lactating:
         # root-mean-square prediction error: 25%
         mu_n_output = (Decimal("12.0") + (Decimal("0.333") *
                                           nitrogen_intake)).quantize(precision)
@@ -1823,14 +1865,15 @@ def urine_nitrogen_output(lactation_number: int, nitrogen_intake: Decimal,
     return mu_n_output, min_n_output, max_n_output
 
 
-def fecal_nitrogen_output(lactation_number, dmi, nitrogen_intake, precision):
+def fecal_nitrogen_output(lactating: bool, dmi: Decimal, nitrogen_intake: Decimal,
+                          precision: Decimal):
     """
     Returns the estimated daily nitrogen output for a cow's feces based on its
     nitrogen intake or dmi.
 
-    :param lactation_number: The lactation number of the cow on the day of the
-        calculation.
-    :type lactation_number: int
+    :param lactating: A boolean deciding which formulas to use based on
+        whether the cow is lactating or not.
+    :type lactating: bool
     :param dmi: The dry matter intake of the cow in kg per day.
     :type dmi: Decimal
     :param nitrogen_intake: The amount of nitrogen consumed by the cow in g per day.
@@ -1848,7 +1891,7 @@ def fecal_nitrogen_output(lactation_number, dmi, nitrogen_intake, precision):
         - max_n_output: Decimal
     """
     # NRC 8th revised edition (2021)
-    if lactation_number < 0:
+    if lactating:
         # root-mean-square prediction error: 16%
         mu_n_output = (Decimal("-18.5") + (Decimal("10.1") * dmi)).quantize(
             precision)
@@ -1867,14 +1910,15 @@ def fecal_nitrogen_output(lactation_number, dmi, nitrogen_intake, precision):
     return mu_n_output, min_n_output, max_n_output
 
 
-def total_manure_nitrogen_output(lactation_number, nitrogen_intake, precision):
+def total_manure_nitrogen_output(lactating: bool, nitrogen_intake: Decimal,
+                                 precision: Decimal):
     """
     Returns estimated daily nitrogen output of a cow's manure (urine and feces)
     based on its nitrogen intake.
 
-    :param lactation_number: The lactation number of the cow on the day of the
-        calculation.
-    :type lactation_number: int
+    :param lactating: A boolean deciding which formulas to use based on
+        whether the cow is lactating or not.
+    :type lactating: bool
     :param nitrogen_intake: The amount of nitrogen consumed by the cow in g per day.
     :type nitrogen_intake: Decimal
     :param precision: A decimal number that determines the number of decimal places
@@ -1891,7 +1935,7 @@ def total_manure_nitrogen_output(lactation_number, nitrogen_intake, precision):
     """
 
     # NRC 8th revised edition (2021)
-    if lactation_number < 0:
+    if lactating:
         # root-mean-square prediction error: 11%
         mu_n_output = (Decimal("20.3") + (Decimal("0.654") *
                                           nitrogen_intake)).quantize(precision)
