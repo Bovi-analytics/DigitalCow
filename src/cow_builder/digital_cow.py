@@ -178,7 +178,6 @@ from cow_builder.state import State
 import math
 from typing import Generator, Iterator, Any
 import numpy as np
-from networkx import DiGraph, write_graphml, read_graphml
 
 import matplotlib.pyplot as plt
 
@@ -1242,320 +1241,103 @@ def convert_vector_to_1d(simulated_day: tuple, total_states: tuple, group_by: in
     return one_dimensional_vector
 
 
-def create_paths(digital_cow: DigitalCow, simulated_days: int, graph_file: str,
-                 out_file: str):
+def vector_milk_production(simulated_day: tuple, digital_cow: DigitalCow):
     """
-    Reads a directed graph to find all paths starting from the current state of the
-    DigitalCow object for a given number of simulated days.
-
-    :param digital_cow: The DigitalCow object that was simulated.
-    :type digital_cow: DigitalCow
-    :param simulated_days: The number of days simulated.
-    :type simulated_days: int
-    :param graph_file: The name of a graphml file that contains the graph
-        for which paths are made.
-    :type graph_file: str
-    :param out_file: The name of the file to which the paths should be written.
-    :type out_file: str
-    :returns: The name of a file containing all the paths the cow may have
-        taken during the simulation.
-    :rtype: str
     """
-    start = time.perf_counter()
-    state_index = {
-        state: index for index, state in enumerate(digital_cow.total_states)
-    }
-    graph = read_graphml(graph_file, node_type=int)
-
-    def __find_paths(network, node, path, length, filename):
-        """
-        Recursive function that calls itself for as many times as indicated by
-        the parameter length. It finds paths in a graph starting from a node using
-        a 'depth-first' implementation. When it has built a complete path,
-        it writes it to a file.
-
-        :param network: The directed graph for which paths must be calculated.
-        :type network: DiGraph
-        :param node: The (starting) node for which successor nodes are retrieved to
-            build the path.
-        :type node: int
-        :param path: The path that has been build so far.
-        :type path: list[int]
-        :param length: The number of days left in the simulation counting from the
-            current recursion level.
-        :type length: int
-        :param filename: The name of a file containing all the paths the cow may have
-            taken during the simulation.
-        :type filename: str
-        :returns: The current path
-        :rtype: list[int]
-        """
-        if length == 0:
-            with open(filename, 'a') as file:
-                file.write(f"{path}\n")
-            path.pop(-1)
-            return path
-        for neighbor in network.neighbors(node):
-            path.append(neighbor)
-            path = __find_paths(network, neighbor, path, length - 1, filename)
-        path.pop(-1)
-        return path
-
-    all_paths = [state_index[digital_cow.current_state]]
-    with open(out_file, 'w') as f:
-        f.flush()
-    __find_paths(graph, state_index[digital_cow.current_state], all_paths,
-                 simulated_days, out_file)
-    end = time.perf_counter()
-    print(f"duration finding paths: {end - start} seconds")
-
-
-def find_probabilities(simulation: Iterator[tuple[ndarray[Any, dtype], int]],
-                       digital_cow: DigitalCow):
-    """
-    Iterates over the simulation to find for every state the probability of being
-    in that state on the day in the simulation if the probability is greater than 0.
-
-    :param simulation: An Iterator object that returns a tuple containing a tuple
-        of a vector with all the probabilities for that day, and the day in
-        simulation.
-    :type simulation: Iterator[tuple[ndarray[Any, dtype], int]]
-    :param digital_cow: The DigitalCow object that was simulated.
-    :type digital_cow: DigitalCow
-    :return: A tuple containing a dictionary for every simulated day. Each
-        dictionary has the index of the state as key and the probability as value.
-    :rtype: tuple[dict]
-    """
-    start = time.perf_counter()
-    state_index = {
-        state: index for index, state in enumerate(digital_cow.total_states)
-    }
-    all_simulations = [{state_index[digital_cow.current_state]: 1}]
-    for simulated_day in simulation:
-        convert_vector_to_1d(simulated_day, digital_cow.total_states, 0)
-        index_probability = {
-            index: probability for index, probability in enumerate(simulated_day[0])
-        }
-        index_sim = {index: index_probability[index] for index in
-                     filter(lambda i: index_probability[i] > 0, index_probability)}
-        all_simulations.append(index_sim)
-    end = time.perf_counter()
-    print(f"duration of looping through the simulation and finding probabilities:"
-          f" {end - start} seconds")
-    return tuple(all_simulations)
-
-
-def create_graph(digital_cow: DigitalCow, out_file):
-    """
-    Creates a DiGraph object of the `total_states` property of the DigitalCow object.
-    Writes the graph to a graphml file.
-
-    :param digital_cow: The DigitalCow object that was simulated.
-    :type digital_cow: DigitalCow
-    :param out_file: The name of a graphml file that contains the graph
-        for which paths are made.
-    :type out_file: str
-    """
-    start = time.perf_counter()
-    graph = DiGraph()
-    state_index = {
-        state: index for index, state in enumerate(digital_cow.total_states)
-    }
-    for state in digital_cow.total_states:
-        if not graph.has_node(state_index[state]):
-            graph.add_node(state_index[state])
-        possible_states = digital_cow.possible_new_states(state)
-        for new_state in possible_states:
-            graph.add_node(state_index[new_state])
-            graph.add_edge(state_index[state], state_index[new_state])
-    write_graphml(graph, out_file)
-    end = time.perf_counter()
-    print(f"duration creating graph: {end - start} seconds")
-
-
-def path_probability(path_file: str, all_simulations: tuple):
-    """
-    Calculates the probability of the cow taking a certain path during the
-    simulation for every path in a file.
-
-    :param path_file: The name of a file containing all the paths the cow may have
-        taken during the simulation.
-    :type path_file: str
-    :param all_simulations: A tuple with a dictionary for every day that is
-        simulated. For each dictionary, the key value pair is:
-        key: index of the state
-        value: The probability for being in that state on that day in the simulation.
-    :type all_simulations: tuple[dict]
-    :returns: A tuple containing the probability of the cow taking a path
-        for every path that it can take.
-    :rtype: tuple[Decimal]
-    """
-    path_probabilities = []
-    with open(path_file, 'r') as file:
-        for line in file:
-            line = line.removeprefix('[').removesuffix(']\n')
-            path = [int(index) for index in line.split(',')]
-            probability = 1
-            for day in range(len(all_simulations)):
-                p = all_simulations[day][path[day]]
-                probability = probability * p
-            probability = Decimal(f"{probability}")
-            path_probabilities.append(probability)
-    path_probabilities = tuple(path_probabilities)
-    return path_probabilities
-
-
-def path_milk_production(digital_cow: DigitalCow, path_file: str):
-    """
-    Calculates the raw total milk production for each path the cow can take during
-    simulation.
-
-    :param digital_cow: The DigitalCow object that is being simulated.
-    :type digital_cow: DigitalCow
-    :param path_file: The name of a file containing all the paths the cow may have
-        taken during the simulation.
-    :type path_file: str
-    :returns: A tuple containing the raw milk production for every path the cow can
-        take during simulation.
-    :rtype: tuple[Decimal]
-    """
-    all_path_milk_totals = []
+    vector_phenotype = 0
     index_state = {
         index: state for index, state in enumerate(digital_cow.total_states)
     }
-    with open(path_file, 'r') as file:
-        for line in file:
-            line = line.removeprefix('[').removesuffix(']\n')
-            path = [int(index) for index in line.split(',')]
-            total_milk_production = 0
-            for index in path:
-                state = index_state[index]
-                total_milk_production += state.milk_output
-            all_path_milk_totals.append(total_milk_production)
-    all_path_milk_totals = tuple(all_path_milk_totals)
-    return all_path_milk_totals
+    # convert_vector_to_1d(simulated_day, digital_cow.total_states, 0)
+    index_probability = {
+        index: probability for index, probability in enumerate(simulated_day[0])
+    }
+    vector_probabilities = {index: index_probability[index] for index in
+                            filter(lambda i: index_probability[i] > 0, index_probability)}
+    for index in vector_probabilities.keys():
+        state = index_state[index]
+        milk = state.milk_output * vector_probabilities[index]
+        vector_phenotype += milk
+    return vector_phenotype
 
 
-def path_nitrogen_emission(digital_cow: DigitalCow, path_file: str):
+def vector_nitrogen_emission(simulated_day: tuple, digital_cow: DigitalCow):
     """
-    Calculates the raw nitrogen emission for each path the cow can take during
-    simulation, using the mass-balance equation.
-
-    :param digital_cow: The DigitalCow object that is being simulated.
-    :type digital_cow: DigitalCow
-    :param path_file: The name of a file containing all the paths the cow may have
-        taken during the simulation.
-    :type path_file: str
-    :returns: A tuple containing the raw nitrogen emission for every path the cow
-        can take during the simulation.
-    :rtype: tuple[Decimal]
     """
-    all_path_nitrogen_total = []
+    # TODO CHECK AGE
+    vector_phenotype = 0
     index_state = {
         index: state for index, state in enumerate(digital_cow.total_states)
     }
-    nitrogen_output_dict = {}
-    with open(path_file, 'r') as file:
-        for line in file:
-            line = line.removeprefix('[').removesuffix(']\n')
-            path = [int(index) for index in line.split(',')]
-            total_nitrogen_emission = 0
-            age = digital_cow.age
-            for index in path:
-                try:
-                    state = index_state[index]
-                    nitrogen = nitrogen_output_dict[index]
-                    if state.state == 'Exit':
-                        age = 0
-                    else:
-                        age += 1
-                except KeyError:
-                    state = index_state[index]
-                    if state.state == 'Exit':
-                        nitrogen = Decimal("0")
-                        age = 0
-                    else:
-                        dp_limit = digital_cow.herd.get_days_pregnant_limit(
-                            state.lactation_number)
-                        vwp = digital_cow.herd.get_voluntary_waiting_period(
-                            state.lactation_number)
-                        dry_period = digital_cow.herd.get_duration_dry(
-                            state.lactation_number)
-                        close_up = dry_period / 2
-                        milk = state.milk_output
-                        bw = calculate_body_weight(
-                            state, age, vwp, digital_cow.precision)
-                        dmi = calculate_dmi(state, bw, digital_cow.precision)
-                        lactating = True
-                        if state.lactation_number == 0 or state.days_pregnant >= \
-                                dp_limit - dry_period:
-                            lactating = False
+    # convert_vector_to_1d(simulated_day, digital_cow.total_states, 0)
+    index_probability = {
+        index: probability for index, probability in enumerate(simulated_day[0])
+    }
+    vector_probabilities = {index: index_probability[index] for index in
+                            filter(lambda i: index_probability[i] > 0, index_probability)}
+    age = digital_cow.age
+    diet_cp = None
+    for index in vector_probabilities.keys():
+        state = index_state[index]
+        if state.state == 'Exit':
+            nitrogen = Decimal("0")
+            age = 0
+        else:
+            dp_limit = digital_cow.herd.get_days_pregnant_limit(
+                state.lactation_number)
+            vwp = digital_cow.herd.get_voluntary_waiting_period(
+                state.lactation_number)
+            dry_period = digital_cow.herd.get_duration_dry(
+                state.lactation_number)
+            close_up = dry_period / 2
+            milk = state.milk_output
+            bw = calculate_body_weight(
+                state, age, vwp, digital_cow.precision)
+            dmi = calculate_dmi(state, bw, digital_cow.precision)
+            lactating = True
+            if state.lactation_number == 0 or state.days_pregnant >= \
+                    dp_limit - dry_period:
+                lactating = False
 
-                        if state.days_pregnant >= dp_limit - close_up or (
-                                state.lactation_number == 0 and state.days_in_milk < (
-                                vwp / 2)) or (state.lactation_number != 0 and
-                                              state.days_in_milk < 100):
-                            diet_cp = digital_cow.diet_cp_cu / Decimal("1000")
-                            intake = dmi * diet_cp / Decimal("0.625")
+            if state.days_pregnant >= dp_limit - close_up or (
+                    state.lactation_number == 0 and state.days_in_milk < (
+                    vwp / 2)) or (state.lactation_number != 0 and
+                                  state.days_in_milk < 100):
+                diet_cp = digital_cow.diet_cp_cu / Decimal("1000")
+                intake = dmi * diet_cp / Decimal("0.625")
 
-                        elif ((dp_limit - dry_period) <= state.days_pregnant <
-                              (dp_limit - close_up)) or (
-                                state.lactation_number == 0 and
-                                state.days_in_milk >= vwp / 2):
-                            diet_cp = digital_cow.diet_cp_fo / Decimal("1000")
-                            intake = dmi * diet_cp / Decimal("0.625")
+            elif ((dp_limit - dry_period) <= state.days_pregnant <
+                  (dp_limit - close_up)) or (
+                    state.lactation_number == 0 and
+                    state.days_in_milk >= vwp / 2):
+                diet_cp = digital_cow.diet_cp_fo / Decimal("1000")
+                intake = dmi * diet_cp / Decimal("0.625")
 
-                        elif state.lactation_number != 0 \
-                                and 100 <= state.days_in_milk:
-                            diet_cp = Decimal(
-                                (digital_cow.diet_cp_fo +
-                                 digital_cow.diet_cp_cu) / 2) / Decimal("1000")
-                            intake = dmi * diet_cp / Decimal("0.625")
+            elif state.lactation_number != 0 \
+                    and 100 <= state.days_in_milk:
+                diet_cp = Decimal(
+                    (digital_cow.diet_cp_fo +
+                     digital_cow.diet_cp_cu) / 2) / Decimal("1000")
+                intake = dmi * diet_cp / Decimal("0.625")
 
-                        nitrogen = manure_nitrogen_output(
-                            dmi, diet_cp * Decimal("100"),
-                            milk, digital_cow.milk_cp / Decimal("10"),
-                            digital_cow.precision)
+            nitrogen = manure_nitrogen_output(
+                dmi, diet_cp * Decimal("100"),
+                milk, digital_cow.milk_cp / Decimal("10"),
+                digital_cow.precision)
 
-                        # nitrogen = urine_nitrogen_output(
-                        #     lactating, intake, digital_cow.precision)[0]
-                        # nitrogen = fecal_nitrogen_output(
-                        #     lactating, dmi, intake, digital_cow.precision)[0]
-                        # nitrogen = total_manure_nitrogen_output(
-                        #     lactating, intake, digital_cow.precision)[0]
-                        # nitrogen = milk_nitrogen_output(
-                        #     dmi, digital_cow.precision)[0]
+            # nitrogen = urine_nitrogen_output(
+            #     lactating, intake, digital_cow.precision)[0]
+            # nitrogen = fecal_nitrogen_output(
+            #     lactating, dmi, intake, digital_cow.precision)[0]
+            # nitrogen = total_manure_nitrogen_output(
+            #     lactating, intake, digital_cow.precision)[0]
+            # nitrogen = milk_nitrogen_output(
+            #     dmi, digital_cow.precision)[0]
 
-                        age += 1
-                    nitrogen_output_dict.update({index: nitrogen})
-
-                total_nitrogen_emission += nitrogen
-            all_path_nitrogen_total.append(total_nitrogen_emission)
-    all_path_nitrogen_total = tuple(all_path_nitrogen_total)
-    return all_path_nitrogen_total
-
-
-def phenotype_simulation(path_phenotype_totals: tuple, path_probabilities: tuple):
-    """
-    Multiplies the total of any phenotype for every path the cow can take during
-    simulation with the probability of the cow taking each corresponding path.
-
-    :param path_phenotype_totals:
-    :type path_phenotype_totals: tuple[Decimal]
-    :param path_probabilities: A tuple containing the probability of the cow taking
-        a path for every path that it can take.
-    :type path_probabilities: tuple[Decimal]
-    :return:
-    """
-    path_phenotype_probability = [path_phenotype_totals[i] * path_probabilities[i]
-                                  for i in range(len(path_probabilities))]
-
-    print(f"sum of all path probabilities: {sum(path_probabilities)}")
-    print(f"number of paths: {len(path_probabilities)}")
-    # weighted_avg = sum(path_phenotype_probability) / sum(path_probabilities)
-    # TODO
-    weighted_avg = sum(path_phenotype_probability) * sum(path_probabilities)
-    return path_phenotype_probability, weighted_avg
+            age += 1
+            nitrogen = nitrogen * vector_probabilities[index]
+            vector_phenotype += nitrogen
+    return vector_phenotype
 
 
 def decimalize_precision(dec=10) -> Decimal:
@@ -1752,6 +1534,7 @@ def milk_production(milkbot_variables: tuple, state: State, dp_limit: int,
     :rtype: Decimal
     """
     # Source (Hostens M., et al., 2012)
+    # TODO
     if state.lactation_number == 0 or state.state == 'Exit' \
             or state.days_pregnant >= dp_limit - duration_dry:
         return Decimal("0")

@@ -4,8 +4,7 @@
 
 
 from cow_builder.digital_cow import DigitalCow, state_probability_generator, \
-    create_graph, create_paths, path_probability, path_milk_production, \
-    phenotype_simulation, path_nitrogen_emission, find_probabilities
+    vector_milk_production, vector_nitrogen_emission
 from cow_builder.digital_herd import DigitalHerd
 from chain_simulator.simulation import state_vector_processor
 from chain_simulator.utilities import validate_matrix_sum, \
@@ -47,16 +46,11 @@ def chain_simulator_test():
     # print(
     #     f"validation of the probabilities in the matrix being positive: {validate_matrix_negative(tm)}")
 
-    simulated_days = 35
+    simulated_days = 7
     steps = 1
     simulation = state_vector_processor(just_another_cow.initial_state_vector, tm,
                                         simulated_days, steps)
     start = time.perf_counter()
-    graph_filename = 'Graph.graphml.gz'
-    path_file = 'paths.txt'
-    # create_graph(just_another_cow, graph_filename)
-    create_paths(just_another_cow, simulated_days, graph_filename, path_file)
-    all_simulations = find_probabilities(simulation, just_another_cow)
 
     # start2 = time.perf_counter()
     # path_milk_totals = path_milk_production(just_another_cow, path_file)
