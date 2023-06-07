@@ -35,7 +35,7 @@ a) without parameters:
 
 b) with parameters:
 
-    ``new_herd = DigitalHerd(milk_threshold=Decimal("5"))``\n
+    ``new_herd = DigitalHerd(milk_threshold=5)``\n
 
 *For details about the parameters, look at the* \ ``__init__``\  *method.*
 
@@ -75,7 +75,6 @@ that are added or removed from the herd.
 
 import numpy as np
 from cow_builder import digital_cow
-from decimal import Decimal
 
 
 class DigitalHerd:
@@ -95,7 +94,7 @@ class DigitalHerd:
         :type _voluntary_waiting_period: tuple[int]
         :var _milk_threshold: The minimum milk production in kg
             to be considered as a productive cow.
-        :type _milk_threshold: Decimal
+        :type _milk_threshold: float
         :var _insemination_window: The number of days in milk since the
             voluntary waiting period after which a cow is no longer eligible for
             insemination. Values in the tuple are for lactation 0, 1, and 2+.
@@ -137,7 +136,7 @@ class DigitalHerd:
     """
     def __init__(self, mu_age_at_first_heat=365, sigma_age_at_first_heat=0,
                  vwp=(365, 80, 60), insemination_window=(100, 100, 100),
-                 milk_threshold=Decimal("10"), days_in_milk_limit=1000,
+                 milk_threshold=10, days_in_milk_limit=1000,
                  lactation_number_limit=9, days_pregnant_limit=(279, 280, 282),
                  duration_dry=(60, 60)):
         """
@@ -159,7 +158,7 @@ class DigitalHerd:
         :type insemination_window: tuple[int]
         :param milk_threshold: The minimum milk production in kg
             to be considered as a productive cow. Default is 10.
-        :type milk_threshold: Decimal
+        :type milk_threshold: float
         :param days_in_milk_limit: The maximum number of days a cow can be in milk
             before being culled.
         :type days_in_milk_limit: int
@@ -321,14 +320,14 @@ class DigitalHerd:
         self._voluntary_waiting_period = vwp
 
     @property
-    def milk_threshold(self) -> Decimal:
+    def milk_threshold(self) -> float:
         """The milk threshold for all cows in the herd. If the milk production
         falls below this threshold, they will be culled."""
         return self._milk_threshold
 
     @milk_threshold.setter
-    def milk_threshold(self, mt: Decimal):
-        if type(mt) == Decimal:
+    def milk_threshold(self, mt: float):
+        if type(mt) == float:
             self._milk_threshold = mt
 
     def get_insemination_window(self, lactation_number: int) -> int:

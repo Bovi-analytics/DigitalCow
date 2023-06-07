@@ -28,7 +28,7 @@ First import the class from the module.
 2. Create a State instance:
 ***************************
 
-    ``new_state = State('Open', 300, 1, 200, Decimal("20"))``
+    ``new_state = State('Open', 300, 1, 200, 20)``
 
 ************************************************************
 
@@ -41,7 +41,6 @@ First import the class from the module.
 """
 
 from dataclasses import dataclass, asdict
-from decimal import Decimal
 
 
 @dataclass(repr=True, eq=True, frozen=True)
@@ -60,7 +59,7 @@ class State:
         :var days_pregnant: The number of days that the cow is pregnant.
         :type days_pregnant: int
         :var milk_output: The amount of milk the cow produces in this state.
-        :type milk_output: Decimal
+        :type milk_output: float
 
     :Methods:
         __post_init__()\n
@@ -73,7 +72,7 @@ class State:
     days_in_milk: int
     lactation_number: int
     days_pregnant: int
-    milk_output: Decimal
+    milk_output: float
 
     def __post_init__(self):
         """
@@ -97,7 +96,7 @@ class State:
             raise TypeError
         if not type(self.days_pregnant) == int:
             raise TypeError
-        if not type(self.milk_output) == Decimal:
+        if not type(self.milk_output) == float:
             raise TypeError
 
     def mutate(self, **kwargs):
