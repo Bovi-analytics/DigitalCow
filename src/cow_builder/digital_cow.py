@@ -181,6 +181,8 @@ import numpy as np
 
 import matplotlib.pyplot as plt
 
+from functools import cache
+
 
 class DigitalCow:
     """
@@ -225,7 +227,7 @@ class DigitalCow:
 
     def __init__(self, days_in_milk=0, lactation_number=0, days_pregnant=0,
                  diet_cp_cu=Decimal("160"), diet_cp_fo=Decimal("140"),
-                 milk_cp=Decimal("34"), age=0, herd=None,
+                 milk_cp=Decimal("3.4"), age=0, herd=None,
                  state='Open', age_at_first_heat=None):
         """
         Initializes a new instance of a DigitalCow object.
@@ -1241,7 +1243,7 @@ def convert_vector_to_1d(simulated_day: tuple, total_states: tuple, group_by: in
     return one_dimensional_vector
 
 
-def vector_milk_production(simulated_day: tuple, digital_cow: DigitalCow):
+def vector_milk_production(vector: np.ndarray, step_in_time: int, digital_cow: DigitalCow):
     """
     """
     vector_phenotype = 0
@@ -1249,19 +1251,20 @@ def vector_milk_production(simulated_day: tuple, digital_cow: DigitalCow):
         index: state for index, state in enumerate(digital_cow.total_states)
     }
     # convert_vector_to_1d(simulated_day, digital_cow.total_states, 0)
-    index_probability = {
-        index: probability for index, probability in enumerate(simulated_day[0])
+    probability_index = {
+        probability: index for index, probability in enumerate(vector)
     }
-    vector_probabilities = {index: index_probability[index] for index in
-                            filter(lambda i: index_probability[i] > 0, index_probability)}
+    filtered = vector[vector > 0]
+    vector_probabilities = {probability_index[probability]: probability for probability in filtered}
+
     for index in vector_probabilities.keys():
         state = index_state[index]
-        milk = state.milk_output * vector_probabilities[index]
+        milk = state.milk_output * Decimal(f"{vector_probabilities[index]}")
         vector_phenotype += milk
     return vector_phenotype
 
 
-def vector_nitrogen_emission(simulated_day: tuple, digital_cow: DigitalCow):
+def vector_nitrogen_emission(vector: np.ndarray, step_in_time: int, digital_cow: DigitalCow):
     """
     """
     # TODO CHECK AGE
@@ -1270,18 +1273,22 @@ def vector_nitrogen_emission(simulated_day: tuple, digital_cow: DigitalCow):
         index: state for index, state in enumerate(digital_cow.total_states)
     }
     # convert_vector_to_1d(simulated_day, digital_cow.total_states, 0)
-    index_probability = {
-        index: probability for index, probability in enumerate(simulated_day[0])
+    probability_index = {
+        probability: index for index, probability in enumerate(vector)
     }
-    vector_probabilities = {index: index_probability[index] for index in
-                            filter(lambda i: index_probability[i] > 0, index_probability)}
-    age = digital_cow.age
+    filtered = vector[vector > 0]
+    vector_probabilities = {probability_index[probability]: probability for probability in filtered}
     diet_cp = None
+    intake = None
     for index in vector_probabilities.keys():
         state = index_state[index]
+        if state.lactation_number == 0:
+            age = state.days_in_milk
+
+        else:
+            age = digital_cow.age + step_in_time
         if state.state == 'Exit':
             nitrogen = Decimal("0")
-            age = 0
         else:
             dp_limit = digital_cow.herd.get_days_pregnant_limit(
                 state.lactation_number)
@@ -1320,23 +1327,22 @@ def vector_nitrogen_emission(simulated_day: tuple, digital_cow: DigitalCow):
                      digital_cow.diet_cp_cu) / 2) / Decimal("1000")
                 intake = dmi * diet_cp / Decimal("0.625")
 
-            nitrogen = manure_nitrogen_output(
-                dmi, diet_cp * Decimal("100"),
-                milk, digital_cow.milk_cp / Decimal("10"),
-                digital_cow.precision)
-
-            # nitrogen = urine_nitrogen_output(
-            #     lactating, intake, digital_cow.precision)[0]
-            # nitrogen = fecal_nitrogen_output(
-            #     lactating, dmi, intake, digital_cow.precision)[0]
-            # nitrogen = total_manure_nitrogen_output(
-            #     lactating, intake, digital_cow.precision)[0]
-            # nitrogen = milk_nitrogen_output(
-            #     dmi, digital_cow.precision)[0]
-
-            age += 1
-            nitrogen = nitrogen * vector_probabilities[index]
-            vector_phenotype += nitrogen
+            if lactating:
+                nitrogen = total_manure_nitrogen_output(
+                    lactating, intake, digital_cow.precision)[0]
+                # nitrogen = urine_nitrogen_output(
+                #     lactating, intake, digital_cow.precision)[0]
+                # nitrogen = fecal_nitrogen_output(
+                #     lactating, dmi, intake, digital_cow.precision)[0]
+            else:
+                nitrogen = manure_nitrogen_output(
+                    dmi, diet_cp * Decimal("100"),
+                    milk, digital_cow.milk_cp,
+                    digital_cow.precision)
+                # nitrogen = milk_nitrogen_output(
+                #     dmi, digital_cow.precision)[0]
+        nitrogen = nitrogen * Decimal(f"{vector_probabilities[index]}")
+        vector_phenotype += nitrogen
     return vector_phenotype
 
 
@@ -1408,7 +1414,7 @@ def set_korver_function_variables(lactation_number: int):
             duration_minimum_live_weight = None
         case 1:
             birth_weight = Decimal(np.random.normal(42, 0))
-            mature_live_weight = Decimal(np.random.normal(600, 0))
+            mature_live_weight = Decimal(np.random.normal(550, 0))
             growth_rate = Decimal(f"{np.random.normal(0.0039, 0)}")
             pregnancy_parameter = Decimal(f"{np.random.normal(0.0187, 0)}")
             max_decrease_live_weight = Decimal(np.random.normal(20, 0))
@@ -1427,6 +1433,7 @@ def set_korver_function_variables(lactation_number: int):
         max_decrease_live_weight, duration_minimum_live_weight
 
 
+@cache
 def calculate_body_weight(state: State, age: int, vwp: int,
                           precision: Decimal) -> Decimal:
     """
@@ -1513,6 +1520,7 @@ def set_milkbot_variables(lactation_number: int) -> tuple:
     return milkbot_variables
 
 
+@cache
 def milk_production(milkbot_variables: tuple, state: State, dp_limit: int,
                     duration_dry: int, precision: Decimal) -> Decimal:
     """
@@ -1548,6 +1556,7 @@ def milk_production(milkbot_variables: tuple, state: State, dp_limit: int,
                      -decay * Decimal(state.days_in_milk))).quantize(precision)
 
 
+@cache
 def calculate_dmi(state: State, body_weight: Decimal, precision: Decimal):
     """
     Calculates the dry matter intake of a cow for a specific state.
