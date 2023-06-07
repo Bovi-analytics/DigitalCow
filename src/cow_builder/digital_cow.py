@@ -1470,8 +1470,7 @@ def milk_production(milkbot_variables: tuple, state: State, dp_limit: int,
     ramp = milkbot_variables[1]
     offset = milkbot_variables[2]
     decay = milkbot_variables[3]
-    return scale * 1 - (pow(math.e, (
-            (offset - state.days_in_milk) / ramp)) / 2) * pow(math.e, -decay * state.days_in_milk)
+    return scale * (1 - (pow(math.e, ((offset - state.days_in_milk) / ramp)) / 2)) * pow(math.e, -decay * state.days_in_milk)
 
 
 @cache
