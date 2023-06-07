@@ -1395,13 +1395,14 @@ def calculate_body_weight(state: State, age: int, vwp: int) -> float:
         dpc = (state.days_in_milk - vwp - 50)  # d after conception - 50
         if dpc < 0:
             dpc = 0
-        bw = mature_live_weight * (1 - (1 - math.pow((birth_weight / mature_live_weight),
-                                                     (1 / 3)) *
-                                        math.pow(math.exp(-growth_rate * age), 3)) +
-                                   max_decrease_live_weight *
-                                   (state.days_in_milk / duration_minimum_live_weight) *
-                                   math.exp(1 - (state.days_in_milk / duration_minimum_live_weight)) +
-                                   pow(pregnancy_parameter, 3) * pow(dpc, 3))
+        # bw = mature_live_weight * \
+        #      (1 - (1 - math.pow((birth_weight / mature_live_weight), (1 / 3))) * math.pow(math.exp(-growth_rate * age), 3)) + max_decrease_live_weight * (state.days_in_milk / duration_minimum_live_weight) * math.exp(1 - (state.days_in_milk / duration_minimum_live_weight)) + pow(pregnancy_parameter, 3) * pow(dpc, 3)
+        bw = mature_live_weight * \
+             math.pow((1 - (1 - math.pow((birth_weight / mature_live_weight), (1 / 3)))
+                       * math.exp(-growth_rate * age)), 3) + \
+             max_decrease_live_weight * (state.days_in_milk / duration_minimum_live_weight) * \
+             math.exp(1 - (state.days_in_milk / duration_minimum_live_weight)) + \
+             math.pow(pregnancy_parameter, 3) + math.pow(dpc, 3)
     return bw
 
 
