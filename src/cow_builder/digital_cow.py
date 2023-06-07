@@ -1285,18 +1285,19 @@ def vector_nitrogen_emission(vector: np.ndarray, step_in_time: int, digital_cow:
                 intake = dmi * diet_cp / 0.625
 
             if lactating:
+                nitrogen = manure_nitrogen_output(
+                    dmi, diet_cp * 100,
+                    milk, digital_cow.milk_cp)
+                # nitrogen = milk_nitrogen_output(
+                #     dmi, digital_cow.precision)[0]
+
+            else:
                 nitrogen = total_manure_nitrogen_output(
                     lactating, intake)[0]
                 # nitrogen = urine_nitrogen_output(
                 #     lactating, intake, digital_cow.precision)[0]
                 # nitrogen = fecal_nitrogen_output(
                 #     lactating, dmi, intake, digital_cow.precision)[0]
-            else:
-                nitrogen = manure_nitrogen_output(
-                    dmi, diet_cp * 100,
-                    milk, digital_cow.milk_cp)
-                # nitrogen = milk_nitrogen_output(
-                #     dmi, digital_cow.precision)[0]
         nitrogen = nitrogen * vector_probabilities[index]
         vector_phenotype += nitrogen
     return vector_phenotype
