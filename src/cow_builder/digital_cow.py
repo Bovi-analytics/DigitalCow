@@ -684,15 +684,6 @@ class DigitalCow:
                             return __probability_death()
                             # chance mortality
 
-            case 'Exit':
-                match state_to.state:
-                    case 'Open':
-
-                        if state_to == State('Open', 0, 0, 0, 0.0):
-                            return 1
-                    case _:
-                        return 0
-
     def possible_new_states(self, state_from: State) -> tuple:
         """
         Returns a tuple with all states ``state_from`` can transition into.
@@ -894,8 +885,6 @@ class DigitalCow:
                             'DoNotBreed',
                             state_from.days_in_milk + 1,
                             state_from.lactation_number, 0, milk_output))
-            case 'Exit':
-                states_to[0] = State('Open', 0, 0, 0, 0.0)
             case _:
                 raise ValueError('The current state given is invalid.')
         return tuple(states_to)
