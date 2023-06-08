@@ -546,7 +546,7 @@ class DigitalCow:
             elif 45 < state_from.days_pregnant < 181:
                 return 0.099 / 135
             elif 180 < state_from.days_pregnant < dp_limit + 1:
-                return 0.02 / dp_limit - 180
+                return 0.02 / (dp_limit - 180)
 
         def __probability_above_insemination_cutoff():
             """Returns 1 if the days in milk is above the cutoff for insemination."""
@@ -1122,7 +1122,7 @@ def state_probability_generator(digital_cow: DigitalCow) -> \
                 probability = 1
             yield state_index[state_from], \
                 state_index[state_to], \
-                float(probability)
+                probability
 
 
 def convert_vector_to_1d(simulated_day: tuple, total_states: tuple, group_by: int):

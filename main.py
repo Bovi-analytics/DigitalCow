@@ -32,7 +32,7 @@ def chain_simulator_test():
     #     days_in_milk=0, lactation_number=0, days_pregnant=0,
     #     age=0, herd=just_another_herd, state='Open')
     start = time.perf_counter()
-    just_another_cow.generate_total_states(dim_limit=1000, ln_limit=2)
+    just_another_cow.generate_total_states(dim_limit=1000, ln_limit=9)
     end = time.perf_counter()
     print(f"duration for generating states: {end - start} seconds.")
 
@@ -43,14 +43,14 @@ def chain_simulator_test():
     # end = time.perf_counter()
     # print(f"duration making TM: {end - start} seconds.")
 
-    tm = scipy.sparse.load_npz('transition_matrix_small.npz')
+    tm = scipy.sparse.load_npz('transition_matrix_large.npz')
 
     print(
         f"validation of the sum of rows being equal to 1: {validate_matrix_sum(tm)}")
     print(
         f"validation of the probabilities in the matrix being positive: {validate_matrix_negative(tm)}")
 
-    simulated_days = 128
+    simulated_days = 512
     steps = 1
     simulation = state_vector_processor(just_another_cow.initial_state_vector, tm,
                                         simulated_days, steps)
