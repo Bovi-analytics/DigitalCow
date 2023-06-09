@@ -6,6 +6,7 @@ from typing import Callable
 import numpy as np
 from _decimal import Decimal
 
+import cow_builder.state
 from cow_builder.digital_cow import DigitalCow, state_probability_generator, \
     vector_milk_production, vector_nitrogen_emission
 from cow_builder.digital_herd import DigitalHerd
@@ -17,6 +18,9 @@ from functools import partial
 import time
 import logging
 import scipy
+from networkx import DiGraph, write_graphml, draw
+import matplotlib.pyplot as plt
+import graphviz
 
 
 def chain_simulator_test():
@@ -36,19 +40,34 @@ def chain_simulator_test():
     end = time.perf_counter()
     print(f"duration for generating states: {end - start} seconds.")
 
-    # start = time.perf_counter()
-    # tm = array_assembler(just_another_cow.node_count,
-    #                      state_probability_generator(just_another_cow))
-    # scipy.sparse.save_npz('transition_matrix_large.npz', tm, True)
-    # end = time.perf_counter()
-    # print(f"duration making TM: {end - start} seconds.")
+    start = time.perf_counter()
+    tm = array_assembler(just_another_cow.node_count,
+                         state_probability_generator(just_another_cow))
+    scipy.sparse.save_npz('transition_matrix_large_re.npz', tm, True)
+    end = time.perf_counter()
+    print(f"duration making TM: {end - start} seconds.")
 
-    tm = scipy.sparse.load_npz('transition_matrix_large.npz')
+    # tm = scipy.sparse.load_npz('transition_matrix_small.npz')
 
     print(
         f"validation of the sum of rows being equal to 1: {validate_matrix_sum(tm)}")
     print(
         f"validation of the probabilities in the matrix being positive: {validate_matrix_negative(tm)}")
+
+    graph = DiGraph()
+    state_index = {
+        state: index for index, state in enumerate(just_another_cow.total_states)
+    }
+    for state in just_another_cow.total_states:
+        if state == cow_builder.state.State('Open', 10, 0, 0, 0.0):
+            break
+        if not graph.has_node(state_index[state]):
+            graph.add_node(state_index[state])
+        possible_states = just_another_cow.possible_new_states(state)
+        for new_state in possible_states:
+            graph.add_node(state_index[new_state])
+            graph.add_edge(state_index[state], state_index[new_state])
+    write_graphml(graph, 'Graph.graphml')
 
     simulated_days = 512
     steps = 1

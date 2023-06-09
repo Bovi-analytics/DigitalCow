@@ -885,6 +885,8 @@ class DigitalCow:
                             'DoNotBreed',
                             state_from.days_in_milk + 1,
                             state_from.lactation_number, 0, milk_output))
+            case 'Exit':
+                states_to = []
             case _:
                 raise ValueError('The current state given is invalid.')
         return tuple(states_to)
@@ -1105,6 +1107,8 @@ def state_probability_generator(digital_cow: DigitalCow) -> \
     }
     for state_from in state_index:
         new_states = digital_cow.possible_new_states(state_from)
+        if not new_states:
+            new_states = (state_from,)
         for state_to in new_states:
             probability = digital_cow.probability_state_change(state_from, state_to)
             if len(new_states) == 1:
