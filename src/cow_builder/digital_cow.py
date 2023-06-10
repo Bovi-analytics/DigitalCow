@@ -1342,7 +1342,7 @@ def set_korver_function_variables(lactation_number: int):
         case 0:
             birth_weight = np.random.normal(42, 0)
             mature_live_weight = None
-            growth_rate = None
+            growth_rate = 0.79
             pregnancy_parameter = None
             max_decrease_live_weight = None
             duration_minimum_live_weight = None
@@ -1397,8 +1397,7 @@ def calculate_body_weight(state: State, age: int, vwp: int) -> float:
         set_korver_function_variables(state.lactation_number)
     if state.lactation_number == 0:
         max_weight = 600
-        start_weight = 32.2
-        growth_rate = 0.78
+        start_weight = 27.2
         bw = min(max(birth_weight, start_weight + (growth_rate * state.days_in_milk)), max_weight)
     else:
         dpc = (state.days_in_milk - vwp - 50)  # d after conception - 50
