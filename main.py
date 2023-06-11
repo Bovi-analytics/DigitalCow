@@ -50,8 +50,8 @@ def chain_simulator_test():
     print(
         f"validation of the probabilities in the matrix being positive: {validate_matrix_negative(tm)}")
 
-    simulated_days = 512
-    steps = 1
+    simulated_days = 5740
+    steps = 14
     simulation = state_vector_processor(just_another_cow.initial_state_vector, tm,
                                         simulated_days, steps)
     start = time.perf_counter()
