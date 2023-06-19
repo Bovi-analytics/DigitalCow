@@ -342,8 +342,8 @@ class DigitalHerd:
         """
         if lactation_number > 2:
             lactation_number = 2
-        return self._insemination_window[lactation_number] - 1
-        # TODO CHECK
+        return self._insemination_window[lactation_number]
+        # return self._insemination_window[lactation_number] - 1
         # While creating the states, there would be 1 extra day pregnant state
         # making the insemination window one day longer.
         # The - 1 solves this issue without interfering with other parts of the code.

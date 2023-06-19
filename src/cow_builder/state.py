@@ -72,6 +72,7 @@ class State:
     days_in_milk: int
     lactation_number: int
     days_pregnant: int
+    age: int
     milk_output: float
 
     def __post_init__(self):
@@ -95,6 +96,8 @@ class State:
         if not type(self.lactation_number) == int:
             raise TypeError
         if not type(self.days_pregnant) == int:
+            raise TypeError
+        if not type(self.age) == int:
             raise TypeError
         if not type(self.milk_output) == float:
             raise TypeError

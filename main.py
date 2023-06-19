@@ -32,38 +32,42 @@ def chain_simulator_test():
     #     days_in_milk=0, lactation_number=0, days_pregnant=0,
     #     age=0, herd=just_another_herd, state='Open')
     start = time.perf_counter()
-    just_another_cow.generate_total_states(dim_limit=1000, ln_limit=9)
+    just_another_cow.generate_total_states(dim_limit=1000, ln_limit=2)
     end = time.perf_counter()
     print(f"duration for generating states: {end - start} seconds.")
 
-    # start = time.perf_counter()
-    # tm = array_assembler(just_another_cow.node_count,
-    #                      state_probability_generator(just_another_cow))
-    # scipy.sparse.save_npz('transition_matrix_large.npz', tm, True)
-    # end = time.perf_counter()
-    # print(f"duration making TM: {end - start} seconds.")
+    # with open('states2.txt', 'w') as file:
+    #     for state in just_another_cow.total_states:
+    #         file.write(f"{state}\n")
 
-    tm = scipy.sparse.load_npz('transition_matrix_large.npz')
+    start = time.perf_counter()
+    tm = array_assembler(just_another_cow.node_count,
+                         state_probability_generator(just_another_cow))
+    scipy.sparse.save_npz('transition_matrices/transition_matrix_2_lactations_new_age.npz', tm, True)
+    end = time.perf_counter()
+    print(f"duration making TM: {end - start} seconds.")
+
+    # tm = scipy.sparse.load_npz('transition_matrices/transition_matrix_9_lactations_new.npz')
 
     print(
         f"validation of the sum of rows being equal to 1: {validate_matrix_sum(tm)}")
     print(
         f"validation of the probabilities in the matrix being positive: {validate_matrix_negative(tm)}")
 
-    simulated_days = 5740
-    steps = 14
-    simulation = state_vector_processor(just_another_cow.initial_state_vector, tm,
-                                        simulated_days, steps)
-    start = time.perf_counter()
-    callbacks = {
-        "milk": partial(vector_milk_production, digital_cow=just_another_cow),
-        "nitrogen": partial(vector_nitrogen_emission, digital_cow=just_another_cow)
-    }
-    accumulated = simulation_accumulator(simulation, **callbacks)
-    end = time.perf_counter()
-    print(f"The time needed to iterate over the simulation "
-          f"and calculate phenotype output: {end - start} seconds.")
-    print(f"accumulated: {accumulated}")
+    simulated_days = 2240
+    steps = 1
+    # simulation = state_vector_processor(just_another_cow.initial_state_vector, tm,
+    #                                     simulated_days, steps)
+    # start = time.perf_counter()
+    # callbacks = {
+    #     "milk": partial(vector_milk_production, digital_cow=just_another_cow),
+    #     "nitrogen": partial(vector_nitrogen_emission, digital_cow=just_another_cow)
+    # }
+    # accumulated = simulation_accumulator(simulation, **callbacks)
+    # end = time.perf_counter()
+    # print(f"The time needed to iterate over the simulation "
+    #       f"and calculate phenotype output: {end - start} seconds.")
+    # print(f"accumulated: {accumulated}")
 
     # print(f"The weighted average milk production for this simulation is: "
     #       f"{weighted_avg} kg")
