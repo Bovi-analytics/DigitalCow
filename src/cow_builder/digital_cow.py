@@ -254,7 +254,7 @@ class DigitalCow:
         :type state: str
         """
         self._herd = herd
-        self.__life_states = ['Open', 'Pregnant', 'DoNotBreed', 'Exit']
+        self.__life_states = ['Open', 'DoNotBreed', 'Pregnant', 'Exit']
         self._age_at_first_heat = age_at_first_heat
         self._total_states = None
         self._generated_days_in_milk = None
@@ -369,7 +369,7 @@ class DigitalCow:
                                 elif lactation_number == ln_limit:
                                     if days_pregnant_start > dp_limit:
                                         stop_pregnant_state = True
-                                    elif days_in_milk == vwp + dp_limit + 1:
+                                    elif days_in_milk == vwp + dp_limit:
                                         last_pregnancy = True
                     case 'DoNotBreed':
                         if days_in_milk > vwp + insemination_window + 1 and \

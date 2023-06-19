@@ -32,14 +32,18 @@ def chain_simulator_test():
     #     days_in_milk=0, lactation_number=0, days_pregnant=0,
     #     age=0, herd=just_another_herd, state='Open')
     start = time.perf_counter()
-    just_another_cow.generate_total_states(dim_limit=1000, ln_limit=9)
+    just_another_cow.generate_total_states(dim_limit=1000, ln_limit=2)
     end = time.perf_counter()
     print(f"duration for generating states: {end - start} seconds.")
+
+    with open('states.txt', 'w') as file:
+        for state in just_another_cow.total_states:
+            file.write(f'{state}\n')
 
     start = time.perf_counter()
     tm = array_assembler(just_another_cow.node_count,
                          state_probability_generator(just_another_cow))
-    scipy.sparse.save_npz('transition_matrix_large_nore.npz', tm, True)
+    scipy.sparse.save_npz('transition_matrix_small_nore.npz', tm, True)
     end = time.perf_counter()
     print(f"duration making TM: {end - start} seconds.")
 
