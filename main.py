@@ -36,14 +36,10 @@ def chain_simulator_test():
     end = time.perf_counter()
     print(f"duration for generating states: {end - start} seconds.")
 
-    with open('states.txt', 'w') as file:
-        for state in just_another_cow.total_states:
-            file.write(f'{state}\n')
-
     start = time.perf_counter()
     tm = array_assembler(just_another_cow.node_count,
                          state_probability_generator(just_another_cow))
-    scipy.sparse.save_npz('transition_matrix_small_nore.npz', tm, True)
+    scipy.sparse.save_npz('transition_matrices/transition_matrix_2_lactations.npz', tm, True)
     end = time.perf_counter()
     print(f"duration making TM: {end - start} seconds.")
 
