@@ -334,7 +334,6 @@ class DigitalCow:
 
                     match life_state:
                         case 'Open':
-                            # TODO age delta moet over gaan in andere states dan pregnant
                             # if days_in_milk <= vwp + insemination_window + 1:
                             if days_in_milk <= vwp + insemination_window:
                                 if milk_output >= self.herd.milk_threshold or \
