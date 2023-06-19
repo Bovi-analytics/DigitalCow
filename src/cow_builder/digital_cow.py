@@ -328,7 +328,7 @@ class DigitalCow:
 
                 match life_state:
                     case 'Open':
-                        if days_in_milk <= vwp + insemination_window + 1:
+                        if days_in_milk <= vwp + insemination_window:
                             if milk_output >= self.herd.milk_threshold or \
                                     lactation_number == 0:
                                 new_state = State(life_state, days_in_milk,
@@ -372,7 +372,7 @@ class DigitalCow:
                                     elif days_in_milk == vwp + dp_limit:
                                         last_pregnancy = True
                     case 'DoNotBreed':
-                        if days_in_milk > vwp + insemination_window + 1 and \
+                        if days_in_milk > vwp + insemination_window and \
                                 lactation_number != 0:
                             if milk_output >= self.herd.milk_threshold or \
                                     lactation_number == 0:
@@ -614,7 +614,7 @@ class DigitalCow:
                             return 1
                             # culling
                         elif state_from.days_in_milk == vwp + insemination_window \
-                                + 1 and state_from.lactation_number == 0:
+                                and state_from.lactation_number == 0:
                             return ((not_pregnant_ * not_death_)
                                     + __probability_death())
                         else:
@@ -660,7 +660,7 @@ class DigitalCow:
                                 and state_from.lactation_number == 0:
                             return __probability_death()
                         elif state_from.days_in_milk >= vwp + insemination_window \
-                                + 1 and state_from.lactation_number == 0:
+                                and state_from.lactation_number == 0:
                             return ((__probability_abortion() * not_death_)
                                     + __probability_death())
                         else:
@@ -731,7 +731,7 @@ class DigitalCow:
                             'Pregnant',
                             state_from.days_in_milk + 1,
                             state_from.lactation_number, 1, milk_output))
-                    if state_from.days_in_milk >= vwp + insemination_window + 1 and \
+                    if state_from.days_in_milk >= vwp + insemination_window and \
                             state_from.lactation_number != 0:
                         self.milkbot_variables = set_milkbot_variables(
                             state_from.lactation_number)
@@ -751,7 +751,7 @@ class DigitalCow:
                             'DoNotBreed',
                             state_from.days_in_milk + 1,
                             state_from.lactation_number, 0, milk_output))
-                    elif state_from.days_in_milk < vwp + insemination_window + 1:
+                    elif state_from.days_in_milk < vwp + insemination_window:
                         self.milkbot_variables = set_milkbot_variables(
                             state_from.lactation_number)
                         temp_state = State('Open',
@@ -828,7 +828,7 @@ class DigitalCow:
                             state_from.days_in_milk + 1,
                             state_from.lactation_number,
                             state_from.days_pregnant + 1, milk_output))
-                        if state_from.days_in_milk < vwp + insemination_window + 1:
+                        if state_from.days_in_milk < vwp + insemination_window:
                             self.milkbot_variables = set_milkbot_variables(state_from.lactation_number)
                             temp_state = State('Open',
                                                state_from.days_in_milk + 1,
@@ -846,7 +846,7 @@ class DigitalCow:
                                 state_from.days_in_milk + 1,
                                 state_from.lactation_number, 0, milk_output))
                         elif state_from.days_in_milk >= vwp + insemination_window \
-                                + 1 and state_from.lactation_number != 0:
+                                and state_from.lactation_number != 0:
                             self.milkbot_variables = set_milkbot_variables(
                                 state_from.lactation_number)
                             temp_state = State('DoNotBreed',
@@ -1402,24 +1402,28 @@ def set_milkbot_variables(lactation_number: int) -> tuple:
     :raises ValueError: If the lactation number is larger than the lactation
         number limit.
     """
-    # TODO Source
+    # (Hostens, M., et al, 2012)
     match lactation_number:
         case 0:
-            milkbot_variables = (0, 1, 1, 1)
+            milkbot_variables = (0, 1, 0, 1)
         case 1:
-            decay = 0.693 / 358
             milkbot_variables = (
-                np.random.normal(34.8, 0),
-                np.random.normal(29.6, 0),
+                np.random.normal(41.66, 0),
+                np.random.normal(29.07, 0),
                 np.random.normal(0, 0),
-                np.random.normal(decay, 0))
-        case ln if ln > 1:
-            decay = 0.693 / 240
+                np.random.normal(0.001383, 0))
+        case 2:
             milkbot_variables = (
-                np.random.normal(47.7, 0),
-                np.random.normal(22.1, 0),
+                np.random.normal(56.70, 0),
+                np.random.normal(21.41, 0),
                 np.random.normal(0, 0),
-                np.random.normal(decay, 0))
+                np.random.normal(0.002874, 0))
+        case ln if ln >= 3:
+            milkbot_variables = (
+                np.random.normal(59.69, 0),
+                np.random.normal(19.71, 0),
+                np.random.normal(0, 0),
+                np.random.normal(0.003262, 0))
         case _:
             raise ValueError
     return milkbot_variables

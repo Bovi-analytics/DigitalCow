@@ -4095,7 +4095,7 @@ if __name__ == '__main__':
                 state = None
                 dp = 0
 
-        new_cow = digital_cow.DigitalCow(dim, ln, dp, None, age, herd, state)
+        new_cow = digital_cow.DigitalCow(dim, ln, dp, 160, 140, 3.4, age, herd, state)
 
     for cow in herd.herd:
         print(str(cow))
