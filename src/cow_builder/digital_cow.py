@@ -367,19 +367,6 @@ class DigitalCow:
                                         total_states.append(new_state)
                                         days_pregnant += 1
                                     days_pregnant = days_pregnant_start
-                                    # if vwp + insemination_window < days_in_milk < vwp + \
-                                    #         insemination_window + dp_limit:
-                                    #     days_pregnant_start += 1
-                                    # days_pregnant = days_pregnant_start
-                                    # if simulated_dp_limit != dp_limit:
-                                    #     simulated_dp_limit += 1
-                                    # else:
-                                    #     age_list_.append(age)
-                                    #     if lactation_number == ln_limit:
-                                    #         if days_pregnant_start > dp_limit:
-                                    #             stop_pregnant_state = True
-                                    #         elif days_in_milk == vwp + dp_limit:
-                                    #             last_pregnancy = True
                         case 'DoNotBreed':
                             # if days_in_milk > vwp + insemination_window + 1 and \
                             if days_in_milk > vwp + insemination_window and \
