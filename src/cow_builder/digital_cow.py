@@ -1194,7 +1194,7 @@ def convert_vector_to_1d(simulated_day: tuple, total_states: tuple, group_by: in
     return one_dimensional_vector
 
 
-def vector_milk_production(vector: np.ndarray, step_in_time: int, digital_cow: DigitalCow):
+def vector_milk_production(vector: np.ndarray, step_in_time: int, step_size: int, digital_cow: DigitalCow):
     """
     """
     vector_phenotype = 0
@@ -1202,42 +1202,29 @@ def vector_milk_production(vector: np.ndarray, step_in_time: int, digital_cow: D
         index: state for index, state in enumerate(digital_cow.total_states)
     }
     # convert_vector_to_1d(simulated_day, digital_cow.total_states, 0)
-    probability_index = {
-        probability: index for index, probability in enumerate(vector)
-    }
-    filtered = vector[vector > 0]
-    vector_probabilities = {probability_index[probability]: probability for probability in filtered}
-
-    for index in vector_probabilities.keys():
+    nonzero_indices = np.where(vector > 0)[0]
+    for index in nonzero_indices:
         state = index_state[index]
-        milk = state.milk_output * vector_probabilities[index]
+        milk = state.milk_output * vector[index]
         vector_phenotype += milk
-    return vector_phenotype
+    return vector_phenotype * step_size
 
 
-def vector_nitrogen_emission(vector: np.ndarray, step_in_time: int, digital_cow: DigitalCow):
+def vector_nitrogen_emission(vector: np.ndarray, step_in_time: int, step_size: int, digital_cow: DigitalCow):
     """
     """
-    # TODO CHECK AGE
     vector_phenotype = 0
     index_state = {
         index: state for index, state in enumerate(digital_cow.total_states)
     }
     # convert_vector_to_1d(simulated_day, digital_cow.total_states, 0)
-    probability_index = {
-        probability: index for index, probability in enumerate(vector)
-    }
-    filtered = vector[vector > 0]
-    vector_probabilities = {probability_index[probability]: probability for probability in filtered}
+    nonzero_indices = np.where(vector > 0)[0]
+
     diet_cp = None
     intake = None
-    for index in vector_probabilities.keys():
+    for index in nonzero_indices:
         state = index_state[index]
-        if state.lactation_number == 0:
-            age = state.days_in_milk
-
-        else:
-            age = digital_cow.age + step_in_time
+        age = digital_cow.age + step_in_time
         if state.state == 'Exit':
             nitrogen = 0
         else:
@@ -1281,19 +1268,13 @@ def vector_nitrogen_emission(vector: np.ndarray, step_in_time: int, digital_cow:
                 nitrogen = manure_nitrogen_output(
                     dmi, diet_cp * 100,
                     milk, digital_cow.milk_cp)
-                # nitrogen = milk_nitrogen_output(
-                #     dmi, digital_cow.precision)[0]
 
             else:
                 nitrogen = total_manure_nitrogen_output(
                     lactating, intake)[0]
-                # nitrogen = urine_nitrogen_output(
-                #     lactating, intake, digital_cow.precision)[0]
-                # nitrogen = fecal_nitrogen_output(
-                #     lactating, dmi, intake, digital_cow.precision)[0]
-        nitrogen = nitrogen * vector_probabilities[index]
+        nitrogen = nitrogen * vector[index]
         vector_phenotype += nitrogen
-    return vector_phenotype
+    return vector_phenotype * step_size
 
 
 def set_korver_function_variables(lactation_number: int):
@@ -1350,13 +1331,13 @@ def set_korver_function_variables(lactation_number: int):
             birth_weight = np.random.normal(42, 0)
             mature_live_weight = np.random.normal(700, 0)
             growth_rate = np.random.normal(0.0037, 0)
-            pregnancy_parameter = np.random.normal(0.006, 0)
+            pregnancy_parameter = np.random.normal(0.0075, 0)
             max_decrease_live_weight = np.random.normal(-70, 0)
             duration_minimum_live_weight = np.random.normal(50, 0)
         case ln if ln > 2:
             birth_weight = np.random.normal(42, 0)
             mature_live_weight = np.random.normal(700, 0)
-            growth_rate = np.random.normal(0.0039, 0)
+            growth_rate = np.random.normal(0.0037, 0)
             pregnancy_parameter = np.random.normal(0.004, 0)
             max_decrease_live_weight = np.random.normal(-60, 0)
             duration_minimum_live_weight = np.random.normal(50, 0)
