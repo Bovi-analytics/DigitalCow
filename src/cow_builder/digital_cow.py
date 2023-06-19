@@ -315,6 +315,7 @@ class DigitalCow:
         insemination_window = self.herd.get_insemination_window(lactation_number)
 
         while lactation_number <= ln_limit:
+
             for age in age_list:
                 for life_state in self.__life_states:
                     self.milkbot_variables = set_milkbot_variables(lactation_number)
@@ -425,9 +426,10 @@ class DigitalCow:
 
             if vwp < days_in_milk <= vwp + insemination_window + dp_limit:
                 if not stop_pregnant_state:
-                    if vwp + insemination_window - 1 < days_in_milk < vwp + \
+                    if vwp + insemination_window < days_in_milk < vwp + \
                             insemination_window + dp_limit:
                         days_pregnant_start += 1
+                        days_pregnant = days_pregnant_start
                     if simulated_dp_limit != dp_limit:
                         simulated_dp_limit += 1
                     else:
@@ -440,6 +442,7 @@ class DigitalCow:
                                 last_pregnancy = True
 
             if days_in_milk == dim_limit - 1 and not_heifer:
+                age_list = [age + 1 for age in age_list]
                 for age in age_list:
                     new_state = State('Exit', dim_limit,
                                       lactation_number, 0, age, 0.0)
@@ -492,7 +495,6 @@ class DigitalCow:
                     lactation_number == 0:
                 days_in_milk = 0
                 age_list_ = [age + 1 for age in age_list_]
-                # age_list_ = age_list_.remove(age_list_[0])
                 age_list = age_list_
                 days_pregnant = 1
                 days_pregnant_start = 1
@@ -1458,24 +1460,28 @@ def set_milkbot_variables(lactation_number: int) -> tuple:
     :raises ValueError: If the lactation number is larger than the lactation
         number limit.
     """
-    # TODO Source
+    # (Hostens, M., et al, 2012)
     match lactation_number:
         case 0:
-            milkbot_variables = (0, 1, 1, 1)
+            milkbot_variables = (0, 1, 0, 1)
         case 1:
-            decay = 0.693 / 358
             milkbot_variables = (
-                np.random.normal(34.8, 0),
-                np.random.normal(29.6, 0),
+                np.random.normal(41.66, 0),
+                np.random.normal(29.07, 0),
                 np.random.normal(0, 0),
-                np.random.normal(decay, 0))
-        case ln if ln > 1:
-            decay = 0.693 / 240
+                np.random.normal(0.001383, 0))
+        case 2:
             milkbot_variables = (
-                np.random.normal(47.7, 0),
-                np.random.normal(22.1, 0),
+                np.random.normal(56.70, 0),
+                np.random.normal(21.41, 0),
                 np.random.normal(0, 0),
-                np.random.normal(decay, 0))
+                np.random.normal(0.002874, 0))
+        case ln if ln >= 3:
+            milkbot_variables = (
+                np.random.normal(59.69, 0),
+                np.random.normal(19.71, 0),
+                np.random.normal(0, 0),
+                np.random.normal(0.003262, 0))
         case _:
             raise ValueError
     return milkbot_variables
