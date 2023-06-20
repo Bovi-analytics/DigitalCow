@@ -188,6 +188,7 @@ class DigitalCow:
         self._milk_cp = milk_cp
         temp_state = State(state, days_in_milk, lactation_number,
                            days_pregnant, 0.0)
+
         if herd is not None:
             self.milkbot_variables = set_milkbot_variables(lactation_number)
             milk_output = milk_production(self.milkbot_variables,
@@ -259,41 +260,6 @@ class DigitalCow:
                                                   milk_output)
                                 total_states.append(new_state)
 
-                    case 'Pregnant':
-                        if vwp < days_in_milk <= vwp + insemination_window + dp_limit:
-                            if not stop_pregnant_state:
-                                while days_pregnant <= simulated_dp_limit:
-                                    temp_state = State(life_state,
-                                                       days_in_milk,
-                                                       lactation_number,
-                                                       days_pregnant,
-                                                       0.0)
-                                    milk_output = milk_production(
-                                        self.milkbot_variables,
-                                        temp_state,
-                                        self.herd.get_days_pregnant_limit(
-                                            temp_state.lactation_number),
-                                        self.herd.get_duration_dry(
-                                            temp_state.lactation_number))
-
-                                    new_state = State(life_state,
-                                                      days_in_milk,
-                                                      lactation_number,
-                                                      days_pregnant,
-                                                      milk_output)
-                                    total_states.append(new_state)
-                                    days_pregnant += 1
-                                if vwp + insemination_window < days_in_milk < vwp + \
-                                        insemination_window + dp_limit:
-                                    days_pregnant_start += 1
-                                days_pregnant = days_pregnant_start
-                                if simulated_dp_limit != dp_limit:
-                                    simulated_dp_limit += 1
-                                elif lactation_number == ln_limit:
-                                    if days_pregnant_start > dp_limit:
-                                        stop_pregnant_state = True
-                                    elif days_in_milk == vwp + dp_limit:
-                                        last_pregnancy = True
                     case 'DoNotBreed':
                         if days_in_milk > vwp + insemination_window and \
                                 lactation_number != 0:
@@ -303,6 +269,7 @@ class DigitalCow:
                                                   lactation_number, 0,
                                                   milk_output)
                                 total_states.append(new_state)
+
                             if last_pregnancy:
                                 self.milkbot_variables = set_milkbot_variables(
                                     lactation_number + 1)
@@ -325,6 +292,44 @@ class DigitalCow:
                                                       0,
                                                       milk_output)
                                     total_states.append(new_state)
+
+                    case 'Pregnant':
+                        if vwp < days_in_milk <= vwp + insemination_window + dp_limit:
+                            if not stop_pregnant_state:
+                                while days_pregnant <= simulated_dp_limit:
+                                    temp_state = State(life_state,
+                                                       days_in_milk,
+                                                       lactation_number,
+                                                       days_pregnant,
+                                                       0.0)
+                                    milk_output = milk_production(
+                                        self.milkbot_variables,
+                                        temp_state,
+                                        self.herd.get_days_pregnant_limit(
+                                            temp_state.lactation_number),
+                                        self.herd.get_duration_dry(
+                                            temp_state.lactation_number))
+                                    # TODO check if this is redundant with milk calculation above
+
+                                    new_state = State(life_state,
+                                                      days_in_milk,
+                                                      lactation_number,
+                                                      days_pregnant,
+                                                      milk_output)
+                                    total_states.append(new_state)
+                                    days_pregnant += 1
+                                if vwp + insemination_window < days_in_milk < vwp + \
+                                        insemination_window + dp_limit:
+                                    days_pregnant_start += 1
+                                days_pregnant = days_pregnant_start
+                                if simulated_dp_limit != dp_limit:
+                                    simulated_dp_limit += 1
+                                elif lactation_number == ln_limit:
+                                    if days_pregnant_start > dp_limit:
+                                        stop_pregnant_state = True
+                                    elif days_in_milk == vwp + dp_limit:
+                                        last_pregnancy = True
+
                     case 'Exit':
                         new_state = State(life_state, days_in_milk,
                                           lactation_number, 0,
@@ -353,6 +358,7 @@ class DigitalCow:
                 vwp = self.herd.get_voluntary_waiting_period(lactation_number)
                 insemination_window = self.herd.get_insemination_window(
                     lactation_number)
+
             else:
                 days_in_milk += 1
 
@@ -364,6 +370,7 @@ class DigitalCow:
                                               temp_state.lactation_number),
                                           self.herd.get_duration_dry(
                                               temp_state.lactation_number))
+
             if milk_output < self.herd.milk_threshold and not_heifer:
                 days_in_milk = 0
                 days_pregnant = 1
@@ -415,8 +422,10 @@ class DigitalCow:
             state_from.lactation_number)
         dp_limit = self.herd.get_days_pregnant_limit(state_from.lactation_number)
         duration_dry = self.herd.get_duration_dry(state_from.lactation_number)
+
         if state_to not in self.possible_new_states(state_from):
             return 0
+
         if state_from.days_in_milk == self._generated_days_in_milk or \
                 (state_from.days_in_milk == vwp + insemination_window +
                  dp_limit and state_from.lactation_number == 0) and \
@@ -515,12 +524,14 @@ class DigitalCow:
                                     not_above_insemination_cutoff_ *
                                     not_death_)
                             # chance staying open
+
                     case 'Pregnant':
                         return (pregnant_ *
                                 not_below_milk_threshold_ *
                                 not_above_insemination_cutoff_ *
                                 not_death_)
                         # chance becoming pregnant
+
                     case 'DoNotBreed':
                         if state_from.days_in_milk == vwp + insemination_window \
                                 and state_from.lactation_number != 0:
@@ -532,6 +543,7 @@ class DigitalCow:
                                     not_below_milk_threshold_ *
                                     not_death_)
                         # chance becoming dnb
+
                     case 'Exit':
                         if __probability_milk_below_threshold() == 1:
                             return 1
@@ -558,11 +570,13 @@ class DigitalCow:
                                     not_below_milk_threshold_ *
                                     not_death_)
                             # chance aborting the pregnancy
+
                     case 'Pregnant':
                         return (not_aborting_ *
                                 not_below_milk_threshold_ *
                                 not_death_)
                         # chance staying pregnant
+
                     case 'DoNotBreed':
                         if state_to.lactation_number == \
                                 state_from.lactation_number + 1:
@@ -575,6 +589,7 @@ class DigitalCow:
                                     not_below_milk_threshold_ *
                                     not_death_)
                             # chance aborting and becoming DNB
+
                     case 'Exit':
                         if __probability_milk_below_threshold() == 1:
                             return 1
@@ -630,6 +645,7 @@ class DigitalCow:
         insemination_window = self.herd.get_insemination_window(
             state_from.lactation_number)
         duration_dry = self.herd.get_duration_dry(state_from.lactation_number)
+
         match state_from.state:
             case 'Open':
                 if state_from.milk_output > self.herd.milk_threshold or \
@@ -654,6 +670,7 @@ class DigitalCow:
                             'Pregnant',
                             state_from.days_in_milk + 1,
                             state_from.lactation_number, 1, milk_output))
+
                     if state_from.days_in_milk >= vwp + insemination_window and \
                             state_from.lactation_number != 0:
                         self.milkbot_variables = set_milkbot_variables(
@@ -674,6 +691,7 @@ class DigitalCow:
                             'DoNotBreed',
                             state_from.days_in_milk + 1,
                             state_from.lactation_number, 0, milk_output))
+
                     elif state_from.days_in_milk < vwp + insemination_window:
                         self.milkbot_variables = set_milkbot_variables(
                             state_from.lactation_number)
@@ -692,6 +710,29 @@ class DigitalCow:
                             'Open',
                             state_from.days_in_milk + 1,
                             state_from.lactation_number, 0, milk_output))
+
+            case 'DoNotBreed':
+                if state_from.milk_output > self.herd.milk_threshold:
+                    self.milkbot_variables = set_milkbot_variables(
+                        state_from.lactation_number)
+                    temp_state = State('DoNotBreed',
+                                       state_from.days_in_milk + 1,
+                                       state_from.lactation_number,
+                                       0,
+                                       0.0)
+                    milk_output = milk_production(
+                        self.milkbot_variables,
+                        temp_state,
+                        self.herd.get_days_pregnant_limit(
+                            temp_state.lactation_number),
+                        self.herd.get_duration_dry(
+                            temp_state.lactation_number))
+                    if milk_output >= self.herd.milk_threshold:
+                        states_to.append(State(
+                            'DoNotBreed',
+                            state_from.days_in_milk + 1,
+                            state_from.lactation_number, 0, milk_output))
+
             case 'Pregnant':
                 if state_from.milk_output > self.herd.milk_threshold \
                         or state_from.lactation_number == 0 \
@@ -717,6 +758,7 @@ class DigitalCow:
                                 'DoNotBreed', state_from.days_in_milk + 1,
                                 state_from.lactation_number + 1, 0,
                                 milk_output))
+
                         else:
                             temp_state = State(
                                 'Open', 0,
@@ -732,6 +774,7 @@ class DigitalCow:
                                 'Open',
                                 0, state_from.lactation_number + 1,
                                 0, milk_output))
+
                     elif state_from.days_pregnant < dp_limit:
                         self.milkbot_variables = set_milkbot_variables(
                             state_from.lactation_number)
@@ -768,6 +811,7 @@ class DigitalCow:
                                 'Open',
                                 state_from.days_in_milk + 1,
                                 state_from.lactation_number, 0, milk_output))
+
                         elif state_from.days_in_milk >= vwp + insemination_window \
                                 and state_from.lactation_number != 0:
                             self.milkbot_variables = set_milkbot_variables(
@@ -787,29 +831,10 @@ class DigitalCow:
                                 'DoNotBreed',
                                 state_from.days_in_milk + 1,
                                 state_from.lactation_number, 0, milk_output))
-            case 'DoNotBreed':
-                if state_from.milk_output > self.herd.milk_threshold:
-                    self.milkbot_variables = set_milkbot_variables(
-                        state_from.lactation_number)
-                    temp_state = State('DoNotBreed',
-                                       state_from.days_in_milk + 1,
-                                       state_from.lactation_number,
-                                       0,
-                                       0.0)
-                    milk_output = milk_production(
-                        self.milkbot_variables,
-                        temp_state,
-                        self.herd.get_days_pregnant_limit(
-                            temp_state.lactation_number),
-                        self.herd.get_duration_dry(
-                            temp_state.lactation_number))
-                    if milk_output >= self.herd.milk_threshold:
-                        states_to.append(State(
-                            'DoNotBreed',
-                            state_from.days_in_milk + 1,
-                            state_from.lactation_number, 0, milk_output))
+
             case 'Exit':
                 states_to = []
+
             case _:
                 raise ValueError('The current state given is invalid.')
         return tuple(states_to)
@@ -822,6 +847,7 @@ class DigitalCow:
                f"\tAge: {self._age}\n" \
                f"\tHerd: {self.herd}\n" \
                f"\tCurrent state: {self.current_life_state}"
+        # TODO fix parameters
 
     def __repr__(self):
         return f"DigitalCow(days_in_milk={self.current_days_in_milk}, " \
@@ -831,6 +857,7 @@ class DigitalCow:
                f"age={self._age}, " \
                f"herd={self.herd}, " \
                f"state={self.current_life_state})"
+        # TODO fix parameters
 
     @property
     def herd(self) -> DigitalHerd:
@@ -1028,6 +1055,7 @@ def state_probability_generator(digital_cow: DigitalCow) -> \
     state_index = {
         state: index for index, state in enumerate(digital_cow.total_states)
     }
+
     for state_from in state_index:
         new_states = digital_cow.possible_new_states(state_from)
         if not new_states:
@@ -1071,6 +1099,7 @@ def convert_vector_to_1d(simulated_day: tuple, total_states: tuple, group_by: in
         index: probability for index, probability in enumerate(vector)
     }
     one_dimensional_vector = {}
+
     for state in state_index:
         index = state_index[state]
         probability = vector_index[index]
@@ -1117,34 +1146,43 @@ def convert_vector_to_1d(simulated_day: tuple, total_states: tuple, group_by: in
     return one_dimensional_vector
 
 
-def vector_milk_production(vector: np.ndarray, step_in_time: int, step_size: int, digital_cow: DigitalCow):
+def vector_milk_production(vector: np.ndarray, step_in_time: int, step_size: int, digital_cow: DigitalCow,
+                           intermediate_accumulator: dict[int, float]):
     """
     """
     vector_phenotype = 0
+    not_exit_states = 0
+    not_exit_output = 0
     index_state = {
         index: state for index, state in enumerate(digital_cow.total_states)
     }
-    # convert_vector_to_1d(simulated_day, digital_cow.total_states, 0)
     nonzero_indices = np.where(vector > 0)[0]
+
     for index in nonzero_indices:
         state = index_state[index]
         milk = state.milk_output * vector[index]
         vector_phenotype += milk
+        if state.state != 'Exit':
+            not_exit_states += 1
+            not_exit_output += state.milk_output
+    intermediate_accumulator[step_in_time] = not_exit_output / not_exit_states
     return vector_phenotype * step_size
 
 
-def vector_nitrogen_emission(vector: np.ndarray, step_in_time: int, step_size: int, digital_cow: DigitalCow):
+def vector_nitrogen_emission(vector: np.ndarray, step_in_time: int, step_size: int, digital_cow: DigitalCow,
+                             intermediate_accumulator: dict[int, float]):
     """
     """
     vector_phenotype = 0
+    not_exit_states = 0
+    not_exit_output = 0
     index_state = {
         index: state for index, state in enumerate(digital_cow.total_states)
     }
-    # convert_vector_to_1d(simulated_day, digital_cow.total_states, 0)
     nonzero_indices = np.where(vector > 0)[0]
-
     diet_cp = None
     intake = None
+
     for index in nonzero_indices:
         state = index_state[index]
         age = digital_cow.age + step_in_time
@@ -1159,8 +1197,7 @@ def vector_nitrogen_emission(vector: np.ndarray, step_in_time: int, step_size: i
                 state.lactation_number)
             close_up = dry_period / 2
             milk = state.milk_output
-            bw = calculate_body_weight(
-                state, age, vwp)
+            bw = calculate_body_weight(state, age)
             dmi = calculate_dmi(state, bw)
             lactating = True
             if state.lactation_number == 0 or state.days_pregnant >= \
@@ -1195,15 +1232,20 @@ def vector_nitrogen_emission(vector: np.ndarray, step_in_time: int, step_size: i
             else:
                 nitrogen = total_manure_nitrogen_output(
                     lactating, intake)[0]
+
+            not_exit_states += 1
+            not_exit_output += nitrogen
+
         nitrogen = nitrogen * vector[index]
         vector_phenotype += nitrogen
+    intermediate_accumulator[step_in_time] = not_exit_output / not_exit_states
     return vector_phenotype * step_size
 
 
 def set_korver_function_variables(lactation_number: int):
     """
-    Returns a set of variables used for the Korver function based on a given
-    lactation number.
+    Returns a set of variables used for a heifer body weight function
+    and the Korver function based on a given lactation number.
 
     :param lactation_number: The lactation number of a cow.
     :type lactation_number: int
@@ -1219,22 +1261,16 @@ def set_korver_function_variables(lactation_number: int):
         - duration_minimum_live_weight: The number of days for which the live weight
             is lowest.
     :rtype:
-        - birth_weight: Decimal
-        - mature_live_weight: Decimal | None
-        - growth_rate: Decimal | None
-        - pregnancy_parameter: Decimal | None
-        - max_decrease_live_weight: Decimal | None
-        - duration_minimum_live_weight: Decimal | None
+        - birth_weight: float
+        - mature_live_weight: float | None
+        - growth_rate: float
+        - pregnancy_parameter: float | None
+        - max_decrease_live_weight: float | None
+        - duration_minimum_live_weight: float | None
     """
-    # parameter values from (J.A.M. Van Arendonk, 1985):
-    # birth_weight = 42
-    # mature_live_weight = 600
-    # growth_rate = 0.0028
-    # pregnancy_parameter = 0.0187
-    # max_decrease_live_weight = 50
-    # duration_minimum_live_weight = 75
 
     # Source: (A. De Vries, 2006)
+    # fitted on data:
     match lactation_number:
         case 0:
             birth_weight = np.random.normal(42, 0)
@@ -1272,7 +1308,7 @@ def set_korver_function_variables(lactation_number: int):
 
 
 @cache
-def calculate_body_weight(state: State, age: int, vwp: int) -> float:
+def calculate_body_weight(state: State, age: int) -> float:
     """
     Calculates the body weight of a cow for a specific state.
     
@@ -1281,9 +1317,6 @@ def calculate_body_weight(state: State, age: int, vwp: int) -> float:
     :type state: State
     :param age: The age of the cow in days.
     :type age: int
-    :param vwp: The voluntary waiting period in days of the cow for the specific
-        lactation of the state.
-    :type vwp: int
     :return: The body weight of the cow in kg in the state that is given.
     :rtype: Decimal
     """
@@ -1297,7 +1330,7 @@ def calculate_body_weight(state: State, age: int, vwp: int) -> float:
         start_weight = 27.2
         bw = min(max(birth_weight, start_weight + (growth_rate * state.days_in_milk)), max_weight)
     else:
-        dpc = (state.days_in_milk - vwp - 50)  # d after conception - 50
+        dpc = (state.days_pregnant - 50)  # d after conception - 50
         if dpc < 0:
             dpc = 0
         bw = (mature_live_weight *
@@ -1341,7 +1374,7 @@ def set_milkbot_variables(lactation_number: int) -> tuple:
                 np.random.normal(21.41, 0),
                 np.random.normal(0, 0),
                 np.random.normal(0.002874, 0))
-        case ln if ln >= 3:
+        case ln if ln > 2:
             milkbot_variables = (
                 np.random.normal(59.69, 0),
                 np.random.normal(19.71, 0),
@@ -1360,18 +1393,17 @@ def milk_production(milkbot_variables: tuple, state: State, dp_limit: int,
 
     :param milkbot_variables: A tuple containing parameters for the MilkBot algorithm.
     :type milkbot_variables: tuple
-    :param state: A state object for which milk production must be calculated.
+    :param state: A ``State`` object for which milk production must be calculated.
     :type state: State
     :param dp_limit: The maximum number of days a cow can be pregnant.
     :type dp_limit: int
-    :param duration_dry: The number of days before calving, when a cow is not
+    :param duration_dry: The number of days before calving when a cow is not
         being milked, otherwise known as the Dry period.
     :type duration_dry: int
     :returns: The milk production for the given days in milk in kg.
-    :rtype: Decimal
+    :rtype: float
     """
-    # Source (Hostens M., et al., 2012)
-    # TODO
+    # Source (Erlich, et al., 2011)
     if state.lactation_number == 0 or state.state == 'Exit' \
             or state.days_pregnant >= dp_limit - duration_dry:
         return 0.0
@@ -1393,7 +1425,7 @@ def calculate_dmi(state: State, body_weight: float):
     :param body_weight: The body weight of the cow in kg on the specific day for which
         the dry matter intake must be calculated.
     :return: The dry matter intake in kg for the specific state that is given.
-    :rtype: Decimal
+    :rtype: float
     """
     # Source: (Giordano J.O., et al., 2012) (Cabrera)
     # doi: http://dx.doi.org/10.3168/jds.2011-4972
@@ -1406,22 +1438,21 @@ def calculate_dmi(state: State, body_weight: float):
 def manure_nitrogen_output(dmi: float, diet_cp: float, milk_yield: float,
                            milk_cp: float):
     """
-    Returns results from a mass balance equation that estimates daily nitrogen 
-    emission in manure for lactating cows when dry-matter intake, 
-    dietary crude protein concentration, milk yield and 
-    milk crude protein concentration are known.
+    Returns the estimated daily nitrogen emission in manure for lactating cows 
+    when dry-matter intake, dietary crude protein concentration, 
+    milk yield and milk crude protein concentration are known.
     
     :param dmi: The dry-matter intake of the cow in kg.
-    :type dmi: Decimal
+    :type dmi: float
     :param diet_cp: The dietary crude protein concentration in %.
-    :type diet_cp: Decimal
+    :type diet_cp: float
     :param milk_yield: The milk output of the cow in kg.
-    :type milk_yield: Decimal
+    :type milk_yield: float
     :param milk_cp: The crude protein concentration in the milk of the cow in %.
-    :type milk_cp: Decimal
+    :type milk_cp: float
     :return: Manure nitrogen output in g.
-    :rtype: Decimal
-    """""
+    :rtype: float
+    """
     # NRC 8th revised edition (2021)
     manure_n_output = ((dmi * diet_cp) / 0.625) - ((milk_yield * milk_cp) / 0.638) - 5
     return manure_n_output
@@ -1429,22 +1460,22 @@ def manure_nitrogen_output(dmi: float, diet_cp: float, milk_yield: float,
 
 def urine_nitrogen_output(lactating: bool, nitrogen_intake: float):
     """
-    Returns the estimated daily nitrogen output for a cow's urine based on its
-    nitrogen intake.
+    Returns the estimated daily nitrogen emission for a cow's urine
+    based on its nitrogen intake.
 
     :param lactating: A boolean deciding which formulas to use based on
         whether the cow is lactating or not.
     :type lactating: bool
     :param nitrogen_intake: The amount of nitrogen consumed by the cow in g per day.
-    :type nitrogen_intake: Decimal
+    :type nitrogen_intake: float
     :return:
         - mu_n_output: The mean nitrogen output in g.
         - min_n_output: The minimum nitrogen output in g.
         - max_n_output: The maximum nitrogen output in g.
     :rtype:
-        - mu_n_output: Decimal
-        - min_n_output: Decimal
-        - max_n_output: Decimal
+        - mu_n_output: float
+        - min_n_output: float
+        - max_n_output: float
     """
     # NRC 8th revised edition (2021)
     if lactating:
@@ -1462,24 +1493,24 @@ def urine_nitrogen_output(lactating: bool, nitrogen_intake: float):
 
 def fecal_nitrogen_output(lactating: bool, dmi: float, nitrogen_intake: float):
     """
-    Returns the estimated daily nitrogen output for a cow's feces based on its
-    nitrogen intake or dmi.
+    Returns the estimated daily nitrogen emission for a cow's feces
+    based on its nitrogen intake or dmi.
 
     :param lactating: A boolean deciding which formulas to use based on
         whether the cow is lactating or not.
     :type lactating: bool
     :param dmi: The dry matter intake of the cow in kg per day.
-    :type dmi: Decimal
+    :type dmi: float
     :param nitrogen_intake: The amount of nitrogen consumed by the cow in g per day.
-    :type nitrogen_intake: Decimal
+    :type nitrogen_intake: float
     :return:
         - mu_n_output: The mean nitrogen output in g.
         - min_n_output: The minimum nitrogen output in g.
         - max_n_output: The maximum nitrogen output in g.
     :rtype:
-        - mu_n_output: Decimal
-        - min_n_output: Decimal
-        - max_n_output: Decimal
+        - mu_n_output: float
+        - min_n_output: float
+        - max_n_output: float
     """
     # NRC 8th revised edition (2021)
     if lactating:
@@ -1497,8 +1528,8 @@ def fecal_nitrogen_output(lactating: bool, dmi: float, nitrogen_intake: float):
 
 def total_manure_nitrogen_output(lactating: bool, nitrogen_intake: float):
     """
-    Returns estimated daily nitrogen output of a cow's manure (urine and feces)
-    based on its nitrogen intake.
+    Returns estimated daily nitrogen emission of a cow's manure
+    (urine and feces) based on its nitrogen intake.
 
     :param lactating: A boolean deciding which formulas to use based on
         whether the cow is lactating or not.
@@ -1510,9 +1541,9 @@ def total_manure_nitrogen_output(lactating: bool, nitrogen_intake: float):
         - min_n_output: The minimum nitrogen output in g.
         - max_n_output: The maximum nitrogen output in g.
     :rtype:
-        - mu_n_output: Decimal
-        - min_n_output: Decimal
-        - max_n_output: Decimal
+        - mu_n_output: float
+        - min_n_output: float
+        - max_n_output: float
     """
 
     # NRC 8th revised edition (2021)
@@ -1529,50 +1560,47 @@ def total_manure_nitrogen_output(lactating: bool, nitrogen_intake: float):
     return mu_n_output, min_n_output, max_n_output
 
 
-def milk_nitrogen_output(dmi, precision):
+def milk_nitrogen_output(dmi: float):
     """
     Returns the estimated daily nitrogen output in a cow's milk based on its dry
     matter intake.
 
     :param dmi: The dry matter intake of the cow in kg per day.
-    :type dmi: Decimal
-    :param precision: A decimal number that determines the number of decimal places
-        to be used.
-    :type precision: Decimal
+    :type dmi: float
     :return:
         - mu_n_output: The mean nitrogen output in g.
         - min_n_output: The minimum nitrogen output in g.
         - max_n_output: The maximum nitrogen output in g.
     :rtype:
-        - mu_n_output: Decimal
-        - min_n_output: Decimal
-        - max_n_output: Decimal
+        - mu_n_output: float
+        - min_n_output: float
+        - max_n_output: float
     """
     # NRC 8th revised edition (2021)
     # root-mean-square prediction error: 14%
-    mu_n_output = (-19.0 + (8.13 * dmi)).quantize(precision)
-    min_n_output = (-22.21 + (7.885 * dmi)).quantize(precision)
-    max_n_output = (-15.79 + (8.375 * dmi)).quantize(precision)
+    mu_n_output = (-19.0 + (8.13 * dmi))
+    min_n_output = (-22.21 + (7.885 * dmi))
+    max_n_output = (-15.79 + (8.375 * dmi))
     return mu_n_output, min_n_output, max_n_output
 
 
-def fecal_phosphor_output(phosphor_intake, milk_yield):
+def fecal_phosphor_output(phosphor_intake: float, milk_yield: float):
     """
-    Calculates the daily phosphor output of a cow's feces based on the cow's
+    Calculates the daily phosphor emission of a cow's feces based on the cow's
     phosphor intake and milk production.
 
     :param phosphor_intake: The amount of phosphor consumed by the cow in g per day.
-    :type phosphor_intake: Decimal
+    :type phosphor_intake: float
     :param milk_yield: The milk production of the cow in kg per day.
-    :type milk_yield: Decimal
+    :type milk_yield: float
     :return:
         - mu_p_output: The mean phosphor output in g.
         - min_p_output: The minimum phosphor output in g.
         - max_p_output: The maximum phosphor output in g.
     :rtype:
-        - mu_p_output: Decimal
-        - min_p_output: Decimal
-        - max_p_output: Decimal
+        - mu_p_output: float
+        - min_p_output: float
+        - max_p_output: float
     """
     # NRC 8th revised edition (2021)
     mu_p_output = (0.73 * phosphor_intake) - (0.37 * milk_yield)
