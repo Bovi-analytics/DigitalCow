@@ -134,11 +134,10 @@ class DigitalHerd:
 
     ************************************************************
     """
-    def __init__(self, mu_age_at_first_heat=365, sigma_age_at_first_heat=0,
-                 vwp=(365, 80, 60), insemination_window=(100, 100, 100),
+    def __init__(self, vwp=(365, 80, 60), insemination_window=(100, 100, 100),
                  milk_threshold=10, days_in_milk_limit=1000,
                  lactation_number_limit=9, days_pregnant_limit=(279, 280, 282),
-                 duration_dry=(60, 60)):
+                 duration_dry=(60, 60), mu_age_at_first_heat=365, sigma_age_at_first_heat=0):
         """
         Initializes an instance of a DigitalHerd object.
 

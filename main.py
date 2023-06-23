@@ -5,8 +5,6 @@ from typing import Callable
 
 import matplotlib.pyplot as plt
 import numpy as np
-from _decimal import Decimal
-
 from cow_builder.digital_cow import DigitalCow, state_probability_generator, \
     vector_milk_production, vector_nitrogen_emission
 from cow_builder.digital_herd import DigitalHerd
@@ -23,26 +21,20 @@ import scipy
 def chain_simulator_test():
     logging.basicConfig()
     just_another_herd = DigitalHerd()
-    # just_another_cow = DigitalCow(
-    #     days_in_milk=650, lactation_number=0, days_pregnant=275,
-    #     age=650, herd=just_another_herd, state='Pregnant')
+
+    cow = DigitalCow(
+        days_in_milk=0, lactation_number=0, days_pregnant=0,
+        age=0, herd=just_another_herd, state='Open')
+    cow.generate_total_states(dim_limit=1000, ln_limit=9)
+
     just_another_cow = DigitalCow(
         days_in_milk=0, lactation_number=1, days_pregnant=0,
         age=660, herd=just_another_herd, state='Open')
-    # just_another_cow = DigitalCow(
-    #     days_in_milk=0, lactation_number=0, days_pregnant=0,
-    #     age=0, herd=just_another_herd, state='Open')
-    start = time.perf_counter()
     just_another_cow.generate_total_states(dim_limit=1000, ln_limit=9)
-    end = time.perf_counter()
-    print(f"duration for generating states: {end - start} seconds.")
 
-    # start = time.perf_counter()
     # tm = array_assembler(just_another_cow.node_count,
     #                      state_probability_generator(just_another_cow))
     # scipy.sparse.save_npz('transition_matrices/transition_matrix_2_lactations.npz', tm, True)
-    # end = time.perf_counter()
-    # print(f"duration making TM: {end - start} seconds.")
 
     tm = scipy.sparse.load_npz('transition_matrices/transition_matrix_9_lactations.npz')
 
@@ -51,44 +43,72 @@ def chain_simulator_test():
     print(
         f"validation of the probabilities in the matrix being positive: {validate_matrix_negative(tm)}")
 
-    simulated_days = 560
-    # simulated_days = 6185
-    steps = 1
-    simulation = state_vector_processor(just_another_cow.initial_state_vector, tm,
-                                        simulated_days, steps)
+    simulated_days = 4900
+    steps = 14
+    simulation1 = state_vector_processor(cow.initial_state_vector, tm,
+                                         simulated_days, steps)
+
     start = time.perf_counter()
-    milk_accumulator = {}
-    nitrogen_accumulator = {}
-    callbacks = {
-        "milk": partial(vector_milk_production, digital_cow=just_another_cow,
-                        intermediate_accumulator=milk_accumulator),
-        "nitrogen": partial(vector_nitrogen_emission, digital_cow=just_another_cow,
-                            intermediate_accumulator=nitrogen_accumulator)
+    milk_accumulator1 = {}
+    nitrogen_accumulator1 = {}
+    callbacks1 = {
+        "milk": partial(vector_milk_production, digital_cow=cow,
+                        intermediate_accumulator=milk_accumulator1),
+        "nitrogen": partial(vector_nitrogen_emission, digital_cow=cow,
+                            intermediate_accumulator=nitrogen_accumulator1)
     }
-    accumulated = simulation_accumulator(simulation, **callbacks)
+    accumulated1 = simulation_accumulator(simulation1, **callbacks1)
     end = time.perf_counter()
     print(f"The time needed to iterate over the simulation "
           f"and calculate phenotype output: {end - start} seconds.")
-    print(f"accumulated: {accumulated}")
+    print(f"accumulated: {accumulated1}")
 
-    # plt.figure()
-    # xpoints = np.asarray([key for key in milk_accumulator.keys()])
-    # ypoints = np.asarray([value for value in milk_accumulator.values()])
-    # plt.plot(xpoints, ypoints)
-    # plt.title('Average milk production per day in simulation.')
-    # plt.ylabel('Milk production (kg)')
-    # plt.xlabel('Days in simulation')
-    # plt.show()
-    # plt.close()
+    simulation2 = state_vector_processor(just_another_cow.initial_state_vector, tm,
+                                         simulated_days, steps)
+
+    start = time.perf_counter()
+    milk_accumulator2 = {}
+    nitrogen_accumulator2 = {}
+    callbacks2 = {
+        "milk": partial(vector_milk_production, digital_cow=just_another_cow,
+                        intermediate_accumulator=milk_accumulator2),
+        "nitrogen": partial(vector_nitrogen_emission, digital_cow=just_another_cow,
+                            intermediate_accumulator=nitrogen_accumulator2)
+    }
+    accumulated2 = simulation_accumulator(simulation2, **callbacks2)
+    end = time.perf_counter()
+    print(f"The time needed to iterate over the simulation "
+          f"and calculate phenotype output: {end - start} seconds.")
+    print(f"accumulated: {accumulated2}")
 
     plt.figure()
-    xpoints = np.asarray([key for key in nitrogen_accumulator.keys()])
-    ypoints = np.asarray([value for value in nitrogen_accumulator.values()])
-    plt.plot(xpoints, ypoints)
-    plt.title('Average nitrogen emission per day in simulation.')
+    xpoints = np.asarray([key for key in milk_accumulator1.keys()])
+    ypoints = np.asarray([value for value in milk_accumulator1.values()])
+    plt.plot(xpoints, ypoints, label='cow 1')
+
+    xpoints = np.asarray([key for key in milk_accumulator2.keys()])
+    ypoints = np.asarray([value for value in milk_accumulator2.values()])
+    plt.plot(xpoints, ypoints, label='cow 2')
+    plt.title('Average milk production per day in simulation')
+    plt.ylabel('Milk production (kg)')
+    plt.xlabel('Days in simulation')
+    plt.legend()
+    plt.savefig('img/complete_simulation_2_cows_4900_days_milk_production')
+    plt.close()
+
+    plt.figure()
+    xpoints = np.asarray([key for key in nitrogen_accumulator1.keys()])
+    ypoints = np.asarray([value for value in nitrogen_accumulator1.values()])
+    plt.plot(xpoints, ypoints, label='cow 1')
+
+    xpoints = np.asarray([key for key in nitrogen_accumulator2.keys()])
+    ypoints = np.asarray([value for value in nitrogen_accumulator2.values()])
+    plt.plot(xpoints, ypoints, label='cow 2')
+    plt.title('Average nitrogen emission per day in simulation')
     plt.ylabel('Nitrogen emission (g)')
     plt.xlabel('Days in simulation')
-    plt.show()
+    plt.legend()
+    plt.savefig('img/complete_simulation_2_cows_4900_days_nitrogen_emission')
     plt.close()
 
     print("simulation successful.")

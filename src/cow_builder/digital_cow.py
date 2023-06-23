@@ -309,7 +309,6 @@ class DigitalCow:
                                             temp_state.lactation_number),
                                         self.herd.get_duration_dry(
                                             temp_state.lactation_number))
-                                    # TODO check if this is redundant with milk calculation above
 
                                     new_state = State(life_state,
                                                       days_in_milk,
@@ -318,6 +317,7 @@ class DigitalCow:
                                                       milk_output)
                                     total_states.append(new_state)
                                     days_pregnant += 1
+
                                 if vwp + insemination_window < days_in_milk < vwp + \
                                         insemination_window + dp_limit:
                                     days_pregnant_start += 1
@@ -1165,7 +1165,10 @@ def vector_milk_production(vector: np.ndarray, step_in_time: int, step_size: int
         if state.state != 'Exit':
             not_exit_states += 1
             not_exit_output += state.milk_output
-    intermediate_accumulator[step_in_time] = not_exit_output / not_exit_states
+    try:
+        intermediate_accumulator[step_in_time] = not_exit_output / not_exit_states
+    except ZeroDivisionError:
+        intermediate_accumulator[step_in_time] = 0
     return vector_phenotype * step_size
 
 
@@ -1200,8 +1203,7 @@ def vector_nitrogen_emission(vector: np.ndarray, step_in_time: int, step_size: i
             bw = calculate_body_weight(state, age)
             dmi = calculate_dmi(state, bw)
             lactating = True
-            if state.lactation_number == 0 or state.days_pregnant >= \
-                    dp_limit - dry_period:
+            if state.lactation_number == 0:
                 lactating = False
 
             if state.days_pregnant >= dp_limit - close_up or (
@@ -1238,7 +1240,10 @@ def vector_nitrogen_emission(vector: np.ndarray, step_in_time: int, step_size: i
 
         nitrogen = nitrogen * vector[index]
         vector_phenotype += nitrogen
-    intermediate_accumulator[step_in_time] = not_exit_output / not_exit_states
+    try:
+        intermediate_accumulator[step_in_time] = not_exit_output / not_exit_states
+    except ZeroDivisionError:
+        intermediate_accumulator[step_in_time] = 0
     return vector_phenotype * step_size
 
 
@@ -1288,7 +1293,7 @@ def set_korver_function_variables(lactation_number: int):
             duration_minimum_live_weight = np.random.normal(50, 0)
         case 2:
             birth_weight = np.random.normal(42, 0)
-            mature_live_weight = np.random.normal(700, 0)
+            mature_live_weight = np.random.normal(695, 0)
             growth_rate = np.random.normal(0.0037, 0)
             pregnancy_parameter = np.random.normal(0.0075, 0)
             max_decrease_live_weight = np.random.normal(-70, 0)
@@ -1334,11 +1339,11 @@ def calculate_body_weight(state: State, age: int) -> float:
         if dpc < 0:
             dpc = 0
         bw = (mature_live_weight *
-              math.pow((1 - (1 - math.pow((birth_weight / mature_live_weight), (1 / 3))) *
-                        math.exp(-growth_rate * age)), 3) +
+              pow((1 - (1 - pow((birth_weight / mature_live_weight), (1 / 3))) *
+                   math.exp(-growth_rate * age)), 3) +
               (max_decrease_live_weight * (state.days_in_milk / duration_minimum_live_weight) *
                math.exp(1 - (state.days_in_milk / duration_minimum_live_weight))) +
-              (math.pow(pregnancy_parameter, 3) * math.pow(dpc, 3)))
+              (pow(pregnancy_parameter, 3) * pow(dpc, 3)))
     return bw
 
 
@@ -1411,7 +1416,7 @@ def milk_production(milkbot_variables: tuple, state: State, dp_limit: int,
     ramp = milkbot_variables[1]
     offset = milkbot_variables[2]
     decay = milkbot_variables[3]
-    return scale * (1 - (pow(math.e, ((offset - state.days_in_milk) / ramp)) / 2)) * pow(math.e, -decay * state.days_in_milk)
+    return scale * (1 - (math.exp(((offset - state.days_in_milk) / ramp)) / 2)) * math.exp(-decay * state.days_in_milk)
 
 
 @cache
@@ -1427,11 +1432,11 @@ def calculate_dmi(state: State, body_weight: float):
     :return: The dry matter intake in kg for the specific state that is given.
     :rtype: float
     """
-    # Source: (Giordano J.O., et al., 2012) (Cabrera)
+    # Source: (Giordano J.O., et al., 2012)
     # doi: http://dx.doi.org/10.3168/jds.2011-4972
-    fcm_dim = state.milk_output * 0.04  # kg (fat corrected milk) 4% FCM production
-    dmi = (0.372 * fcm_dim + 0.0968 * pow(body_weight, 0.75)) * \
-          (1 - pow(math.e, (-0.192 * ((state.days_in_milk / 7) + 3.67))))
+    fcm_dim = state.milk_output * 1  # kg (fat corrected milk) multiplier when working with variable fat content.
+    dmi = ((0.372 * fcm_dim + (0.0968 * pow(body_weight, 0.75))) *
+           (1 - math.exp((-0.192 * ((state.days_in_milk / 7) + 3.67)))))
     return dmi
 
 
