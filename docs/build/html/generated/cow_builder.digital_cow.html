@@ -1,0 +1,1124 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="cow_builder.digital_herd module" href="cow_builder.digital_herd.html" /><link rel="prev" title="cow_builder package" href="cow_builder.html" />
+
+    <!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20 -->
+        <title>cow_builder.digital_cow module - Cow builder 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Cow builder 0.1 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">Cow builder 0.1 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../api.html">API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current has-children"><a class="reference internal" href="cow_builder.html">cow_builder package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of cow_builder package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">cow_builder.digital_cow module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cow_builder.digital_herd.html">cow_builder.digital_herd module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cow_builder.state.html">cow_builder.state module</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current has-children"><a class="reference internal" href="modules.html">src</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of src</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3 current has-children"><a class="reference internal" href="cow_builder.html">cow_builder package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of cow_builder package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l4 current current-page"><a class="current reference internal" href="#">cow_builder.digital_cow module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cow_builder.digital_herd.html">cow_builder.digital_herd module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cow_builder.state.html">cow_builder.state module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="module-cow_builder.digital_cow">
+<span id="cow-builder-digital-cow-module"></span><h1>cow_builder.digital_cow module<a class="headerlink" href="#module-cow_builder.digital_cow" title="Permalink to this heading">#</a></h1>
+<dl class="field-list simple">
+<dt class="field-odd">module<span class="colon">:</span></dt>
+<dd class="field-odd"><p>digital_cow</p>
+</dd>
+<dt class="field-even">module author<span class="colon">:</span></dt>
+<dd class="field-even"><p>Gabe van den Hoeven</p>
+</dd>
+<dt class="field-odd">synopsis<span class="colon">:</span></dt>
+<dd class="field-odd"><p>This module contains the DigitalCow class which represents a cow in a
+dairy herd, as well as some functions that it uses.</p>
+</dd>
+</dl>
+<section id="how-to-use-this-module">
+<h2>How To Use This Module<a class="headerlink" href="#how-to-use-this-module" title="Permalink to this heading">#</a></h2>
+<p>(See the individual classes, methods, and attributes for details.)</p>
+<p><em>Values in this HowTo are examples, see documentation of each class or function
+for details on the default values.</em></p>
+<section id="import-the-classes-digitalcow-and-digitalherd">
+<h3>1. Import the classes DigitalCow and DigitalHerd:<a class="headerlink" href="#import-the-classes-digitalcow-and-digitalherd" title="Permalink to this heading">#</a></h3>
+<p>First import the DigitalCow class:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">cow_builder.digital_cow</span> <span class="pre">import</span> <span class="pre">DigitalCow</span></code></p>
+</div></blockquote>
+<p>You will also need to import the DigitalHerd class from the digital_herd module:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">cow_builder.digital_herd</span> <span class="pre">import</span> <span class="pre">DigitalHerd</span></code></p>
+</div></blockquote>
+</section>
+<hr class="docutils" />
+<section id="create-a-digitalcow-and-digitalherd-object">
+<h3>2. Create a DigitalCow and DigitalHerd object:<a class="headerlink" href="#create-a-digitalcow-and-digitalherd-object" title="Permalink to this heading">#</a></h3>
+<p>A DigitalCow object can be made without a DigitalHerd object,
+however it won’t have full functionality until a DigitalHerd is added as its herd.</p>
+<ol class="loweralpha">
+<li><dl>
+<dt>Without a DigitalHerd object:</dt><dd><ol class="arabic">
+<li><p>Without parameters:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">cow</span> <span class="pre">=</span> <span class="pre">DigitalCow()</span></code></p>
+</div></blockquote>
+</li>
+<li><p>With parameters:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">cow</span> <span class="pre">=</span> <span class="pre">DigitalCow(days_in_milk=245,</span> <span class="pre">lactation_number=3,</span>
+<span class="pre">days_pregnant=165,</span> <span class="pre">age_at_first_heat=371,</span> <span class="pre">age=2079,</span> <span class="pre">state='Pregnant')</span></code></p>
+</div></blockquote>
+</li>
+</ol>
+<p><em>These parameters may not be all available parameters. Look at each class’
+documentation for details.</em></p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>With a DigitalHerd object:</dt><dd><ol class="arabic">
+<li><p>Without parameters:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">a_herd</span> <span class="pre">=</span> <span class="pre">DigitalHerd()</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">cow</span> <span class="pre">=</span> <span class="pre">DigitalCow(herd=a_herd)</span></code></p>
+</div></blockquote>
+</li>
+<li><p>With parameters:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">a_herd</span> <span class="pre">=</span> <span class="pre">DigitalHerd(vwp=[365,</span> <span class="pre">90,</span> <span class="pre">70],</span> <span class="pre">insemination_window=[110,</span> <span class="pre">100,</span> <span class="pre">90],</span>
+<span class="pre">milk_threshold=Decimal(&quot;12&quot;),</span> <span class="pre">duration_dry=[70,</span> <span class="pre">50])</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">cow</span> <span class="pre">=</span> <span class="pre">DigitalCow(days_in_milk=67,</span> <span class="pre">lactation_number=1,</span>
+<span class="pre">days_pregnant=0,</span> <span class="pre">age=767,</span> <span class="pre">herd=a_herd,</span> <span class="pre">state='Open')</span></code></p>
+</div></blockquote>
+</li>
+</ol>
+<p><em>These parameters may not be all available parameters. Look at each class’
+documentation for details.</em></p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>Set the herd of the DigitalCow:</dt><dd><ol class="arabic">
+<li><p>Sets the DigitalHerd as the herd of the DigitalCow:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">a_herd</span> <span class="pre">=</span> <span class="pre">DigitalHerd()</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">cow</span> <span class="pre">=</span> <span class="pre">DigitalCow(herd=a_herd)</span></code></p>
+</div></blockquote>
+</li>
+<li><p>Overwrites the DigitalHerd as the herd of the DigitalCow:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">a_herd</span> <span class="pre">=</span> <span class="pre">DigitalHerd()</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">another_herd</span> <span class="pre">=</span> <span class="pre">DigitalHerd()</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">cow</span> <span class="pre">=</span> <span class="pre">DigitalCow(herd=a_herd)</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">cow.herd</span> <span class="pre">=</span> <span class="pre">another_herd</span></code></p>
+</div></blockquote>
+</li>
+</ol>
+<p><em>There are other methods that alter the herd of the cow using functions from the
+DigitalHerd class. These are described in the digital_herd module.</em></p>
+</dd>
+</dl>
+</li>
+</ol>
+</section>
+<hr class="docutils" />
+<section id="generate-states-for-the-digitalcow-object">
+<h3>3. Generate states for the DigitalCow object:<a class="headerlink" href="#generate-states-for-the-digitalcow-object" title="Permalink to this heading">#</a></h3>
+<p>Generate states for the cow with using the <code class="docutils literal notranslate"><span class="pre">generate_total_states()</span></code> function:</p>
+<ol class="loweralpha">
+<li><p>without parameters:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">cow.generate_total_state()</span></code></p>
+</div></blockquote>
+</li>
+</ol>
+<p>Here the <code class="docutils literal notranslate"><span class="pre">days_in_milk_limit</span></code> and <code class="docutils literal notranslate"><span class="pre">lactation_number_limit</span></code> variables from the
+herd are used.</p>
+<ol class="loweralpha" start="2">
+<li><p>with parameters:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">cow.generate_total_states(dim_limit=750,</span> <span class="pre">ln_limit=9)</span></code></p>
+</div></blockquote>
+</li>
+</ol>
+</section>
+</section>
+<hr class="docutils" />
+<dl class="py class">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.DigitalCow">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cow_builder.digital_cow.</span></span><span class="sig-name descname"><span class="pre">DigitalCow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">days_in_milk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lactation_number</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">days_pregnant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diet_cp_cu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">160</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diet_cp_fo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">140</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">milk_cp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">age</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">herd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Open'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">age_at_first_heat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cow_builder.digital_cow.DigitalCow" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A digital twin representing a dairy cow.</p>
+<dl class="field-list">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="field-list">
+<dt class="field-odd">var _herd<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The <code class="docutils literal notranslate"><span class="pre">DigitalHerd</span></code> instance representing the herd that the cow
+belongs to.</p>
+</dd>
+<dt class="field-even">type _herd<span class="colon">:</span></dt>
+<dd class="field-even"><p>DigitalHerd</p>
+</dd>
+<dt class="field-odd">var _current_state<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The <code class="docutils literal notranslate"><span class="pre">State</span></code> instance representing the current state of
+the cow.</p>
+</dd>
+<dt class="field-even">type _current_state<span class="colon">:</span></dt>
+<dd class="field-even"><p>State</p>
+</dd>
+<dt class="field-odd">var _age_at_first_heat<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The age in days, at which the cow had her first
+estrus. Defaults to None if it has not happened yet.</p>
+</dd>
+<dt class="field-even">type _age_at_first_heat<span class="colon">:</span></dt>
+<dd class="field-even"><p>int | None</p>
+</dd>
+<dt class="field-odd">var __life_states<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of all possible life states the cow can be in.</p>
+</dd>
+<dt class="field-even">type __life_states<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[str]</p>
+</dd>
+<dt class="field-odd">var _total_states<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple of <code class="docutils literal notranslate"><span class="pre">State</span></code> objects containing all possible
+states this cow can be in or transition to. Filled by
+<code class="docutils literal notranslate"><span class="pre">self.generate_total_states()</span></code>.</p>
+</dd>
+<dt class="field-even">type _total_states<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple[State] | None</p>
+</dd>
+<dt class="field-odd">var _milkbot_variables<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple of 4 <code class="docutils literal notranslate"><span class="pre">Decimal</span></code> objects used for the
+<code class="docutils literal notranslate"><span class="pre">self.milk_production</span></code> function.</p>
+<ul class="simple">
+<li><p>index = 0: scale</p></li>
+<li><p>index = 1: ramp</p></li>
+<li><p>index = 2: offset</p></li>
+<li><p>index = 3: decay</p></li>
+</ul>
+<p>Filled by <code class="docutils literal notranslate"><span class="pre">self.__set_milkbot_variables()</span></code>.</p>
+</dd>
+<dt class="field-even">type _milkbot_variables<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple[Decimal]</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Methods<span class="colon">:</span></dt>
+<dd class="field-even"><p>__init__(days_in_milk, lactation_number, days_pregnant, age_at_first_heat,
+herd, state, precision)</p>
+<p>generate_total_states(dim_limit, ln_limit)</p>
+<p>probability_state_change(state_from, state_to)</p>
+<p>possible_new_states(state_from)</p>
+</dd>
+</dl>
+<hr class="docutils" />
+<dl class="py method">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.DigitalCow.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">days_in_milk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lactation_number</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">days_pregnant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diet_cp_cu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">160</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diet_cp_fo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">140</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">milk_cp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">age</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">herd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Open'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">age_at_first_heat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cow_builder.digital_cow.DigitalCow.__init__" title="Permalink to this definition">#</a></dt>
+<dd><p>Initializes a new instance of a DigitalCow object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>days_in_milk</strong> (<em>int</em>) – The number of days since the cow’s last calving,
+or it’s birth if it has not calved yet. Defaults to 0.</p></li>
+<li><p><strong>lactation_number</strong> (<em>int</em>) – The number of lactation cycles the cow has completed.
+Defaults to 0.</p></li>
+<li><p><strong>days_pregnant</strong> (<em>int</em>) – The number of days that the cow is pregnant.
+Defaults to 0.</p></li>
+<li><p><strong>age_at_first_heat</strong> (<em>int</em><em> | </em><em>None</em>) – The age in days, at which the cow had her first
+estrus. Defaults to None.</p></li>
+<li><p><strong>age</strong> (<em>int</em>) – The age of the cow in days. Defaults to 0.</p></li>
+<li><p><strong>herd</strong> (<a class="reference internal" href="cow_builder.digital_herd.html#cow_builder.digital_herd.DigitalHerd" title="cow_builder.digital_herd.DigitalHerd"><em>DigitalHerd</em></a><em> | </em><em>None</em>) – The herd to which the cow belongs.
+Contains variables that apply to all cows in the herd. Defaults to None.</p></li>
+<li><p><strong>state</strong> (<em>str</em>) – The life state of the cow.
+This state should be one of the states defined in <code class="docutils literal notranslate"><span class="pre">self.__life_states</span></code>.
+Defaults to ‘Open’.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.DigitalCow.age">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">age</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#cow_builder.digital_cow.DigitalCow.age" title="Permalink to this definition">#</a></dt>
+<dd><p>The age of the cow in days.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.DigitalCow.age_at_first_heat">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">age_at_first_heat</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#cow_builder.digital_cow.DigitalCow.age_at_first_heat" title="Permalink to this definition">#</a></dt>
+<dd><p>The age in days at which the cow experienced its first heat.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.DigitalCow.current_days_in_milk">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">current_days_in_milk</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#cow_builder.digital_cow.DigitalCow.current_days_in_milk" title="Permalink to this definition">#</a></dt>
+<dd><p>The current number of days since last calving, or the cow’s birth if it
+has not calved yet.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.DigitalCow.current_days_pregnant">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">current_days_pregnant</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#cow_builder.digital_cow.DigitalCow.current_days_pregnant" title="Permalink to this definition">#</a></dt>
+<dd><p>The current number of days in pregnancy of the cow.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.DigitalCow.current_lactation_number">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">current_lactation_number</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#cow_builder.digital_cow.DigitalCow.current_lactation_number" title="Permalink to this definition">#</a></dt>
+<dd><p>The current number of lactation cycles the cow has completed.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.DigitalCow.current_life_state">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">current_life_state</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#cow_builder.digital_cow.DigitalCow.current_life_state" title="Permalink to this definition">#</a></dt>
+<dd><p>The current life_state the cow is in.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.DigitalCow.current_milk_output">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">current_milk_output</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#cow_builder.digital_cow.DigitalCow.current_milk_output" title="Permalink to this definition">#</a></dt>
+<dd><p>The current milk output of the cow.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.DigitalCow.current_state">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">current_state</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="cow_builder.state.html#cow_builder.state.State" title="cow_builder.state.State"><span class="pre">State</span></a></em><a class="headerlink" href="#cow_builder.digital_cow.DigitalCow.current_state" title="Permalink to this definition">#</a></dt>
+<dd><p>The current state of the cow, as a <code class="docutils literal notranslate"><span class="pre">State</span></code> object.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.DigitalCow.diet_cp_cu">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">diet_cp_cu</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#cow_builder.digital_cow.DigitalCow.diet_cp_cu" title="Permalink to this definition">#</a></dt>
+<dd><p>The concentration of crude proteins in the diet of the cow in g.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.DigitalCow.diet_cp_fo">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">diet_cp_fo</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#cow_builder.digital_cow.DigitalCow.diet_cp_fo" title="Permalink to this definition">#</a></dt>
+<dd><p>The concentration of crude proteins in the diet of the cow in g.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.DigitalCow.edge_count">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">edge_count</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#cow_builder.digital_cow.DigitalCow.edge_count" title="Permalink to this definition">#</a></dt>
+<dd><p>The total number of possible transitions.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.DigitalCow.generate_total_states">
+<span class="sig-name descname"><span class="pre">generate_total_states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ln_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#cow_builder.digital_cow.DigitalCow.generate_total_states" title="Permalink to this definition">#</a></dt>
+<dd><p>Generates a tuple of <code class="docutils literal notranslate"><span class="pre">State</span></code> objects that represent all possible
+states of the <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code> instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dim_limit</strong> (<em>int</em><em> | </em><em>None</em>) – The limit of days in milk for which states should
+be generated. Defaults to the limit of its herd.</p></li>
+<li><p><strong>ln_limit</strong> (<em>int</em><em> | </em><em>None</em>) – The limit of lactation numbers for which states should
+be generated. Defaults to the limit of its herd.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.DigitalCow.herd">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">herd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="cow_builder.digital_herd.html#cow_builder.digital_herd.DigitalHerd" title="cow_builder.digital_herd.DigitalHerd"><span class="pre">DigitalHerd</span></a></em><a class="headerlink" href="#cow_builder.digital_cow.DigitalCow.herd" title="Permalink to this definition">#</a></dt>
+<dd><p>The herd object representing the herd of the cow.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.DigitalCow.initial_state_vector">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">initial_state_vector</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#cow_builder.digital_cow.DigitalCow.initial_state_vector" title="Permalink to this definition">#</a></dt>
+<dd><p>A numpy array indicating which state of all states in <code class="docutils literal notranslate"><span class="pre">total_states</span></code>
+the cow is in.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.DigitalCow.milk_cp">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">milk_cp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#cow_builder.digital_cow.DigitalCow.milk_cp" title="Permalink to this definition">#</a></dt>
+<dd><p>The concentration of crude proteins in the milk produced by the cow in
+g.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.DigitalCow.milkbot_variables">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">milkbot_variables</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span></em><a class="headerlink" href="#cow_builder.digital_cow.DigitalCow.milkbot_variables" title="Permalink to this definition">#</a></dt>
+<dd><p>A tuple containing 4 parameters used to calculate milk output.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.DigitalCow.node_count">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">node_count</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#cow_builder.digital_cow.DigitalCow.node_count" title="Permalink to this definition">#</a></dt>
+<dd><p>The total number of <code class="docutils literal notranslate"><span class="pre">State</span></code> objects in <code class="docutils literal notranslate"><span class="pre">total_states</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.DigitalCow.possible_new_states">
+<span class="sig-name descname"><span class="pre">possible_new_states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_from</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="cow_builder.state.html#cow_builder.state.State" title="cow_builder.state.State"><span class="pre">State</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#cow_builder.digital_cow.DigitalCow.possible_new_states" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns a tuple with all states <code class="docutils literal notranslate"><span class="pre">state_from</span></code> can transition into.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state_from</strong> (<a class="reference internal" href="cow_builder.state.html#cow_builder.state.State" title="cow_builder.state.State"><em>State</em></a>) – The state from which to transition.</p>
+</dd>
+<dt class="field-even">Returns states_to<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing all states that <code class="docutils literal notranslate"><span class="pre">state_from</span></code> can
+transition into.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[<a class="reference internal" href="cow_builder.state.html#cow_builder.state.State" title="cow_builder.state.State">State</a>]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the state of <code class="docutils literal notranslate"><span class="pre">state_from</span></code> is not valid.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.DigitalCow.probability_state_change">
+<span class="sig-name descname"><span class="pre">probability_state_change</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_from</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="cow_builder.state.html#cow_builder.state.State" title="cow_builder.state.State"><span class="pre">State</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="cow_builder.state.html#cow_builder.state.State" title="cow_builder.state.State"><span class="pre">State</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#cow_builder.digital_cow.DigitalCow.probability_state_change" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculates the probability of transitioning from <code class="docutils literal notranslate"><span class="pre">state_from</span></code> to
+<code class="docutils literal notranslate"><span class="pre">state_to</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>state_from</strong> (<a class="reference internal" href="cow_builder.state.html#cow_builder.state.State" title="cow_builder.state.State"><em>State</em></a>) – The state from which to transition.</p></li>
+<li><p><strong>state_to</strong> (<a class="reference internal" href="cow_builder.state.html#cow_builder.state.State" title="cow_builder.state.State"><em>State</em></a>) – The state to transition into.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The probability of transitioning from <code class="docutils literal notranslate"><span class="pre">state_from</span></code> to
+<code class="docutils literal notranslate"><span class="pre">state_to</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the state is not defined in <code class="docutils literal notranslate"><span class="pre">self.__life_states</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.DigitalCow.total_states">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">total_states</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span></em><a class="headerlink" href="#cow_builder.digital_cow.DigitalCow.total_states" title="Permalink to this definition">#</a></dt>
+<dd><p>A generated tuple of <code class="docutils literal notranslate"><span class="pre">State</span></code> objects that the cow can be in.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.calculate_body_weight">
+<span class="sig-prename descclassname"><span class="pre">cow_builder.digital_cow.</span></span><span class="sig-name descname"><span class="pre">calculate_body_weight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="cow_builder.state.html#cow_builder.state.State" title="cow_builder.state.State"><span class="pre">State</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">age</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#cow_builder.digital_cow.calculate_body_weight" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculates the body weight of a cow for a specific state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>state</strong> (<a class="reference internal" href="cow_builder.state.html#cow_builder.state.State" title="cow_builder.state.State"><em>State</em></a>) – The <code class="docutils literal notranslate"><span class="pre">State</span></code> object that represents the specific day for which the
+body weight must be calculated.</p></li>
+<li><p><strong>age</strong> (<em>int</em>) – The age of the cow in days.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The body weight of the cow in kg in the state that is given.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Decimal</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.calculate_dmi">
+<span class="sig-prename descclassname"><span class="pre">cow_builder.digital_cow.</span></span><span class="sig-name descname"><span class="pre">calculate_dmi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="cow_builder.state.html#cow_builder.state.State" title="cow_builder.state.State"><span class="pre">State</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">body_weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cow_builder.digital_cow.calculate_dmi" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculates the dry matter intake of a cow for a specific state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>state</strong> (<a class="reference internal" href="cow_builder.state.html#cow_builder.state.State" title="cow_builder.state.State"><em>State</em></a>) – The <code class="docutils literal notranslate"><span class="pre">State</span></code> object that represents the specific day for which the
+dry matter intake must be calculated.</p></li>
+<li><p><strong>body_weight</strong> – The body weight of the cow in kg on the specific day for which
+the dry matter intake must be calculated.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The dry matter intake in kg for the specific state that is given.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.convert_vector_to_1d">
+<span class="sig-prename descclassname"><span class="pre">cow_builder.digital_cow.</span></span><span class="sig-name descname"><span class="pre">convert_vector_to_1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulated_day</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_states</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cow_builder.digital_cow.convert_vector_to_1d" title="Permalink to this definition">#</a></dt>
+<dd><p>Converts a vector to 1 dimension by adding the probabilities of different states
+with the same value on the chosen dimension together. Which dimension this is
+depends on the <code class="docutils literal notranslate"><span class="pre">group_by</span></code> parameter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>simulated_day</strong> (<em>tuple</em>) – A tuple that contains a vector as well as the day in
+simulation that the vector is from.</p></li>
+<li><p><strong>total_states</strong> (<em>tuple</em>) – A generated tuple of State objects that the cow can be in.</p></li>
+<li><p><strong>group_by</strong> (<em>int</em>) – <p>An int that indicates what dimension to group the states by.</p>
+<ul>
+<li><p>index = 0: days_in_milk</p></li>
+<li><p>index = 1: lactation_number</p></li>
+<li><p>index = 2: days_pregnant</p></li>
+<li><p>index = 3: life_state</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The value of the chosen dimension with the corresponding probability
+of being in a state with that specific value</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.fecal_nitrogen_output">
+<span class="sig-prename descclassname"><span class="pre">cow_builder.digital_cow.</span></span><span class="sig-name descname"><span class="pre">fecal_nitrogen_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lactating</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dmi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nitrogen_intake</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cow_builder.digital_cow.fecal_nitrogen_output" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the estimated daily nitrogen emission for a cow’s feces
+based on its nitrogen intake or dmi.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lactating</strong> (<em>bool</em>) – A boolean deciding which formulas to use based on
+whether the cow is lactating or not.</p></li>
+<li><p><strong>dmi</strong> (<em>float</em>) – The dry matter intake of the cow in kg per day.</p></li>
+<li><p><strong>nitrogen_intake</strong> (<em>float</em>) – The amount of nitrogen consumed by the cow in g per day.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>mu_n_output: The mean nitrogen output in g.</p></li>
+<li><p>min_n_output: The minimum nitrogen output in g.</p></li>
+<li><p>max_n_output: The maximum nitrogen output in g.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>mu_n_output: float</p></li>
+<li><p>min_n_output: float</p></li>
+<li><p>max_n_output: float</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.fecal_phosphor_output">
+<span class="sig-prename descclassname"><span class="pre">cow_builder.digital_cow.</span></span><span class="sig-name descname"><span class="pre">fecal_phosphor_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phosphor_intake</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">milk_yield</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cow_builder.digital_cow.fecal_phosphor_output" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculates the daily phosphor emission of a cow’s feces based on the cow’s
+phosphor intake and milk production.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>phosphor_intake</strong> (<em>float</em>) – The amount of phosphor consumed by the cow in g per day.</p></li>
+<li><p><strong>milk_yield</strong> (<em>float</em>) – The milk production of the cow in kg per day.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>mu_p_output: The mean phosphor output in g.</p></li>
+<li><p>min_p_output: The minimum phosphor output in g.</p></li>
+<li><p>max_p_output: The maximum phosphor output in g.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>mu_p_output: float</p></li>
+<li><p>min_p_output: float</p></li>
+<li><p>max_p_output: float</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.manure_nitrogen_output">
+<span class="sig-prename descclassname"><span class="pre">cow_builder.digital_cow.</span></span><span class="sig-name descname"><span class="pre">manure_nitrogen_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dmi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diet_cp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">milk_yield</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">milk_cp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cow_builder.digital_cow.manure_nitrogen_output" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the estimated daily nitrogen emission in manure for lactating cows 
+when dry-matter intake, dietary crude protein concentration, 
+milk yield and milk crude protein concentration are known.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dmi</strong> (<em>float</em>) – The dry-matter intake of the cow in kg.</p></li>
+<li><p><strong>diet_cp</strong> (<em>float</em>) – The dietary crude protein concentration in %.</p></li>
+<li><p><strong>milk_yield</strong> (<em>float</em>) – The milk output of the cow in kg.</p></li>
+<li><p><strong>milk_cp</strong> (<em>float</em>) – The crude protein concentration in the milk of the cow in %.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Manure nitrogen output in g.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.milk_nitrogen_output">
+<span class="sig-prename descclassname"><span class="pre">cow_builder.digital_cow.</span></span><span class="sig-name descname"><span class="pre">milk_nitrogen_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dmi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cow_builder.digital_cow.milk_nitrogen_output" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the estimated daily nitrogen output in a cow’s milk based on its dry
+matter intake.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dmi</strong> (<em>float</em>) – The dry matter intake of the cow in kg per day.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>mu_n_output: The mean nitrogen output in g.</p></li>
+<li><p>min_n_output: The minimum nitrogen output in g.</p></li>
+<li><p>max_n_output: The maximum nitrogen output in g.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>mu_n_output: float</p></li>
+<li><p>min_n_output: float</p></li>
+<li><p>max_n_output: float</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.milk_production">
+<span class="sig-prename descclassname"><span class="pre">cow_builder.digital_cow.</span></span><span class="sig-name descname"><span class="pre">milk_production</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">milkbot_variables</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="cow_builder.state.html#cow_builder.state.State" title="cow_builder.state.State"><span class="pre">State</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dp_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration_dry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#cow_builder.digital_cow.milk_production" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculates milk production for a given state using the MilkBot algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>milkbot_variables</strong> (<em>tuple</em>) – A tuple containing parameters for the MilkBot algorithm.</p></li>
+<li><p><strong>state</strong> (<a class="reference internal" href="cow_builder.state.html#cow_builder.state.State" title="cow_builder.state.State"><em>State</em></a>) – A <code class="docutils literal notranslate"><span class="pre">State</span></code> object for which milk production must be calculated.</p></li>
+<li><p><strong>dp_limit</strong> (<em>int</em>) – The maximum number of days a cow can be pregnant.</p></li>
+<li><p><strong>duration_dry</strong> (<em>int</em>) – The number of days before calving when a cow is not
+being milked, otherwise known as the Dry period.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The milk production for the given days in milk in kg.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.set_korver_function_variables">
+<span class="sig-prename descclassname"><span class="pre">cow_builder.digital_cow.</span></span><span class="sig-name descname"><span class="pre">set_korver_function_variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lactation_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cow_builder.digital_cow.set_korver_function_variables" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns a set of variables used for a heifer body weight function
+and the Korver function based on a given lactation number.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lactation_number</strong> (<em>int</em>) – The lactation number of a cow.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>birth_weight: The weight of the cow at birth in kg.</p></li>
+<li><p>mature_live_weight: The weight of a mature cow in kg.</p></li>
+<li><dl class="simple">
+<dt>growth_rate: A variable that describes the speed at which the weight of</dt><dd><p>the cow increases.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>pregnancy_parameter: A variable that describes that decrease in weight of</dt><dd><p>the cow after calving.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>max_decrease_live_weight: The maximum decrease in live weight during a</dt><dd><p>lactation cycle in kg.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>duration_minimum_live_weight: The number of days for which the live weight</dt><dd><p>is lowest.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>birth_weight: float</p></li>
+<li><p>mature_live_weight: float | None</p></li>
+<li><p>growth_rate: float</p></li>
+<li><p>pregnancy_parameter: float | None</p></li>
+<li><p>max_decrease_live_weight: float | None</p></li>
+<li><p>duration_minimum_live_weight: float | None</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.set_milkbot_variables">
+<span class="sig-prename descclassname"><span class="pre">cow_builder.digital_cow.</span></span><span class="sig-name descname"><span class="pre">set_milkbot_variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lactation_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#cow_builder.digital_cow.set_milkbot_variables" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns MilkBot variables for a DigitalCow, based on its lactation number.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lactation_number</strong> (<em>int</em>) – The number of lactation cycles the cow has completed.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A tuple of parameters for the MilkBot function.</p>
+<ul class="simple">
+<li><p>index = 1: scale</p></li>
+<li><p>index = 2: ramp</p></li>
+<li><p>index = 3: offset</p></li>
+<li><p>index= 4: decay</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[Decimal]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the lactation number is larger than the lactation
+number limit.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.state_probability_generator">
+<span class="sig-prename descclassname"><span class="pre">cow_builder.digital_cow.</span></span><span class="sig-name descname"><span class="pre">state_probability_generator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">digital_cow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#cow_builder.digital_cow.DigitalCow" title="cow_builder.digital_cow.DigitalCow"><span class="pre">DigitalCow</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#cow_builder.digital_cow.state_probability_generator" title="Permalink to this definition">#</a></dt>
+<dd><p>A generator that iterates over a tuple of states. It determines the states
+each state can transition into, and calculates the probability of the state
+change for each pair.
+It returns the indexes of the state pair in the tuple of states and their
+probability.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>digital_cow</strong> (<a class="reference internal" href="#cow_builder.digital_cow.DigitalCow" title="cow_builder.digital_cow.DigitalCow"><em>DigitalCow</em></a>) – A DigitalCow object for which the states are generated and
+transition probabilities must be calculated.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><dl class="simple">
+<dt>state_index[state_from]: The index of the <code class="docutils literal notranslate"><span class="pre">state_from</span></code> state in the</dt><dd><p>tuple of states.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>state_index[state_to]: The index of the <code class="docutils literal notranslate"><span class="pre">state_to</span></code> state in the tuple of</dt><dd><p>states.</p>
+</dd>
+</dl>
+</li>
+<li><p>probability: The probability of moving from <code class="docutils literal notranslate"><span class="pre">state_from</span></code> to <code class="docutils literal notranslate"><span class="pre">state_to</span></code>.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>state_index[state_from]: int</p></li>
+<li><p>state_index[state_to]: int</p></li>
+<li><p>probability: float</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.total_manure_nitrogen_output">
+<span class="sig-prename descclassname"><span class="pre">cow_builder.digital_cow.</span></span><span class="sig-name descname"><span class="pre">total_manure_nitrogen_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lactating</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nitrogen_intake</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cow_builder.digital_cow.total_manure_nitrogen_output" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns estimated daily nitrogen emission of a cow’s manure
+(urine and feces) based on its nitrogen intake.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lactating</strong> (<em>bool</em>) – A boolean deciding which formulas to use based on
+whether the cow is lactating or not.</p></li>
+<li><p><strong>nitrogen_intake</strong> (<em>float</em>) – The amount of nitrogen consumed by the cow in g per day.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>mu_n_output: The mean nitrogen output in g.</p></li>
+<li><p>min_n_output: The minimum nitrogen output in g.</p></li>
+<li><p>max_n_output: The maximum nitrogen output in g.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>mu_n_output: float</p></li>
+<li><p>min_n_output: float</p></li>
+<li><p>max_n_output: float</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.urine_nitrogen_output">
+<span class="sig-prename descclassname"><span class="pre">cow_builder.digital_cow.</span></span><span class="sig-name descname"><span class="pre">urine_nitrogen_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lactating</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nitrogen_intake</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cow_builder.digital_cow.urine_nitrogen_output" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the estimated daily nitrogen emission for a cow’s urine
+based on its nitrogen intake.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lactating</strong> (<em>bool</em>) – A boolean deciding which formulas to use based on
+whether the cow is lactating or not.</p></li>
+<li><p><strong>nitrogen_intake</strong> (<em>float</em>) – The amount of nitrogen consumed by the cow in g per day.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>mu_n_output: The mean nitrogen output in g.</p></li>
+<li><p>min_n_output: The minimum nitrogen output in g.</p></li>
+<li><p>max_n_output: The maximum nitrogen output in g.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>mu_n_output: float</p></li>
+<li><p>min_n_output: float</p></li>
+<li><p>max_n_output: float</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.vector_milk_production">
+<span class="sig-prename descclassname"><span class="pre">cow_builder.digital_cow.</span></span><span class="sig-name descname"><span class="pre">vector_milk_production</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_in_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">digital_cow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#cow_builder.digital_cow.DigitalCow" title="cow_builder.digital_cow.DigitalCow"><span class="pre">DigitalCow</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">intermediate_accumulator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cow_builder.digital_cow.vector_milk_production" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cow_builder.digital_cow.vector_nitrogen_emission">
+<span class="sig-prename descclassname"><span class="pre">cow_builder.digital_cow.</span></span><span class="sig-name descname"><span class="pre">vector_nitrogen_emission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_in_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">digital_cow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#cow_builder.digital_cow.DigitalCow" title="cow_builder.digital_cow.DigitalCow"><span class="pre">DigitalCow</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">intermediate_accumulator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cow_builder.digital_cow.vector_nitrogen_emission" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="cow_builder.digital_herd.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">cow_builder.digital_herd module</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="cow_builder.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">cow_builder package</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023, Gabe van den Hoeven
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">cow_builder.digital_cow module</a><ul>
+<li><a class="reference internal" href="#how-to-use-this-module">How To Use This Module</a><ul>
+<li><a class="reference internal" href="#import-the-classes-digitalcow-and-digitalherd">1. Import the classes DigitalCow and DigitalHerd:</a></li>
+<li><a class="reference internal" href="#create-a-digitalcow-and-digitalherd-object">2. Create a DigitalCow and DigitalHerd object:</a></li>
+<li><a class="reference internal" href="#generate-states-for-the-digitalcow-object">3. Generate states for the DigitalCow object:</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.DigitalCow"><code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code></a><ul>
+<li><a class="reference internal" href="#cow_builder.digital_cow.DigitalCow.__init__"><code class="docutils literal notranslate"><span class="pre">DigitalCow.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.DigitalCow.age"><code class="docutils literal notranslate"><span class="pre">DigitalCow.age</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.DigitalCow.age_at_first_heat"><code class="docutils literal notranslate"><span class="pre">DigitalCow.age_at_first_heat</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.DigitalCow.current_days_in_milk"><code class="docutils literal notranslate"><span class="pre">DigitalCow.current_days_in_milk</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.DigitalCow.current_days_pregnant"><code class="docutils literal notranslate"><span class="pre">DigitalCow.current_days_pregnant</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.DigitalCow.current_lactation_number"><code class="docutils literal notranslate"><span class="pre">DigitalCow.current_lactation_number</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.DigitalCow.current_life_state"><code class="docutils literal notranslate"><span class="pre">DigitalCow.current_life_state</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.DigitalCow.current_milk_output"><code class="docutils literal notranslate"><span class="pre">DigitalCow.current_milk_output</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.DigitalCow.current_state"><code class="docutils literal notranslate"><span class="pre">DigitalCow.current_state</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.DigitalCow.diet_cp_cu"><code class="docutils literal notranslate"><span class="pre">DigitalCow.diet_cp_cu</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.DigitalCow.diet_cp_fo"><code class="docutils literal notranslate"><span class="pre">DigitalCow.diet_cp_fo</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.DigitalCow.edge_count"><code class="docutils literal notranslate"><span class="pre">DigitalCow.edge_count</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.DigitalCow.generate_total_states"><code class="docutils literal notranslate"><span class="pre">DigitalCow.generate_total_states()</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.DigitalCow.herd"><code class="docutils literal notranslate"><span class="pre">DigitalCow.herd</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.DigitalCow.initial_state_vector"><code class="docutils literal notranslate"><span class="pre">DigitalCow.initial_state_vector</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.DigitalCow.milk_cp"><code class="docutils literal notranslate"><span class="pre">DigitalCow.milk_cp</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.DigitalCow.milkbot_variables"><code class="docutils literal notranslate"><span class="pre">DigitalCow.milkbot_variables</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.DigitalCow.node_count"><code class="docutils literal notranslate"><span class="pre">DigitalCow.node_count</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.DigitalCow.possible_new_states"><code class="docutils literal notranslate"><span class="pre">DigitalCow.possible_new_states()</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.DigitalCow.probability_state_change"><code class="docutils literal notranslate"><span class="pre">DigitalCow.probability_state_change()</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.DigitalCow.total_states"><code class="docutils literal notranslate"><span class="pre">DigitalCow.total_states</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.calculate_body_weight"><code class="docutils literal notranslate"><span class="pre">calculate_body_weight()</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.calculate_dmi"><code class="docutils literal notranslate"><span class="pre">calculate_dmi()</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.convert_vector_to_1d"><code class="docutils literal notranslate"><span class="pre">convert_vector_to_1d()</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.fecal_nitrogen_output"><code class="docutils literal notranslate"><span class="pre">fecal_nitrogen_output()</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.fecal_phosphor_output"><code class="docutils literal notranslate"><span class="pre">fecal_phosphor_output()</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.manure_nitrogen_output"><code class="docutils literal notranslate"><span class="pre">manure_nitrogen_output()</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.milk_nitrogen_output"><code class="docutils literal notranslate"><span class="pre">milk_nitrogen_output()</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.milk_production"><code class="docutils literal notranslate"><span class="pre">milk_production()</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.set_korver_function_variables"><code class="docutils literal notranslate"><span class="pre">set_korver_function_variables()</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.set_milkbot_variables"><code class="docutils literal notranslate"><span class="pre">set_milkbot_variables()</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.state_probability_generator"><code class="docutils literal notranslate"><span class="pre">state_probability_generator()</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.total_manure_nitrogen_output"><code class="docutils literal notranslate"><span class="pre">total_manure_nitrogen_output()</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.urine_nitrogen_output"><code class="docutils literal notranslate"><span class="pre">urine_nitrogen_output()</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.vector_milk_production"><code class="docutils literal notranslate"><span class="pre">vector_milk_production()</span></code></a></li>
+<li><a class="reference internal" href="#cow_builder.digital_cow.vector_nitrogen_emission"><code class="docutils literal notranslate"><span class="pre">vector_nitrogen_emission()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/scripts/furo.js"></script>
+    </body>
+</html>
