@@ -208,7 +208,10 @@
           </label>
         </div>
         <article role="main">
-          <section id="cow-builder-documentation">
+          <p>sphinx-quickstart on Thu Apr  6 11:45:32 2023.
+You can adapt this file completely to your liking, but it should at least
+contain the root <cite>toctree</cite> directive.</p>
+<section id="cow-builder-documentation">
 <h1>Cow builder documentation<a class="headerlink" href="#cow-builder-documentation" title="Permalink to this heading">#</a></h1>
 <p>This is the documentation of the cow_builder package. Use the indices</p>
 <section id="how-to-use-this-module">
@@ -219,13 +222,13 @@ for details on the default values.</em></p>
 <section id="import-the-classes-digitalcow-and-digitalherd">
 <h3>1. Import the classes DigitalCow and DigitalHerd:<a class="headerlink" href="#import-the-classes-digitalcow-and-digitalherd" title="Permalink to this heading">#</a></h3>
 <p>First import the DigitalCow class:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">cow_builder.digital_cow</span> <span class="pre">import</span> <span class="pre">DigitalCow</span></code></p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cow_builder.digital_cow</span> <span class="kn">import</span> <span class="n">DigitalCow</span>
+</pre></div>
+</div>
 <p>You will also need to import the DigitalHerd class from the digital_herd module:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">cow_builder.digital_herd</span> <span class="pre">import</span> <span class="pre">DigitalHerd</span></code></p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cow_builder.digital_herd</span> <span class="kn">import</span> <span class="n">DigitalHerd</span>
+</pre></div>
+</div>
 </section>
 <hr class="docutils" />
 <section id="create-a-digitalcow-and-digitalherd-object">
@@ -236,15 +239,15 @@ however it won’t have full functionality until a DigitalHerd is added as its h
 <li><dl>
 <dt>Without a DigitalHerd object:</dt><dd><ol class="arabic">
 <li><p>Without parameters:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">cow</span> <span class="pre">=</span> <span class="pre">DigitalCow()</span></code>n</p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cow</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">()</span>
+</pre></div>
+</div>
 </li>
 <li><p>With parameters:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">cow</span> <span class="pre">=</span> <span class="pre">DigitalCow(days_in_milk=245,</span> <span class="pre">lactation_number=3,</span>
-<span class="pre">days_pregnant=165,</span> <span class="pre">age_at_first_heat=371,</span> <span class="pre">age=2079,</span> <span class="pre">state='Pregnant')</span></code>n</p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cow</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">(</span><span class="n">days_in_milk</span><span class="o">=</span><span class="mi">245</span><span class="p">,</span> <span class="n">lactation_number</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+<span class="n">days_pregnant</span><span class="o">=</span><span class="mi">165</span><span class="p">,</span> <span class="n">age_at_first_heat</span><span class="o">=</span><span class="mi">371</span><span class="p">,</span> <span class="n">age</span><span class="o">=</span><span class="mi">2079</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s1">&#39;Pregnant&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 </li>
 </ol>
 <p><em>These parameters may not be all available parameters. Look at each class’
@@ -255,18 +258,18 @@ documentation for details.</em></p>
 <li><dl>
 <dt>With a DigitalHerd object:</dt><dd><ol class="arabic">
 <li><p>Without parameters:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">a_herd</span> <span class="pre">=</span> <span class="pre">DigitalHerd()</span></code>n
-<code class="docutils literal notranslate"><span class="pre">cow</span> <span class="pre">=</span> <span class="pre">DigitalCow(herd=a_herd)</span></code>n</p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a_herd</span> <span class="o">=</span> <span class="n">DigitalHerd</span><span class="p">()</span>
+<span class="n">cow</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">(</span><span class="n">herd</span><span class="o">=</span><span class="n">a_herd</span><span class="p">)</span>
+</pre></div>
+</div>
 </li>
 <li><p>With parameters:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">a_herd</span> <span class="pre">=</span> <span class="pre">DigitalHerd(vwp=[365,</span> <span class="pre">90,</span> <span class="pre">70],</span> <span class="pre">insemination_window=[110,</span> <span class="pre">100,</span> <span class="pre">90],</span>
-<span class="pre">milk_threshold=Decimal(&quot;12&quot;),</span> <span class="pre">duration_dry=[70,</span> <span class="pre">50])</span></code>n
-<code class="docutils literal notranslate"><span class="pre">cow</span> <span class="pre">=</span> <span class="pre">DigitalCow(days_in_milk=67,</span> <span class="pre">lactation_number=1,</span>
-<span class="pre">days_pregnant=0,</span> <span class="pre">age=767,</span> <span class="pre">herd=a_herd,</span> <span class="pre">state='Open')</span></code>n</p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a_herd</span> <span class="o">=</span> <span class="n">DigitalHerd</span><span class="p">(</span><span class="n">vwp</span><span class="o">=</span><span class="p">[</span><span class="mi">365</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">70</span><span class="p">],</span> <span class="n">insemination_window</span><span class="o">=</span><span class="p">[</span><span class="mi">110</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span>
+<span class="n">milk_threshold</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="s2">&quot;12&quot;</span><span class="p">),</span> <span class="n">duration_dry</span><span class="o">=</span><span class="p">[</span><span class="mi">70</span><span class="p">,</span> <span class="mi">50</span><span class="p">])</span>
+<span class="n">cow</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">(</span><span class="n">days_in_milk</span><span class="o">=</span><span class="mi">67</span><span class="p">,</span> <span class="n">lactation_number</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="n">days_pregnant</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">age</span><span class="o">=</span><span class="mi">767</span><span class="p">,</span> <span class="n">herd</span><span class="o">=</span><span class="n">a_herd</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s1">&#39;Open&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 </li>
 </ol>
 <p><em>These parameters may not be all available parameters. Look at each class’
@@ -277,18 +280,18 @@ documentation for details.</em></p>
 <li><dl>
 <dt>Set the herd of the DigitalCow:</dt><dd><ol class="arabic">
 <li><p>Sets the DigitalHerd as the herd of the DigitalCow:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">a_herd</span> <span class="pre">=</span> <span class="pre">DigitalHerd()</span></code>n
-<code class="docutils literal notranslate"><span class="pre">cow</span> <span class="pre">=</span> <span class="pre">DigitalCow(herd=a_herd)</span></code>n</p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a_herd</span> <span class="o">=</span> <span class="n">DigitalHerd</span><span class="p">()</span>
+<span class="n">cow</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">(</span><span class="n">herd</span><span class="o">=</span><span class="n">a_herd</span><span class="p">)</span>
+</pre></div>
+</div>
 </li>
 <li><p>Overwrites the DigitalHerd as the herd of the DigitalCow:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">a_herd</span> <span class="pre">=</span> <span class="pre">DigitalHerd()</span></code>n
-<code class="docutils literal notranslate"><span class="pre">another_herd</span> <span class="pre">=</span> <span class="pre">DigitalHerd()</span></code>n
-<code class="docutils literal notranslate"><span class="pre">cow</span> <span class="pre">=</span> <span class="pre">DigitalCow(herd=a_herd)</span></code>n
-<code class="docutils literal notranslate"><span class="pre">cow.herd</span> <span class="pre">=</span> <span class="pre">another_herd</span></code>n</p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a_herd</span> <span class="o">=</span> <span class="n">DigitalHerd</span><span class="p">()</span>
+<span class="n">another_herd</span> <span class="o">=</span> <span class="n">DigitalHerd</span><span class="p">()</span>
+<span class="n">cow</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">(</span><span class="n">herd</span><span class="o">=</span><span class="n">a_herd</span><span class="p">)</span>
+<span class="n">cow</span><span class="o">.</span><span class="n">herd</span> <span class="o">=</span> <span class="n">another_herd</span>
+</pre></div>
+</div>
 </li>
 </ol>
 <p><em>There are other methods that alter the herd of the cow using functions from the
@@ -321,9 +324,9 @@ herd are used.n</p>
 </section>
 <hr class="docutils" />
 <section id="create-a-transition-matrix-using-the-chain-simulator-package">
-<h3>4. Create a transition matrix using the <code class="xref py py-mod docutils literal notranslate"><span class="pre">chain_simulator</span></code> package:<a class="headerlink" href="#create-a-transition-matrix-using-the-chain-simulator-package" title="Permalink to this heading">#</a></h3>
+<h3>4. Create a transition matrix using the <a class="reference external" href="https://bovi-analytics.github.io/chain-simulator/generated/chain_simulator.html#module-chain_simulator" title="(in Chain simulator)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">chain_simulator</span></code></a> package:<a class="headerlink" href="#create-a-transition-matrix-using-the-chain-simulator-package" title="Permalink to this heading">#</a></h3>
 <p>To create a transition matrix from the states of the DigitalCow object the
-<code class="xref py py-mod docutils literal notranslate"><span class="pre">chain_simulator</span></code> package must be used.n
+<a class="reference external" href="https://bovi-analytics.github.io/chain-simulator/generated/chain_simulator.html#module-chain_simulator" title="(in Chain simulator)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">chain_simulator</span></code></a> package must be used.n
 1) Import <code class="docutils literal notranslate"><span class="pre">array_assembler</span></code> from the <code class="docutils literal notranslate"><span class="pre">chain_simulator</span></code> package:</p>
 <blockquote>
 <div><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">chain_simulator.assembly</span> <span class="pre">import</span> <span class="pre">array_assembler</span></code></p>
@@ -340,9 +343,9 @@ herd are used.n</p>
 </div></blockquote>
 </li>
 </ol>
-<p><em>For details on the parameters of functions from the</em> <code class="xref py py-mod docutils literal notranslate"><span class="pre">chain_simulator</span></code>
-<em>package, see the corresponding documentation of the</em> <code class="xref py py-mod docutils literal notranslate"><span class="pre">chain_simulator</span></code>
-<em>package here:</em> <code class="xref py py-mod docutils literal notranslate"><span class="pre">chain_simulator</span></code>
+<p><em>For details on the parameters of functions from the</em> <a class="reference external" href="https://bovi-analytics.github.io/chain-simulator/generated/chain_simulator.html#module-chain_simulator" title="(in Chain simulator)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">chain_simulator</span></code></a>
+<em>package, see the corresponding documentation of the</em> <a class="reference external" href="https://bovi-analytics.github.io/chain-simulator/generated/chain_simulator.html#module-chain_simulator" title="(in Chain simulator)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">chain_simulator</span></code></a>
+<em>package here:</em> <a class="reference external" href="https://bovi-analytics.github.io/chain-simulator/generated/chain_simulator.html#module-chain_simulator" title="(in Chain simulator)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">chain_simulator</span></code></a>
 <a class="reference external" href="https://matplotlib.org/stable/index.html#module-matplotlib" title="(in Matplotlib v3.7.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">matplotlib</span></code></a></p>
 </section>
 <hr class="docutils" />
@@ -362,7 +365,7 @@ herd are used.n</p>
 </ol>
 <p><em>For details on the parameters of functions from the chain_simulator package,
 see the corresponding documentation of the chain_simulator package here:</em>
-<code class="xref py py-mod docutils literal notranslate"><span class="pre">chain_simulator</span></code></p>
+<a class="reference external" href="https://bovi-analytics.github.io/chain-simulator/generated/chain_simulator.html#module-chain_simulator" title="(in Chain simulator)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">chain_simulator</span></code></a></p>
 </section>
 <hr class="docutils" />
 <section id="create-the-graph-all-possible-paths-path-phenotype-totals-and-path-probabilities-for-the-simulation">

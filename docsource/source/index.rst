@@ -1,7 +1,7 @@
 .. DigitalCow documentation master file, created by
-   sphinx-quickstart on Thu Apr  6 11:45:32 2023.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+sphinx-quickstart on Thu Apr  6 11:45:32 2023.
+You can adapt this file completely to your liking, but it should at least
+contain the root `toctree` directive.
 
 Cow builder documentation
 =========================
@@ -17,13 +17,13 @@ for details on the default values.*
 
 1. Import the classes DigitalCow and DigitalHerd:
 *************************************************
-First import the DigitalCow class:
+First import the DigitalCow class::
 
-    ``from cow_builder.digital_cow import DigitalCow``
+    from cow_builder.digital_cow import DigitalCow
 
-You will also need to import the DigitalHerd class from the digital_herd module:
+You will also need to import the DigitalHerd class from the digital_herd module::
 
-    ``from cow_builder.digital_herd import DigitalHerd``
+    from cow_builder.digital_herd import DigitalHerd
 
 ************************************************************
 
@@ -33,46 +33,46 @@ A DigitalCow object can be made without a DigitalHerd object,
 however it won't have full functionality until a DigitalHerd is added as its herd.
 
 a) Without a DigitalHerd object:
-    1) Without parameters:
+    1) Without parameters::
 
-        ``cow = DigitalCow()``\n
+        cow = DigitalCow()
 
-    2) With parameters:
+    2) With parameters::
 
-        ``cow = DigitalCow(days_in_milk=245, lactation_number=3,
-        days_pregnant=165, age_at_first_heat=371, age=2079, state='Pregnant')``\n
+        cow = DigitalCow(days_in_milk=245, lactation_number=3,
+        days_pregnant=165, age_at_first_heat=371, age=2079, state='Pregnant')
 
     *These parameters may not be all available parameters. Look at each class'
     documentation for details.*
 
 b) With a DigitalHerd object:
-    1) Without parameters:
+    1) Without parameters::
 
-        ``a_herd = DigitalHerd()``\n
-        ``cow = DigitalCow(herd=a_herd)``\n
+        a_herd = DigitalHerd()
+        cow = DigitalCow(herd=a_herd)
 
-    2) With parameters:
+    2) With parameters::
 
-        ``a_herd = DigitalHerd(vwp=[365, 90, 70], insemination_window=[110, 100, 90],
-        milk_threshold=Decimal("12"), duration_dry=[70, 50])``\n
-        ``cow = DigitalCow(days_in_milk=67, lactation_number=1,
-        days_pregnant=0, age=767, herd=a_herd, state='Open')``\n
+        a_herd = DigitalHerd(vwp=[365, 90, 70], insemination_window=[110, 100, 90],
+        milk_threshold=Decimal("12"), duration_dry=[70, 50])
+        cow = DigitalCow(days_in_milk=67, lactation_number=1,
+        days_pregnant=0, age=767, herd=a_herd, state='Open')
 
     *These parameters may not be all available parameters. Look at each class'
     documentation for details.*
 
 c) Set the herd of the DigitalCow:
-    1) Sets the DigitalHerd as the herd of the DigitalCow:
+    1) Sets the DigitalHerd as the herd of the DigitalCow::
 
-        ``a_herd = DigitalHerd()``\n
-        ``cow = DigitalCow(herd=a_herd)``\n
+        a_herd = DigitalHerd()
+        cow = DigitalCow(herd=a_herd)
 
-    2) Overwrites the DigitalHerd as the herd of the DigitalCow:
+    2) Overwrites the DigitalHerd as the herd of the DigitalCow::
 
-        ``a_herd = DigitalHerd()``\n
-        ``another_herd = DigitalHerd()``\n
-        ``cow = DigitalCow(herd=a_herd)``\n
-        ``cow.herd = another_herd``\n
+        a_herd = DigitalHerd()
+        another_herd = DigitalHerd()
+        cow = DigitalCow(herd=a_herd)
+        cow.herd = another_herd
 
     *There are other methods that alter the herd of the cow using functions from the
     DigitalHerd class. These are described in the digital_herd module.*

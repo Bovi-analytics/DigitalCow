@@ -18,8 +18,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.intersphinx']
 
 intersphinx_mapping = {
-    'chain_simulator': ('base_url_for_documentation-objects.inv', None),
-    # TODO: fix url
+    'chain_simulator': ('https://bovi-analytics.github.io/chain-simulator/', None),
     'numpy': ('https://docs.scipy.org/doc/numpy/', None),
     'matplotlib': ('https://matplotlib.org/', None)
 }

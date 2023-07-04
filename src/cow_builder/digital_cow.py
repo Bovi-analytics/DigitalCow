@@ -1150,9 +1150,8 @@ def vector_milk_production(vector: np.ndarray, step_in_time: int, step_size: int
                            intermediate_accumulator: dict[int, float]):
     """
     """
+    non_exit_states = 0
     vector_phenotype = 0
-    not_exit_states = 0
-    not_exit_output = 0
     index_state = {
         index: state for index, state in enumerate(digital_cow.total_states)
     }
@@ -1160,15 +1159,14 @@ def vector_milk_production(vector: np.ndarray, step_in_time: int, step_size: int
 
     for index in nonzero_indices:
         state = index_state[index]
-        milk = state.milk_output * vector[index]
-        vector_phenotype += milk
         if state.state != 'Exit':
-            not_exit_states += 1
-            not_exit_output += state.milk_output
+            non_exit_states += 1
+            vector_phenotype += state.milk_output
     try:
-        intermediate_accumulator[step_in_time] = not_exit_output / not_exit_states
+        vector_phenotype = vector_phenotype / non_exit_states
     except ZeroDivisionError:
-        intermediate_accumulator[step_in_time] = 0
+        vector_phenotype = 0
+    intermediate_accumulator[step_in_time] = vector_phenotype
     return vector_phenotype * step_size
 
 
@@ -1176,9 +1174,8 @@ def vector_nitrogen_emission(vector: np.ndarray, step_in_time: int, step_size: i
                              intermediate_accumulator: dict[int, float]):
     """
     """
+    non_exit_states = 0
     vector_phenotype = 0
-    not_exit_states = 0
-    not_exit_output = 0
     index_state = {
         index: state for index, state in enumerate(digital_cow.total_states)
     }
@@ -1189,9 +1186,7 @@ def vector_nitrogen_emission(vector: np.ndarray, step_in_time: int, step_size: i
     for index in nonzero_indices:
         state = index_state[index]
         age = digital_cow.age + step_in_time
-        if state.state == 'Exit':
-            nitrogen = 0
-        else:
+        if state.state != 'Exit':
             dp_limit = digital_cow.herd.get_days_pregnant_limit(
                 state.lactation_number)
             vwp = digital_cow.herd.get_voluntary_waiting_period(
@@ -1206,15 +1201,16 @@ def vector_nitrogen_emission(vector: np.ndarray, step_in_time: int, step_size: i
             if state.lactation_number == 0:
                 lactating = False
 
-            if state.days_pregnant >= dp_limit - close_up or (
-                    state.lactation_number == 0 and state.days_in_milk < (
+            if (state.lactation_number != 0 and state.days_pregnant >=
+                dp_limit - close_up) or (state.lactation_number == 0
+                                         and state.days_in_milk < (
                     vwp / 2)) or (state.lactation_number != 0 and
                                   state.days_in_milk < 100):
                 diet_cp = digital_cow.diet_cp_cu / 1000
                 intake = dmi * diet_cp / 0.625
 
-            elif ((dp_limit - dry_period) <= state.days_pregnant <
-                  (dp_limit - close_up)) or (
+            elif (state.lactation_number != 0 and (dp_limit - dry_period)
+                  <= state.days_pregnant < (dp_limit - close_up)) or (
                     state.lactation_number == 0 and
                     state.days_in_milk >= vwp / 2):
                 diet_cp = digital_cow.diet_cp_fo / 1000
@@ -1235,15 +1231,14 @@ def vector_nitrogen_emission(vector: np.ndarray, step_in_time: int, step_size: i
                 nitrogen = total_manure_nitrogen_output(
                     lactating, intake)[0]
 
-            not_exit_states += 1
-            not_exit_output += nitrogen
+            non_exit_states += 1
+            vector_phenotype += nitrogen
 
-        nitrogen = nitrogen * vector[index]
-        vector_phenotype += nitrogen
     try:
-        intermediate_accumulator[step_in_time] = not_exit_output / not_exit_states
+        vector_phenotype = vector_phenotype / non_exit_states
     except ZeroDivisionError:
-        intermediate_accumulator[step_in_time] = 0
+        vector_phenotype = 0
+    intermediate_accumulator[step_in_time] = vector_phenotype
     return vector_phenotype * step_size
 
 
@@ -1440,6 +1435,7 @@ def calculate_dmi(state: State, body_weight: float):
     return dmi
 
 
+@cache
 def manure_nitrogen_output(dmi: float, diet_cp: float, milk_yield: float,
                            milk_cp: float):
     """
@@ -1531,6 +1527,7 @@ def fecal_nitrogen_output(lactating: bool, dmi: float, nitrogen_intake: float):
     return mu_n_output, min_n_output, max_n_output
 
 
+@cache
 def total_manure_nitrogen_output(lactating: bool, nitrogen_intake: float):
     """
     Returns estimated daily nitrogen emission of a cow's manure

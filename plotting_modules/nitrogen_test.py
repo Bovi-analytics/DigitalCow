@@ -143,7 +143,6 @@ if __name__ == '__main__':
     dp = 0
 
     for dim in range(410):
-        lactating = True
         if dim > 410 - 280:
             dp += 1
         if dp >= 280 - 60:
@@ -162,17 +161,13 @@ if __name__ == '__main__':
         elif dim >= 100:
             diet_cp = 0.15
             intake = dry_matter_intake * diet_cp / 0.625
-        if lactating:
-            nitrogen = manure_nitrogen_output(dry_matter_intake, diet_cp * 100, milk, milk_cp)
-        else:
-            nitrogen = total_manure_nitrogen_output(lactating, intake)[0]
+        nitrogen = manure_nitrogen_output(dry_matter_intake, diet_cp * 100, milk, milk_cp)
         x_values.append(age)
         y_values.append(nitrogen)
         age += 1
     dp = 0
 
     for dim in range(390):
-        lactating = True
         if dim > 390 - 282:
             dp += 1
         if dp >= 282 - 60:
@@ -191,10 +186,7 @@ if __name__ == '__main__':
         elif dim >= 100:
             diet_cp = 0.15
             intake = dry_matter_intake * diet_cp / 0.625
-        if lactating:
-            nitrogen = manure_nitrogen_output(dry_matter_intake, diet_cp * 100, milk, milk_cp)
-        else:
-            nitrogen = total_manure_nitrogen_output(lactating, intake)[0]
+        nitrogen = manure_nitrogen_output(dry_matter_intake, diet_cp * 100, milk, milk_cp)
         x_values.append(age)
         y_values.append(nitrogen)
         age += 1
@@ -220,17 +212,13 @@ if __name__ == '__main__':
         elif dim >= 100:
             diet_cp = 0.15
             intake = dry_matter_intake * diet_cp / 0.625
-        if lactating:
-            nitrogen = manure_nitrogen_output(dry_matter_intake, diet_cp * 100, milk, milk_cp)
-        else:
-            nitrogen = total_manure_nitrogen_output(lactating, intake)[0]
+        nitrogen = manure_nitrogen_output(dry_matter_intake, diet_cp * 100, milk, milk_cp)
         x_values.append(age)
         y_values.append(nitrogen)
         age += 1
     dp = 0
 
     for dim in range(390):
-        lactating = True
         if dim > 390 - 282:
             dp += 1
         if dp >= 282 - 60:
@@ -249,24 +237,21 @@ if __name__ == '__main__':
         elif dim >= 100:
             diet_cp = 0.15
             intake = dry_matter_intake * diet_cp / 0.625
-        if lactating:
-            nitrogen = manure_nitrogen_output(dry_matter_intake, diet_cp * 100, milk, milk_cp)
-        else:
-            nitrogen = total_manure_nitrogen_output(lactating, intake)[0]
+        nitrogen = manure_nitrogen_output(dry_matter_intake, diet_cp * 100, milk, milk_cp)
         x_values.append(age)
         y_values.append(nitrogen)
         age += 1
 
     xpoints = np.asarray(x_values)
     ypoints = np.asarray(y_values)
-    plt.plot(xpoints, ypoints, label='cow nitrogen')
+    plt.plot(xpoints, ypoints, label='Average nitrogen emission')
     plt.xlabel('Age (days)')
-    plt.ylabel('N (g)')
-    plt.title(f'Nitrogen emission for the first 4 lactations')
-    plt.plot([700, 700], [30, 0], label='calving1')
-    plt.plot([1110, 1110], [30, 0], label='calving2')
-    plt.plot([1500, 1500], [30, 0], label='calving3')
-    plt.plot([1890, 1890], [30, 0], label='calving4')
+    plt.ylabel('Nitrogen emission (g)')
+    plt.title(f'Average nitrogen curves for the first 4 lactations')
+    # plt.plot([700, 700], [400, 0], label='calving1')
+    # plt.plot([1110, 1110], [400, 0], label='calving2')
+    # plt.plot([1500, 1500], [400, 0], label='calving3')
+    # plt.plot([1890, 1890], [400, 0], label='calving4')
     plt.legend()
     plt.savefig('../img/nitrogen_lactations_0-4_age')
     plt.close()
@@ -303,7 +288,6 @@ if __name__ == '__main__':
     x_values = []
     y_values = []
     for dim in range(410):
-        lactating = True
         if dim > 410 - 280:
             dp += 1
         diet_cp = None
@@ -320,10 +304,8 @@ if __name__ == '__main__':
         elif dim >= 100:
             diet_cp = 0.15
             intake = dry_matter_intake * diet_cp / 0.625
-        if lactating:
-            nitrogen = manure_nitrogen_output(dry_matter_intake, diet_cp * 100, milk, milk_cp)
-        else:
-            nitrogen = total_manure_nitrogen_output(lactating, intake)[0]
+
+        nitrogen = manure_nitrogen_output(dry_matter_intake, diet_cp * 100, milk, milk_cp)
         x_values.append(dim)
         y_values.append(nitrogen)
         age += 1
@@ -334,7 +316,6 @@ if __name__ == '__main__':
     x_values = []
     y_values = []
     for dim in range(390):
-        lactating = True
         if dim > 390 - 282:
             dp += 1
         diet_cp = None
@@ -351,10 +332,8 @@ if __name__ == '__main__':
         elif dim >= 100:
             diet_cp = 0.15
             intake = dry_matter_intake * diet_cp / 0.625
-        if lactating:
-            nitrogen = manure_nitrogen_output(dry_matter_intake, diet_cp * 100, milk, milk_cp)
-        else:
-            nitrogen = total_manure_nitrogen_output(lactating, intake)[0]
+        nitrogen = manure_nitrogen_output(dry_matter_intake, diet_cp * 100, milk, milk_cp)
+
         x_values.append(dim)
         y_values.append(nitrogen)
         age += 1
@@ -365,7 +344,6 @@ if __name__ == '__main__':
     x_values = []
     y_values = []
     for dim in range(390):
-        lactating = True
         if dim > 390 - 282:
             dp += 1
         diet_cp = None
@@ -382,10 +360,7 @@ if __name__ == '__main__':
         elif dim >= 100:
             diet_cp = 0.15
             intake = dry_matter_intake * diet_cp / 0.625
-        if lactating:
-            nitrogen = manure_nitrogen_output(dry_matter_intake, diet_cp * 100, milk, milk_cp)
-        else:
-            nitrogen = total_manure_nitrogen_output(lactating, intake)[0]
+        nitrogen = manure_nitrogen_output(dry_matter_intake, diet_cp * 100, milk, milk_cp)
         x_values.append(dim)
         y_values.append(nitrogen)
         age += 1
@@ -396,7 +371,6 @@ if __name__ == '__main__':
     x_values = []
     y_values = []
     for dim in range(390):
-        lactating = True
         if dim > 390 - 282:
             dp += 1
         diet_cp = None
@@ -413,10 +387,7 @@ if __name__ == '__main__':
         elif dim >= 100:
             diet_cp = 0.15
             intake = dry_matter_intake * diet_cp / 0.625
-        if lactating:
-            nitrogen = manure_nitrogen_output(dry_matter_intake, diet_cp * 100, milk, milk_cp)
-        else:
-            nitrogen = total_manure_nitrogen_output(lactating, intake)[0]
+        nitrogen = manure_nitrogen_output(dry_matter_intake, diet_cp * 100, milk, milk_cp)
         x_values.append(dim)
         y_values.append(nitrogen)
         age += 1

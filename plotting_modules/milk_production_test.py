@@ -102,10 +102,10 @@ if __name__ == '__main__':
 
     xmarkers = np.asarray(x_values)
     ypoints = np.asarray(y_values)
-    plt.plot(xmarkers, ypoints, label='cow milk production')
+    plt.plot(xmarkers, ypoints, label='Average milk production')
     plt.xlabel('Age (days)')
-    plt.ylabel('Milk (kg)')
-    plt.title(f'Cow Milk Production')
+    plt.ylabel('Milk production (kg)')
+    plt.title(f'Average lactation curves for the first 4 lactations')
     # plt.plot([700, 700], [50, 0], label='calving1')
     # plt.plot([1110, 1110], [50, 0], label='calving2')
     # plt.plot([1500, 1500], [50, 0], label='calving3')
