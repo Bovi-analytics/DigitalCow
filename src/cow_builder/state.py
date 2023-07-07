@@ -4,7 +4,7 @@
 :module: state
 :module author: Gabe van den Hoeven
 :synopsis: This module contains the State dataclass representing a state of a cow.
-    This class is used by the DigitalCow class.
+    This class is used by the ``DigitalCow`` class.
 
 ======================
 How To Use This Module
@@ -19,23 +19,25 @@ for details on the default values.*
 
 1. Import the State class:
 **************************
-First import the class from the module.
+First import the ``State`` class from the ``state`` module::
 
-    ``from cow_builder.state import State``
+    from cow_builder.state import State
 
 ************************************************************
 
 2. Create a State instance:
 ***************************
+::
 
-    ``new_state = State('Open', 300, 1, 200, 20)``
+    new_state = State('Open', 300, 1, 200, 20)
 
 ************************************************************
 
 3. Return variables from the State instance:
 ********************************************
+::
 
-    ``days_in_milk = new_state.days_in_milk``
+    days_in_milk = new_state.days_in_milk
 
 ************************************************************
 """
@@ -76,28 +78,27 @@ class State:
 
     def __post_init__(self):
         """
-        Post-init check for illegal variable types and value-combinations.
+        Checks for illegal variable types and value-combinations.
 
         :raises TypeError: If the type of any variable is wrong.
         :raises ValueError: If days_pregnant is not 0 and the state
             is not 'Pregnant' or days_pregnant is 0 and the state is 'Pregnant'.
 
-        TODO provide meaningful error messages
         """
         if self.days_pregnant != 0 and self.state != 'Pregnant':
-            raise ValueError
+            raise ValueError("The days_pregnant variable cannot be more than 0 if the state variable is not Pregnant.")
         if self.days_pregnant == 0 and self.state == 'Pregnant':
-            raise ValueError
+            raise ValueError("The days_pregnant variable cannot be 0 if the state variable is Pregnant.")
         if not type(self.state) == str:
-            raise TypeError
+            raise TypeError("The state variable is not of type str.")
         if not type(self.days_in_milk) == int:
-            raise TypeError
+            raise TypeError("The days_in_milk variable is not of type int.")
         if not type(self.lactation_number) == int:
-            raise TypeError
+            raise TypeError("The lactation_number variable is not of type int.")
         if not type(self.days_pregnant) == int:
-            raise TypeError
+            raise TypeError("The days_pregnant variable is not of type int.")
         if not type(self.milk_output) == float:
-            raise TypeError
+            raise TypeError("The milk_output variable is not of type float.")
 
     def mutate(self, **kwargs):
         """

@@ -6,10 +6,10 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'Cow builder'
+project = 'Cow-builder'
 copyright = '2023, Gabe van den Hoeven'
 author = 'Gabe van den Hoeven'
-release = '0.1'
+release = '1.0'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -20,11 +20,11 @@ extensions = ['sphinx.ext.autodoc',
 intersphinx_mapping = {
     'chain_simulator': ('https://bovi-analytics.github.io/chain-simulator/', None),
     'numpy': ('https://docs.scipy.org/doc/numpy/', None),
-    'matplotlib': ('https://matplotlib.org/', None)
+    'matplotlib': ('https://matplotlib.org/', None),
+    'scipy': ('https://docs.scipy.org/doc/scipy/', None)
 }
 templates_path = ['_templates']
 exclude_patterns = []
-
 
 
 # -- Options for HTML output -------------------------------------------------

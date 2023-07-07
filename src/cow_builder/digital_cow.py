@@ -1147,7 +1147,7 @@ def convert_vector_to_1d(simulated_day: tuple, total_states: tuple, group_by: in
 
 
 def vector_milk_production(vector: np.ndarray, step_in_time: int, step_size: int, digital_cow: DigitalCow,
-                           intermediate_accumulator: dict[int, float]):
+                           intermediate_accumulator: dict[int, float] | None):
     """
     """
     non_exit_states = 0
@@ -1166,12 +1166,13 @@ def vector_milk_production(vector: np.ndarray, step_in_time: int, step_size: int
         vector_phenotype = vector_phenotype / non_exit_states
     except ZeroDivisionError:
         vector_phenotype = 0
-    intermediate_accumulator[step_in_time] = vector_phenotype
+    if intermediate_accumulator is not None:
+        intermediate_accumulator[step_in_time] = vector_phenotype
     return vector_phenotype * step_size
 
 
 def vector_nitrogen_emission(vector: np.ndarray, step_in_time: int, step_size: int, digital_cow: DigitalCow,
-                             intermediate_accumulator: dict[int, float]):
+                             intermediate_accumulator: dict[int, float] | None):
     """
     """
     non_exit_states = 0
@@ -1238,7 +1239,8 @@ def vector_nitrogen_emission(vector: np.ndarray, step_in_time: int, step_size: i
         vector_phenotype = vector_phenotype / non_exit_states
     except ZeroDivisionError:
         vector_phenotype = 0
-    intermediate_accumulator[step_in_time] = vector_phenotype
+    if intermediate_accumulator is not None:
+        intermediate_accumulator[step_in_time] = vector_phenotype
     return vector_phenotype * step_size
 
 

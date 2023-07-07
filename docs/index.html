@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="API" href="api.html" />
 
     <!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20 -->
-        <title>Cow builder 0.1 documentation</title>
+        <title>Cow-builder 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">Cow builder 0.1 documentation</div></a>
+      <a href="#"><div class="brand">Cow-builder 1.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="#">
   
   
-  <span class="sidebar-brand-text">Cow builder 0.1 documentation</span>
+  <span class="sidebar-brand-text">Cow-builder 1.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -208,36 +208,36 @@
           </label>
         </div>
         <article role="main">
-          <p>sphinx-quickstart on Thu Apr  6 11:45:32 2023.
-You can adapt this file completely to your liking, but it should at least
-contain the root <cite>toctree</cite> directive.</p>
-<section id="cow-builder-documentation">
-<h1>Cow builder documentation<a class="headerlink" href="#cow-builder-documentation" title="Permalink to this heading">#</a></h1>
-<p>This is the documentation of the cow_builder package. Use the indices</p>
-<section id="how-to-use-this-module">
-<h2>How To Use This Module<a class="headerlink" href="#how-to-use-this-module" title="Permalink to this heading">#</a></h2>
-<p>(See the individual classes, methods, and attributes for details.)n
-<em>Values in this HowTo are examples, see documentation of each class or function
+          <section id="cow-builder-documentation">
+<h1>Cow-builder documentation<a class="headerlink" href="#cow-builder-documentation" title="Permalink to this heading">#</a></h1>
+<p>This is the documentation of the cow_builder package. Use the indices at the bottom of this page.</p>
+<p>Required packages to use this package are <a class="reference external" href="https://bovi-analytics.github.io/chain-simulator/generated/chain_simulator.html#module-chain_simulator" title="(in Chain simulator)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">chain_simulator</span></code></a> and <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html#module-numpy" title="(in NumPy v1.25)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a>.
+Additionally, <a class="reference external" href="https://docs.scipy.org/doc/scipy/index.html#module-scipy" title="(in SciPy v1.11.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy</span></code></a> can be used to save and load created transition matrices.
+These packages are automatically installed when installing the <code class="docutils literal notranslate"><span class="pre">cow_builder</span></code> package.</p>
+<p>Installing the visualisation version will also include <a class="reference external" href="https://matplotlib.org/stable/index.html#module-matplotlib" title="(in Matplotlib v3.7.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">matplotlib</span></code></a>, which can be used to visualise results
+from a simulation. How this can be installed is described in the ReadMe of the cow-builder Github repository.</p>
+<section id="how-to-use-this-package">
+<h2>How To Use This Package<a class="headerlink" href="#how-to-use-this-package" title="Permalink to this heading">#</a></h2>
+<p>(See the individual classes, methods, and attributes for details.)</p>
+<p><em>Values in this HowTo are examples, see documentation of each class or function
 for details on the default values.</em></p>
 <section id="import-the-classes-digitalcow-and-digitalherd">
 <h3>1. Import the classes DigitalCow and DigitalHerd:<a class="headerlink" href="#import-the-classes-digitalcow-and-digitalherd" title="Permalink to this heading">#</a></h3>
-<p>First import the DigitalCow class:</p>
+<p>1) Import the <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code> class from the <code class="docutils literal notranslate"><span class="pre">digital_cow</span></code> module and
+the <code class="docutils literal notranslate"><span class="pre">DigitalHerd</span></code> class from the <code class="docutils literal notranslate"><span class="pre">digital_herd</span></code> module:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cow_builder.digital_cow</span> <span class="kn">import</span> <span class="n">DigitalCow</span>
-</pre></div>
-</div>
-<p>You will also need to import the DigitalHerd class from the digital_herd module:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cow_builder.digital_herd</span> <span class="kn">import</span> <span class="n">DigitalHerd</span>
+<span class="kn">from</span> <span class="nn">cow_builder.digital_herd</span> <span class="kn">import</span> <span class="n">DigitalHerd</span>
 </pre></div>
 </div>
 </section>
 <hr class="docutils" />
 <section id="create-a-digitalcow-and-digitalherd-object">
 <h3>2. Create a DigitalCow and DigitalHerd object:<a class="headerlink" href="#create-a-digitalcow-and-digitalherd-object" title="Permalink to this heading">#</a></h3>
-<p>A DigitalCow object can be made without a DigitalHerd object,
-however it won’t have full functionality until a DigitalHerd is added as its herd.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code> object can be made without a <code class="docutils literal notranslate"><span class="pre">DigitalHerd</span></code> object,
+however it won’t have full functionality until a <code class="docutils literal notranslate"><span class="pre">DigitalHerd</span></code> is added as its herd.</p>
 <ol class="loweralpha">
 <li><dl>
-<dt>Without a DigitalHerd object:</dt><dd><ol class="arabic">
+<dt>Without a <code class="docutils literal notranslate"><span class="pre">DigitalHerd</span></code> object:</dt><dd><ol class="arabic">
 <li><p>Without parameters:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cow</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">()</span>
 </pre></div>
@@ -245,7 +245,7 @@ however it won’t have full functionality until a DigitalHerd is added as its h
 </li>
 <li><p>With parameters:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cow</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">(</span><span class="n">days_in_milk</span><span class="o">=</span><span class="mi">245</span><span class="p">,</span> <span class="n">lactation_number</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-<span class="n">days_pregnant</span><span class="o">=</span><span class="mi">165</span><span class="p">,</span> <span class="n">age_at_first_heat</span><span class="o">=</span><span class="mi">371</span><span class="p">,</span> <span class="n">age</span><span class="o">=</span><span class="mi">2079</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s1">&#39;Pregnant&#39;</span><span class="p">)</span>
+<span class="n">days_pregnant</span><span class="o">=</span><span class="mi">165</span><span class="p">,</span> <span class="n">diet_cp_cu</span><span class="o">=</span><span class="mi">160</span><span class="p">,</span> <span class="n">diet_cp_fo</span><span class="o">=</span><span class="mi">140</span><span class="p">,</span> <span class="n">age</span><span class="o">=</span><span class="mi">2079</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s1">&#39;Pregnant&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
@@ -256,7 +256,7 @@ documentation for details.</em></p>
 </dl>
 </li>
 <li><dl>
-<dt>With a DigitalHerd object:</dt><dd><ol class="arabic">
+<dt>With a <code class="docutils literal notranslate"><span class="pre">DigitalHerd</span></code> object:</dt><dd><ol class="arabic">
 <li><p>Without parameters:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a_herd</span> <span class="o">=</span> <span class="n">DigitalHerd</span><span class="p">()</span>
 <span class="n">cow</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">(</span><span class="n">herd</span><span class="o">=</span><span class="n">a_herd</span><span class="p">)</span>
@@ -267,7 +267,7 @@ documentation for details.</em></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a_herd</span> <span class="o">=</span> <span class="n">DigitalHerd</span><span class="p">(</span><span class="n">vwp</span><span class="o">=</span><span class="p">[</span><span class="mi">365</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">70</span><span class="p">],</span> <span class="n">insemination_window</span><span class="o">=</span><span class="p">[</span><span class="mi">110</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span>
 <span class="n">milk_threshold</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="s2">&quot;12&quot;</span><span class="p">),</span> <span class="n">duration_dry</span><span class="o">=</span><span class="p">[</span><span class="mi">70</span><span class="p">,</span> <span class="mi">50</span><span class="p">])</span>
 <span class="n">cow</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">(</span><span class="n">days_in_milk</span><span class="o">=</span><span class="mi">67</span><span class="p">,</span> <span class="n">lactation_number</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<span class="n">days_pregnant</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">age</span><span class="o">=</span><span class="mi">767</span><span class="p">,</span> <span class="n">herd</span><span class="o">=</span><span class="n">a_herd</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s1">&#39;Open&#39;</span><span class="p">)</span>
+<span class="n">days_pregnant</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">diet_cp_cu</span><span class="o">=</span><span class="mi">160</span><span class="p">,</span> <span class="n">diet_cp_fo</span><span class="o">=</span><span class="mi">140</span><span class="p">,</span> <span class="n">age</span><span class="o">=</span><span class="mi">767</span><span class="p">,</span> <span class="n">herd</span><span class="o">=</span><span class="n">a_herd</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s1">&#39;Open&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
@@ -278,14 +278,14 @@ documentation for details.</em></p>
 </dl>
 </li>
 <li><dl>
-<dt>Set the herd of the DigitalCow:</dt><dd><ol class="arabic">
-<li><p>Sets the DigitalHerd as the herd of the DigitalCow:</p>
+<dt>Set the herd of the <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code>:</dt><dd><ol class="arabic">
+<li><p>Sets the <code class="docutils literal notranslate"><span class="pre">DigitalHerd</span></code> as the herd of the <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a_herd</span> <span class="o">=</span> <span class="n">DigitalHerd</span><span class="p">()</span>
 <span class="n">cow</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">(</span><span class="n">herd</span><span class="o">=</span><span class="n">a_herd</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
-<li><p>Overwrites the DigitalHerd as the herd of the DigitalCow:</p>
+<li><p>Overwrites the <code class="docutils literal notranslate"><span class="pre">DigitalHerd</span></code> as the herd of the <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a_herd</span> <span class="o">=</span> <span class="n">DigitalHerd</span><span class="p">()</span>
 <span class="n">another_herd</span> <span class="o">=</span> <span class="n">DigitalHerd</span><span class="p">()</span>
 <span class="n">cow</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">(</span><span class="n">herd</span><span class="o">=</span><span class="n">a_herd</span><span class="p">)</span>
@@ -304,63 +304,66 @@ DigitalHerd class. These are described in the digital_herd module.</em></p>
 <hr class="docutils" />
 <section id="generate-states-for-the-digitalcow-object">
 <h3>3. Generate states for the DigitalCow object:<a class="headerlink" href="#generate-states-for-the-digitalcow-object" title="Permalink to this heading">#</a></h3>
-<p>Generate states for the cow with using the <code class="docutils literal notranslate"><span class="pre">generate_total_states()</span></code> function:</p>
+<p>Generate states for the cow using the <code class="docutils literal notranslate"><span class="pre">generate_total_states()</span></code> function:</p>
 <ol class="loweralpha">
 <li><p>without parameters:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">cow.generate_total_state()</span></code></p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cow</span><span class="o">.</span><span class="n">generate_total_state</span><span class="p">()</span>
+</pre></div>
+</div>
 </li>
 </ol>
-<p>Here the <code class="docutils literal notranslate"><span class="pre">days_in_milk_limit</span></code> and <code class="docutils literal notranslate"><span class="pre">lactation_number_limit</span></code> variables from the
-herd are used.n</p>
+<p>Here the <code class="docutils literal notranslate"><span class="pre">days_in_milk_limit</span></code> and <code class="docutils literal notranslate"><span class="pre">lactation_number_limit</span></code> variables from
+the <code class="docutils literal notranslate"><span class="pre">DigitalHerd</span></code> object are used.</p>
 <ol class="loweralpha" start="2">
 <li><p>with parameters:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">cow.generate_total_states(dim_limit=750,</span> <span class="pre">ln_limit=9)</span></code></p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cow</span><span class="o">.</span><span class="n">generate_total_states</span><span class="p">(</span><span class="n">dim_limit</span><span class="o">=</span><span class="mi">750</span><span class="p">,</span> <span class="n">ln_limit</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+</pre></div>
+</div>
 </li>
 </ol>
 </section>
 <hr class="docutils" />
 <section id="create-a-transition-matrix-using-the-chain-simulator-package">
-<h3>4. Create a transition matrix using the <a class="reference external" href="https://bovi-analytics.github.io/chain-simulator/generated/chain_simulator.html#module-chain_simulator" title="(in Chain simulator)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">chain_simulator</span></code></a> package:<a class="headerlink" href="#create-a-transition-matrix-using-the-chain-simulator-package" title="Permalink to this heading">#</a></h3>
-<p>To create a transition matrix from the states of the DigitalCow object the
-<a class="reference external" href="https://bovi-analytics.github.io/chain-simulator/generated/chain_simulator.html#module-chain_simulator" title="(in Chain simulator)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">chain_simulator</span></code></a> package must be used.n
-1) Import <code class="docutils literal notranslate"><span class="pre">array_assembler</span></code> from the <code class="docutils literal notranslate"><span class="pre">chain_simulator</span></code> package:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">chain_simulator.assembly</span> <span class="pre">import</span> <span class="pre">array_assembler</span></code></p>
-</div></blockquote>
+<h3>4. Create a transition matrix using the <code class="docutils literal notranslate"><span class="pre">chain_simulator</span></code> package:<a class="headerlink" href="#create-a-transition-matrix-using-the-chain-simulator-package" title="Permalink to this heading">#</a></h3>
+<p>To create a transition matrix from the states of the <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code> object, the
+<a class="reference external" href="https://bovi-analytics.github.io/chain-simulator/generated/chain_simulator.html#module-chain_simulator" title="(in Chain simulator)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">chain_simulator</span></code></a> package must be used.</p>
+<ol class="loweralpha">
+<li><dl>
+<dt>Create a new transition matrix:</dt><dd><p>1) Import <code class="docutils literal notranslate"><span class="pre">array_assembler</span></code> from the <code class="docutils literal notranslate"><span class="pre">chain_simulator</span></code> package
+and the <code class="docutils literal notranslate"><span class="pre">state_probability_generator</span></code> function from the <code class="docutils literal notranslate"><span class="pre">digital_cow</span></code> module:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">chain_simulator.assembly</span> <span class="kn">import</span> <span class="n">array_assembler</span>
+<span class="kn">from</span> <span class="nn">cow_builder.digital_cow</span> <span class="kn">import</span> <span class="n">state_probability_generator</span>
+</pre></div>
+</div>
 <ol class="arabic" start="2">
-<li><p>Import the <code class="docutils literal notranslate"><span class="pre">state_probability_generator</span></code> function from this module:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">cow_builder.digital_cow</span> <span class="pre">import</span> <span class="pre">state_probability_generator</span></code></p>
-</div></blockquote>
-</li>
 <li><p>Use <code class="docutils literal notranslate"><span class="pre">array_assembler</span></code> to create a transition matrix:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">tm</span> <span class="pre">=</span> <span class="pre">array_assembler(cow.node_count,</span> <span class="pre">state_probability_generator(cow))</span></code></p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tm</span> <span class="o">=</span> <span class="n">array_assembler</span><span class="p">(</span><span class="n">state_count</span><span class="o">=</span><span class="n">cow</span><span class="o">.</span><span class="n">node_count</span><span class="p">,</span> <span class="n">probability_calculator</span><span class="o">=</span><span class="n">state_probability_generator</span><span class="p">(</span><span class="n">cow</span><span class="p">))</span>
+</pre></div>
+</div>
+</li>
+<li><p><em>Optional:</em> Save the transition matrix to a file using <a class="reference external" href="https://docs.scipy.org/doc/scipy/index.html#module-scipy" title="(in SciPy v1.11.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy</span></code></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">save_npz</span>
+
+<span class="n">save_npz</span><span class="p">(</span><span class="s1">&#39;transition_matrix.npz&#39;</span><span class="p">,</span> <span class="n">tm</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
 </li>
 </ol>
-<p><em>For details on the parameters of functions from the</em> <a class="reference external" href="https://bovi-analytics.github.io/chain-simulator/generated/chain_simulator.html#module-chain_simulator" title="(in Chain simulator)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">chain_simulator</span></code></a>
-<em>package, see the corresponding documentation of the</em> <a class="reference external" href="https://bovi-analytics.github.io/chain-simulator/generated/chain_simulator.html#module-chain_simulator" title="(in Chain simulator)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">chain_simulator</span></code></a>
-<em>package here:</em> <a class="reference external" href="https://bovi-analytics.github.io/chain-simulator/generated/chain_simulator.html#module-chain_simulator" title="(in Chain simulator)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">chain_simulator</span></code></a>
-<a class="reference external" href="https://matplotlib.org/stable/index.html#module-matplotlib" title="(in Matplotlib v3.7.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">matplotlib</span></code></a></p>
-</section>
-<hr class="docutils" />
-<section id="perform-a-simulation-using-the-chain-simulator-package-to-get-the-simulation-iterator">
-<h3>5. Perform a simulation using the <code class="docutils literal notranslate"><span class="pre">chain_simulator</span></code> package to get the <code class="docutils literal notranslate"><span class="pre">simulation</span></code> Iterator:<a class="headerlink" href="#perform-a-simulation-using-the-chain-simulator-package-to-get-the-simulation-iterator" title="Permalink to this heading">#</a></h3>
-<ol class="arabic">
-<li><p>Import <code class="docutils literal notranslate"><span class="pre">state_vector_processor</span></code> from the <code class="docutils literal notranslate"><span class="pre">chain_simulator</span></code> package:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">chain_simulator.simulation</span> <span class="pre">import</span> <span class="pre">state_vector_processor</span></code></p>
-</div></blockquote>
+</dd>
+</dl>
 </li>
-<li><p>Use the transition matrix and the cow’s initial state vector to simulate the cow over a given number of days:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">simulation</span> <span class="pre">=</span> <span class="pre">state_vector_processor(cow.initial_state_vector,</span> <span class="pre">tm,</span> <span class="pre">140,</span> <span class="pre">7)</span></code></p>
-</div></blockquote>
+<li><dl>
+<dt>Load an existing transition matrix with <a class="reference external" href="https://docs.scipy.org/doc/scipy/index.html#module-scipy" title="(in SciPy v1.11.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy</span></code></a>:</dt><dd><ol class="arabic">
+<li><p>Load the transition matrix:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">load_npz</span>
+
+<span class="n">tm</span> <span class="o">=</span> <span class="n">load_npz</span><span class="p">(</span><span class="s1">&#39;transition_matrix.npz&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</dd>
+</dl>
 </li>
 </ol>
 <p><em>For details on the parameters of functions from the chain_simulator package,
@@ -368,50 +371,113 @@ see the corresponding documentation of the chain_simulator package here:</em>
 <a class="reference external" href="https://bovi-analytics.github.io/chain-simulator/generated/chain_simulator.html#module-chain_simulator" title="(in Chain simulator)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">chain_simulator</span></code></a></p>
 </section>
 <hr class="docutils" />
-<section id="create-the-graph-all-possible-paths-path-phenotype-totals-and-path-probabilities-for-the-simulation">
-<h3>6. Create the graph, all possible paths, path phenotype totals, and path probabilities for the simulation:<a class="headerlink" href="#create-the-graph-all-possible-paths-path-phenotype-totals-and-path-probabilities-for-the-simulation" title="Permalink to this heading">#</a></h3>
+<section id="use-the-chain-simulator-package-to-get-a-simulation-iterator">
+<h3>5. Use the <code class="docutils literal notranslate"><span class="pre">chain_simulator</span></code> package to get a simulation iterator:<a class="headerlink" href="#use-the-chain-simulator-package-to-get-a-simulation-iterator" title="Permalink to this heading">#</a></h3>
+<p>An iterator made with the <code class="docutils literal notranslate"><span class="pre">chain_simulator</span></code> package is used to perform the simulation.</p>
+<p><em>Note:</em> You are only setting up the simulation in this step.</p>
 <ol class="arabic">
-<li><p>Import the functions <code class="docutils literal notranslate"><span class="pre">create_graph</span></code>, <code class="docutils literal notranslate"><span class="pre">create_paths</span></code>, <code class="docutils literal notranslate"><span class="pre">find_probabilities</span></code>, <code class="docutils literal notranslate"><span class="pre">path_probability</span></code>, and <code class="docutils literal notranslate"><span class="pre">path_milk_production</span></code>:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">cow_builder.digital_cow</span> <span class="pre">import</span> <span class="pre">create_graph,</span> <span class="pre">create_paths,</span> <span class="pre">find_probabilities,</span> <span class="pre">path_probability,</span> <span class="pre">path_milk_production</span></code></p>
-</div></blockquote>
-</li>
-<li><p>Create a directed graph using the <code class="docutils literal notranslate"><span class="pre">create_graph()</span></code> function:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">graph_filename</span> <span class="pre">=</span> <span class="pre">'Mygraph.graphml.gz'</span></code>n
-<code class="docutils literal notranslate"><span class="pre">create_graph(cow,</span> <span class="pre">graph_filename)</span></code>n</p>
-</div></blockquote>
-</li>
-<li><p>Create the paths that the cow could take during the simulation using the <code class="docutils literal notranslate"><span class="pre">create_paths()</span></code> function:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">path_file</span> <span class="pre">=</span> <span class="pre">'paths.txt'</span></code>n
-<code class="docutils literal notranslate"><span class="pre">create_paths(cow,</span> <span class="pre">simulated_days,</span> <span class="pre">graph_filename,</span> <span class="pre">path_file)</span></code>n</p>
-</div></blockquote>
-</li>
-<li><p>Find the path phenotype totals and the path probabilities:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">all_simulations</span> <span class="pre">=</span> <span class="pre">find_probabilities(simulation,</span> <span class="pre">cow)</span></code>n
-<code class="docutils literal notranslate"><span class="pre">path_milk_totals</span> <span class="pre">=</span> <span class="pre">path_milk_production(cow,</span> <span class="pre">path_file)</span></code>n
-<code class="docutils literal notranslate"><span class="pre">path_probabilities</span> <span class="pre">=</span> <span class="pre">path_probability(path_file,</span> <span class="pre">all_simulations)</span></code>n</p>
-</div></blockquote>
+<li><p>Import <code class="docutils literal notranslate"><span class="pre">state_vector_processor</span></code> from the <code class="docutils literal notranslate"><span class="pre">chain_simulator</span></code> package:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">chain_simulator.simulation</span> <span class="kn">import</span> <span class="n">state_vector_processor</span>
+</pre></div>
+</div>
 </li>
 </ol>
+<p>2) Use the transition matrix and the cow’s initial state vector to create an iterator that can simulate the cow over a
+given number of days:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">simulation</span> <span class="o">=</span> <span class="n">state_vector_processor</span><span class="p">(</span><span class="n">state_vector</span><span class="o">=</span><span class="n">cow</span><span class="o">.</span><span class="n">initial_state_vector</span><span class="p">,</span> <span class="n">transition_matrix</span><span class="o">=</span><span class="n">tm</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="mi">2800</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><em>For details on the parameters of functions from the chain_simulator package,
+see the corresponding documentation of the chain_simulator package here:</em>
+<a class="reference external" href="https://bovi-analytics.github.io/chain-simulator/generated/chain_simulator.html#module-chain_simulator" title="(in Chain simulator)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">chain_simulator</span></code></a></p>
 </section>
 <hr class="docutils" />
-<section id="get-phenotypes-for-the-simulation-period">
-<h3>7. Get phenotypes for the simulation period:<a class="headerlink" href="#get-phenotypes-for-the-simulation-period" title="Permalink to this heading">#</a></h3>
-<ol class="arabic">
-<li><p>Import the <code class="docutils literal notranslate"><span class="pre">phenotype_simulation</span></code> function:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">cow_builder.digital_cow</span> <span class="pre">import</span> <span class="pre">phenotype_simulation</span></code></p>
-</div></blockquote>
+<section id="create-a-dictionary-with-phenotypes-and-the-respective-phenotype-function-from-the-digital-cow-module">
+<h3>6. Create a dictionary with phenotypes and the respective phenotype function from the <code class="docutils literal notranslate"><span class="pre">digital_cow</span></code> module:<a class="headerlink" href="#create-a-dictionary-with-phenotypes-and-the-respective-phenotype-function-from-the-digital-cow-module" title="Permalink to this heading">#</a></h3>
+<p>A dictionary with phenotype functions is needed for the chain_simulator package to calculate the desired phenotypes.</p>
+<p>1) Import the functions <code class="docutils literal notranslate"><span class="pre">vector_milk_production</span></code> and <code class="docutils literal notranslate"><span class="pre">vector_nitrogen_emission</span></code> from the <code class="docutils literal notranslate"><span class="pre">digital_cow</span></code> module
+and the <code class="docutils literal notranslate"><span class="pre">partial</span></code> function from <code class="docutils literal notranslate"><span class="pre">functools</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cow_builder.digital_cow</span> <span class="kn">import</span> <span class="n">vector_milk_production</span><span class="p">,</span> <span class="n">vector_nitrogen_emission</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+</pre></div>
+</div>
+<ol class="arabic" start="2">
+<li><p><em>Optional:</em> Create a dictionary to store intermediate results for every phenotype:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">milk_accumulator</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">nitrogen_accumulator</span> <span class="o">=</span> <span class="p">{}</span>
+</pre></div>
+</div>
 </li>
-<li><p>Get the weighted phenotypes for all paths and the weighted average using the <code class="docutils literal notranslate"><span class="pre">phenotype_simulation()</span></code> function:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">weighted_path_milk_totals,</span> <span class="pre">weighted_avg</span> <span class="pre">=</span> <span class="pre">phenotype_simulation(path_milk_totals,</span> <span class="pre">path_probabilities)</span></code></p>
-</div></blockquote>
+<li><p>Fill in the <code class="docutils literal notranslate"><span class="pre">digital_cow</span></code> and <code class="docutils literal notranslate"><span class="pre">intermediate_accumulator</span></code> parameters using <code class="docutils literal notranslate"><span class="pre">partial</span></code> and add the functions to a dictionary:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">callbacks</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;milk&quot;</span><span class="p">:</span> <span class="n">partial</span><span class="p">(</span><span class="n">vector_milk_production</span><span class="p">,</span> <span class="n">digital_cow</span><span class="o">=</span><span class="n">cow</span><span class="p">,</span>
+                    <span class="n">intermediate_accumulator</span><span class="o">=</span><span class="n">milk_accumulator</span><span class="p">),</span>
+    <span class="s2">&quot;nitrogen&quot;</span><span class="p">:</span> <span class="n">partial</span><span class="p">(</span><span class="n">vector_nitrogen_emission</span><span class="p">,</span> <span class="n">digital_cow</span><span class="o">=</span><span class="n">cow</span><span class="p">,</span>
+                        <span class="n">intermediate_accumulator</span><span class="o">=</span><span class="n">nitrogen_accumulator</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </li>
 </ol>
+<p><em>Filling in these parameters here allows the code to refer to these objects and use them without having to give them as parameters to the simulation_accumulator function nor having it return them.</em>
+<em>If the intermediate_accumulator is skipped in step 2, it does not need to be filled in.</em></p>
+</section>
+<hr class="docutils" />
+<section id="run-the-simulation">
+<h3>7. Run the simulation:<a class="headerlink" href="#run-the-simulation" title="Permalink to this heading">#</a></h3>
+<p>Run the simulation using the <code class="docutils literal notranslate"><span class="pre">simulation_accumulator</span></code> function from the <code class="docutils literal notranslate"><span class="pre">chain_simulator</span></code> package.</p>
+<ol class="arabic">
+<li><p>Import the <code class="docutils literal notranslate"><span class="pre">simulation_accumulator</span></code> function from the <code class="docutils literal notranslate"><span class="pre">chain_simulator</span></code> package:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">chain_simulator.utilities</span> <span class="kn">import</span> <span class="n">simulation_accumulator</span>
+</pre></div>
+</div>
+</li>
+<li><p>Run the simulation to get a dictionary with the accumulated phenotype values at the end of the simulation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">accumulated</span> <span class="o">=</span> <span class="n">simulation_accumulator</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="o">**</span><span class="n">callbacks</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p><em>For details on the parameters of functions from the chain_simulator package,
+see the corresponding documentation of the chain_simulator package here:</em>
+<a class="reference external" href="https://bovi-analytics.github.io/chain-simulator/generated/chain_simulator.html#module-chain_simulator" title="(in Chain simulator)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">chain_simulator</span></code></a></p>
+</section>
+<hr class="docutils" />
+<section id="optional-print-the-results-and-use-matplotlib-to-plot-the-simulation">
+<h3>8. <em>Optional:</em> Print the results and use Matplotlib to plot the simulation:<a class="headerlink" href="#optional-print-the-results-and-use-matplotlib-to-plot-the-simulation" title="Permalink to this heading">#</a></h3>
+<p>Extract the results from the dictionary or plot the simulation using the intermediate results and <a class="reference external" href="https://matplotlib.org/stable/index.html#module-matplotlib" title="(in Matplotlib v3.7.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">matplotlib</span></code></a>.</p>
+<ol class="arabic">
+<li><p>Print the results from the simulation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;The milk production is: </span><span class="si">{</span><span class="n">accumulated</span><span class="p">[</span><span class="s1">&#39;milk&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> kg</span><span class="se">\n</span><span class="s2">&quot;</span> \
+    <span class="sa">f</span><span class="s2">&quot;The nitrogen emission is: </span><span class="si">{</span><span class="n">accumulated</span><span class="p">[</span><span class="s1">&#39;nitrogen&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> g&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>Plot the simulation using the intermediate results:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">x_points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">milk_accumulator</span><span class="o">.</span><span class="n">keys</span><span class="p">()])</span>
+<span class="n">y_points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">value</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">milk_accumulator</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_points</span><span class="p">,</span> <span class="n">y_points</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;milk production&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">x_points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">nitrogen_accumulator</span><span class="o">.</span><span class="n">keys</span><span class="p">()])</span>
+<span class="n">y_points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">value</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">nitrogen_accumulator</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_points</span><span class="p">,</span> <span class="n">y_points</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;nitrogen emission&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p><em>Plotting the simulation requires the user to track the intermediate results.</em></p>
 <hr class="docutils" />
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
@@ -480,15 +546,16 @@ see the corresponding documentation of the chain_simulator package here:</em>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Cow builder documentation</a><ul>
-<li><a class="reference internal" href="#how-to-use-this-module">How To Use This Module</a><ul>
+<li><a class="reference internal" href="#">Cow-builder documentation</a><ul>
+<li><a class="reference internal" href="#how-to-use-this-package">How To Use This Package</a><ul>
 <li><a class="reference internal" href="#import-the-classes-digitalcow-and-digitalherd">1. Import the classes DigitalCow and DigitalHerd:</a></li>
 <li><a class="reference internal" href="#create-a-digitalcow-and-digitalherd-object">2. Create a DigitalCow and DigitalHerd object:</a></li>
 <li><a class="reference internal" href="#generate-states-for-the-digitalcow-object">3. Generate states for the DigitalCow object:</a></li>
-<li><a class="reference internal" href="#create-a-transition-matrix-using-the-chain-simulator-package">4. Create a transition matrix using the <code class="xref py py-mod docutils literal notranslate"><span class="pre">chain_simulator</span></code> package:</a></li>
-<li><a class="reference internal" href="#perform-a-simulation-using-the-chain-simulator-package-to-get-the-simulation-iterator">5. Perform a simulation using the <code class="docutils literal notranslate"><span class="pre">chain_simulator</span></code> package to get the <code class="docutils literal notranslate"><span class="pre">simulation</span></code> Iterator:</a></li>
-<li><a class="reference internal" href="#create-the-graph-all-possible-paths-path-phenotype-totals-and-path-probabilities-for-the-simulation">6. Create the graph, all possible paths, path phenotype totals, and path probabilities for the simulation:</a></li>
-<li><a class="reference internal" href="#get-phenotypes-for-the-simulation-period">7. Get phenotypes for the simulation period:</a></li>
+<li><a class="reference internal" href="#create-a-transition-matrix-using-the-chain-simulator-package">4. Create a transition matrix using the <code class="docutils literal notranslate"><span class="pre">chain_simulator</span></code> package:</a></li>
+<li><a class="reference internal" href="#use-the-chain-simulator-package-to-get-a-simulation-iterator">5. Use the <code class="docutils literal notranslate"><span class="pre">chain_simulator</span></code> package to get a simulation iterator:</a></li>
+<li><a class="reference internal" href="#create-a-dictionary-with-phenotypes-and-the-respective-phenotype-function-from-the-digital-cow-module">6. Create a dictionary with phenotypes and the respective phenotype function from the <code class="docutils literal notranslate"><span class="pre">digital_cow</span></code> module:</a></li>
+<li><a class="reference internal" href="#run-the-simulation">7. Run the simulation:</a></li>
+<li><a class="reference internal" href="#optional-print-the-results-and-use-matplotlib-to-plot-the-simulation">8. <em>Optional:</em> Print the results and use Matplotlib to plot the simulation:</a></li>
 </ul>
 </li>
 </ul>

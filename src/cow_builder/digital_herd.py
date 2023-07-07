@@ -18,9 +18,9 @@ for details on the default values.*
 
 1. Import the class DigitalHerd:
 ********************************
-Import the class with:\n
+Import the class with::
 
-    ``from cow_builder.digital_herd import DigitalHerd``.\n
+    from cow_builder.digital_herd import DigitalHerd
 
 ************************************************************
 
@@ -29,13 +29,13 @@ Import the class with:\n
 Since default values are provided for the DigitalHerd class, it can be created as
 follows:\n
 
-a) without parameters:
+a) without parameters::
 
-    ``new_herd = DigitalHerd()``
+    new_herd = DigitalHerd()
 
-b) with parameters:
+b) with parameters::
 
-    ``new_herd = DigitalHerd(milk_threshold=5)``\n
+    new_herd = DigitalHerd(milk_threshold=5)
 
 *For details about the parameters, look at the* \ ``__init__``\  *method.*
 
@@ -47,26 +47,26 @@ There are a few different methods that can be used to alter the herd list of a
 DigitalHerd instance. These alterations will also affect the ``DigitalCow`` objects
 that are added or removed from the herd.
 
-1) Adds the ``DigitalCow`` objects to the DigitalHerd and sets the DigitalHerd as the herd of each ``DigitalCow``:
+1) Adds the ``DigitalCow`` objects to the DigitalHerd and sets the ``DigitalHerd`` as the herd of each ``DigitalCow``::
 
-    ``a_herd = DigitalHerd()``\n
-    ``cow = DigitalCow()``\n
-    ``cow2 = DigitalCow()``\n
-    ``a_herd.add_to_herd(cows=[cow, cow2])``\n
+    a_herd = DigitalHerd()
+    cow = DigitalCow()
+    cow2 = DigitalCow()
+    a_herd.add_to_herd(cows=[cow, cow2])
 
-2) Removes the ``DigitalCow`` objects from the DigitalHerd and sets the herd of each ``DigitalCow`` to None:
+2) Removes the ``DigitalCow`` objects from the ``DigitalHerd`` and sets the herd of each ``DigitalCow`` to ``None``::
 
-    ``a_herd = DigitalHerd()``\n
-    ``cow = DigitalCow(herd=a_herd)``\n
-    ``cow2 = DigitalCow(herd=a_herd)``\n
-    ``a_herd.remove_from_herd(cows=[cow, cow2])``\n
+    a_herd = DigitalHerd()
+    cow = DigitalCow(herd=a_herd)
+    cow2 = DigitalCow(herd=a_herd)
+    a_herd.remove_from_herd(cows=[cow, cow2])
 
-3) Overwrites the list of ``DigitalCow`` objects as the herd of the DigitalHerd and the DigitalHerd as the herd of each ``DigitalCow``:
+3) Overwrites the list of ``DigitalCow`` objects as the herd of the ``DigitalHerd`` and the ``DigitalHerd`` as the herd of each ``DigitalCow``::
 
-    ``a_herd = DigitalHerd()``\n
-    ``cow = DigitalCow()``\n
-    ``cow2 = DigitalCow()``\n
-    ``a_herd.herd = [cow, cow2]``\n
+    a_herd = DigitalHerd()
+    cow = DigitalCow()
+    cow2 = DigitalCow()
+    a_herd.herd = [cow, cow2]
 
 ************************************************************
 
@@ -79,7 +79,7 @@ from cow_builder import digital_cow
 
 class DigitalHerd:
     """
-    A class to represent a digital herd of cows and manage their properties.
+    A class to represent a herd of cows and manage their properties.
 
     :Attributes:
         :var _mu_age_at_first_heat: The mean age in days at which a cow
@@ -141,12 +141,6 @@ class DigitalHerd:
         """
         Initializes an instance of a DigitalHerd object.
 
-        :param mu_age_at_first_heat: The mean age in days at which a cow
-            will experience its first estrus.
-        :type mu_age_at_first_heat: int
-        :param sigma_age_at_first_heat: The standard deviation of the age
-            at which a cow will experience its first estrus.
-        :type sigma_age_at_first_heat: int
         :param vwp: The voluntary waiting period in days before a
             cow can be inseminated. Values in the tuple are for lactation 0, 1,
             and 2+.
@@ -170,6 +164,12 @@ class DigitalHerd:
         :param duration_dry: The number of days before calving, when a cow is not
             being milked. Values in the tuple are for lactation 1 and 2+.
         :type duration_dry: tuple[int]
+        :param mu_age_at_first_heat: The mean age in days at which a cow
+            will experience its first estrus.
+        :type mu_age_at_first_heat: int
+        :param sigma_age_at_first_heat: The standard deviation of the age
+            at which a cow will experience its first estrus.
+        :type sigma_age_at_first_heat: int
         """
         self._mu_age_at_first_heat = mu_age_at_first_heat
         self._sigma_age_at_first_heat = sigma_age_at_first_heat
@@ -181,7 +181,6 @@ class DigitalHerd:
         self._lactation_number_limit = lactation_number_limit
         self._days_pregnant_limit = days_pregnant_limit
         self._duration_dry = duration_dry
-        # other general properties shared between the entities in the _herd
 
     def add_to_herd(self, cows: list) -> None:
         """

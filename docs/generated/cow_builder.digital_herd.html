@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="cow_builder.state module" href="cow_builder.state.html" /><link rel="prev" title="cow_builder.digital_cow module" href="cow_builder.digital_cow.html" />
 
     <!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20 -->
-        <title>cow_builder.digital_herd module - Cow builder 0.1 documentation</title>
+        <title>cow_builder.digital_herd module - Cow-builder 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Cow builder 0.1 documentation</div></a>
+      <a href="../index.html"><div class="brand">Cow-builder 1.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">Cow builder 0.1 documentation</span>
+  <span class="sidebar-brand-text">Cow-builder 1.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -233,9 +233,9 @@ for details on the default values.</em></p>
 <section id="import-the-class-digitalherd">
 <h3>1. Import the class DigitalHerd:<a class="headerlink" href="#import-the-class-digitalherd" title="Permalink to this heading">#</a></h3>
 <p>Import the class with:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">cow_builder.digital_herd</span> <span class="pre">import</span> <span class="pre">DigitalHerd</span></code>.</p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cow_builder.digital_herd</span> <span class="kn">import</span> <span class="n">DigitalHerd</span>
+</pre></div>
+</div>
 </section>
 <hr class="docutils" />
 <section id="create-a-digitalherd-instance">
@@ -244,14 +244,14 @@ for details on the default values.</em></p>
 follows:</p>
 <ol class="loweralpha">
 <li><p>without parameters:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">new_herd</span> <span class="pre">=</span> <span class="pre">DigitalHerd()</span></code></p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">new_herd</span> <span class="o">=</span> <span class="n">DigitalHerd</span><span class="p">()</span>
+</pre></div>
+</div>
 </li>
 <li><p>with parameters:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">new_herd</span> <span class="pre">=</span> <span class="pre">DigitalHerd(milk_threshold=5)</span></code></p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">new_herd</span> <span class="o">=</span> <span class="n">DigitalHerd</span><span class="p">(</span><span class="n">milk_threshold</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
 </li>
 </ol>
 <p><em>For details about the parameters, look at the</em> <code class="docutils literal notranslate"><span class="pre">__init__</span></code> <em>method.</em></p>
@@ -263,29 +263,29 @@ follows:</p>
 DigitalHerd instance. These alterations will also affect the <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code> objects
 that are added or removed from the herd.</p>
 <ol class="arabic">
-<li><p>Adds the <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code> objects to the DigitalHerd and sets the DigitalHerd as the herd of each <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code>:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">a_herd</span> <span class="pre">=</span> <span class="pre">DigitalHerd()</span></code></p>
-<p><code class="docutils literal notranslate"><span class="pre">cow</span> <span class="pre">=</span> <span class="pre">DigitalCow()</span></code></p>
-<p><code class="docutils literal notranslate"><span class="pre">cow2</span> <span class="pre">=</span> <span class="pre">DigitalCow()</span></code></p>
-<p><code class="docutils literal notranslate"><span class="pre">a_herd.add_to_herd(cows=[cow,</span> <span class="pre">cow2])</span></code></p>
-</div></blockquote>
+<li><p>Adds the <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code> objects to the DigitalHerd and sets the <code class="docutils literal notranslate"><span class="pre">DigitalHerd</span></code> as the herd of each <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a_herd</span> <span class="o">=</span> <span class="n">DigitalHerd</span><span class="p">()</span>
+<span class="n">cow</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">()</span>
+<span class="n">cow2</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">()</span>
+<span class="n">a_herd</span><span class="o">.</span><span class="n">add_to_herd</span><span class="p">(</span><span class="n">cows</span><span class="o">=</span><span class="p">[</span><span class="n">cow</span><span class="p">,</span> <span class="n">cow2</span><span class="p">])</span>
+</pre></div>
+</div>
 </li>
-<li><p>Removes the <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code> objects from the DigitalHerd and sets the herd of each <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code> to None:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">a_herd</span> <span class="pre">=</span> <span class="pre">DigitalHerd()</span></code></p>
-<p><code class="docutils literal notranslate"><span class="pre">cow</span> <span class="pre">=</span> <span class="pre">DigitalCow(herd=a_herd)</span></code></p>
-<p><code class="docutils literal notranslate"><span class="pre">cow2</span> <span class="pre">=</span> <span class="pre">DigitalCow(herd=a_herd)</span></code></p>
-<p><code class="docutils literal notranslate"><span class="pre">a_herd.remove_from_herd(cows=[cow,</span> <span class="pre">cow2])</span></code></p>
-</div></blockquote>
+<li><p>Removes the <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code> objects from the <code class="docutils literal notranslate"><span class="pre">DigitalHerd</span></code> and sets the herd of each <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code> to <code class="docutils literal notranslate"><span class="pre">None</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a_herd</span> <span class="o">=</span> <span class="n">DigitalHerd</span><span class="p">()</span>
+<span class="n">cow</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">(</span><span class="n">herd</span><span class="o">=</span><span class="n">a_herd</span><span class="p">)</span>
+<span class="n">cow2</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">(</span><span class="n">herd</span><span class="o">=</span><span class="n">a_herd</span><span class="p">)</span>
+<span class="n">a_herd</span><span class="o">.</span><span class="n">remove_from_herd</span><span class="p">(</span><span class="n">cows</span><span class="o">=</span><span class="p">[</span><span class="n">cow</span><span class="p">,</span> <span class="n">cow2</span><span class="p">])</span>
+</pre></div>
+</div>
 </li>
 <li><p>Overwrites the list of <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code> objects as the herd of the DigitalHerd and the DigitalHerd as the herd of each <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code>:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">a_herd</span> <span class="pre">=</span> <span class="pre">DigitalHerd()</span></code></p>
-<p><code class="docutils literal notranslate"><span class="pre">cow</span> <span class="pre">=</span> <span class="pre">DigitalCow()</span></code></p>
-<p><code class="docutils literal notranslate"><span class="pre">cow2</span> <span class="pre">=</span> <span class="pre">DigitalCow()</span></code></p>
-<p><code class="docutils literal notranslate"><span class="pre">a_herd.herd</span> <span class="pre">=</span> <span class="pre">[cow,</span> <span class="pre">cow2]</span></code></p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a_herd</span> <span class="o">=</span> <span class="n">DigitalHerd</span><span class="p">()</span>
+<span class="n">cow</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">()</span>
+<span class="n">cow2</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">()</span>
+<span class="n">a_herd</span><span class="o">.</span><span class="n">herd</span> <span class="o">=</span> <span class="p">[</span><span class="n">cow</span><span class="p">,</span> <span class="n">cow2</span><span class="p">]</span>
+</pre></div>
+</div>
 </li>
 </ol>
 </section>

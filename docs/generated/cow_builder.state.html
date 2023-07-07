@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="src" href="modules.html" /><link rel="prev" title="cow_builder.digital_herd module" href="cow_builder.digital_herd.html" />
 
     <!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20 -->
-        <title>cow_builder.state module - Cow builder 0.1 documentation</title>
+        <title>cow_builder.state module - Cow-builder 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Cow builder 0.1 documentation</div></a>
+      <a href="../index.html"><div class="brand">Cow-builder 1.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">Cow builder 0.1 documentation</span>
+  <span class="sidebar-brand-text">Cow-builder 1.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -219,7 +219,7 @@
 </dd>
 <dt class="field-odd">synopsis<span class="colon">:</span></dt>
 <dd class="field-odd"><p>This module contains the State dataclass representing a state of a cow.
-This class is used by the DigitalCow class.</p>
+This class is used by the <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code> class.</p>
 </dd>
 </dl>
 <section id="how-to-use-this-module">
@@ -233,24 +233,24 @@ same instance values are compared, they will be considered equal.</p>
 for details on the default values.</em></p>
 <section id="import-the-state-class">
 <h3>1. Import the State class:<a class="headerlink" href="#import-the-state-class" title="Permalink to this heading">#</a></h3>
-<p>First import the class from the module.</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">cow_builder.state</span> <span class="pre">import</span> <span class="pre">State</span></code></p>
-</div></blockquote>
+<p>First import the <code class="docutils literal notranslate"><span class="pre">State</span></code> class from the <code class="docutils literal notranslate"><span class="pre">state</span></code> module:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cow_builder.state</span> <span class="kn">import</span> <span class="n">State</span>
+</pre></div>
+</div>
 </section>
 <hr class="docutils" />
 <section id="create-a-state-instance">
 <h3>2. Create a State instance:<a class="headerlink" href="#create-a-state-instance" title="Permalink to this heading">#</a></h3>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">new_state</span> <span class="pre">=</span> <span class="pre">State('Open',</span> <span class="pre">300,</span> <span class="pre">1,</span> <span class="pre">200,</span> <span class="pre">20)</span></code></p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">new_state</span> <span class="o">=</span> <span class="n">State</span><span class="p">(</span><span class="s1">&#39;Open&#39;</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <hr class="docutils" />
 <section id="return-variables-from-the-state-instance">
 <h3>3. Return variables from the State instance:<a class="headerlink" href="#return-variables-from-the-state-instance" title="Permalink to this heading">#</a></h3>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">days_in_milk</span> <span class="pre">=</span> <span class="pre">new_state.days_in_milk</span></code></p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">days_in_milk</span> <span class="o">=</span> <span class="n">new_state</span><span class="o">.</span><span class="n">days_in_milk</span>
+</pre></div>
+</div>
 </section>
 </section>
 <hr class="docutils" />
@@ -304,7 +304,7 @@ or it’s birth if it has not calved yet.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="cow_builder.state.State.__post_init__">
 <span class="sig-name descname"><span class="pre">__post_init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cow_builder.state.State.__post_init__" title="Permalink to this definition">#</a></dt>
-<dd><p>Post-init check for illegal variable types and value-combinations.</p>
+<dd><p>Checks for illegal variable types and value-combinations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -314,7 +314,6 @@ is not ‘Pregnant’ or days_pregnant is 0 and the state is ‘Pregnant’.</p>
 </ul>
 </dd>
 </dl>
-<p>TODO provide meaningful error messages</p>
 </dd></dl>
 
 <dl class="py attribute">

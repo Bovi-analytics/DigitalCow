@@ -15,7 +15,7 @@ from chain_simulator.assembly import array_assembler
 from functools import partial
 import time
 import logging
-import scipy
+from scipy.sparse import save_npz, load_npz
 
 
 def chain_simulator_test():
@@ -53,9 +53,9 @@ def chain_simulator_test():
     a_sixth_cow.generate_total_states(dim_limit=1000, ln_limit=9)
     # tm = array_assembler(just_another_cow.node_count,
     #                      state_probability_generator(just_another_cow))
-    # scipy.sparse.save_npz('transition_matrices/transition_matrix_2_lactations.npz', tm, True)
+    # save_npz('transition_matrices/transition_matrix_2_lactations.npz', tm, True)
 
-    tm = scipy.sparse.load_npz('transition_matrices/transition_matrix_9_lactations.npz')
+    tm = load_npz('transition_matrices/transition_matrix_9_lactations.npz')
 
     print(
         f"validation of the sum of rows being equal to 1: {validate_matrix_sum(tm)}")
