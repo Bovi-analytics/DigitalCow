@@ -101,8 +101,6 @@ import math
 from typing import Generator, Iterator, Any
 import numpy as np
 
-import matplotlib.pyplot as plt
-
 from functools import cache
 
 
@@ -1067,83 +1065,6 @@ def state_probability_generator(digital_cow: DigitalCow) -> \
             yield state_index[state_from], \
                 state_index[state_to], \
                 probability
-
-
-def convert_vector_to_1d(simulated_day: tuple, total_states: tuple, group_by: int):
-    """
-    Converts a vector to 1 dimension by adding the probabilities of different states
-    with the same value on the chosen dimension together. Which dimension this is
-    depends on the ``group_by`` parameter.
-
-    :param simulated_day: A tuple that contains a vector as well as the day in
-        simulation that the vector is from.
-    :type simulated_day: tuple
-    :param total_states: A generated tuple of State objects that the cow can be in.
-    :type total_states: tuple
-    :param group_by: An int that indicates what dimension to group the states by.
-
-        * index = 0: days_in_milk
-        * index = 1: lactation_number
-        * index = 2: days_pregnant
-        * index = 3: life_state
-    :type group_by: int
-    :returns: The value of the chosen dimension with the corresponding probability
-        of being in a state with that specific value
-    :rtype: dict
-    """
-    vector, day = simulated_day
-    state_index = {
-        state: index for index, state in enumerate(total_states)
-    }
-    vector_index = {
-        index: probability for index, probability in enumerate(vector)
-    }
-    one_dimensional_vector = {}
-
-    for state in state_index:
-        index = state_index[state]
-        probability = vector_index[index]
-        match group_by:
-            case 0:
-                days_in_milk = state.days_in_milk
-                try:
-                    one_dimensional_vector[days_in_milk] = one_dimensional_vector[
-                                                               days_in_milk] + probability
-                except KeyError:
-                    one_dimensional_vector.update({days_in_milk: probability})
-            case 1:
-                lactation_number = state.lactation_number
-                try:
-                    one_dimensional_vector[lactation_number] = one_dimensional_vector[
-                                                                   lactation_number] + probability
-                except KeyError:
-                    one_dimensional_vector.update({lactation_number: probability})
-            case 2:
-                days_pregnant = state.days_pregnant
-                try:
-                    one_dimensional_vector[days_pregnant] = one_dimensional_vector[
-                                                                days_pregnant] + probability
-                except KeyError:
-                    one_dimensional_vector.update({days_pregnant: probability})
-            case 3:
-                life_state = state.state
-                try:
-                    one_dimensional_vector[life_state] = one_dimensional_vector[
-                                                             life_state] + probability
-                except KeyError:
-                    one_dimensional_vector.update({life_state: probability})
-
-    xpoints = np.asarray([i for i in one_dimensional_vector.keys()])
-    ypoints = np.asarray([i for i in one_dimensional_vector.values()])
-    plt.figure()
-    plt.xlabel('Days in milk')
-    plt.ylabel('Probability')
-    plt.title(f'Probability of cow at each day in milk for day '
-              f'{simulated_day[1]} in simulation')
-    plt.plot(xpoints, ypoints)
-    plt.savefig(f'img/simulated_day_{simulated_day[1]}')
-    plt.close()
-    return one_dimensional_vector
 
 
 def vector_milk_production(vector: np.ndarray, step_in_time: int, step_size: int, digital_cow: DigitalCow,
