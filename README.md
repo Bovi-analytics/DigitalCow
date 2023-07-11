@@ -16,7 +16,7 @@ Or add it to your ``requirements.txt``:
 Alternatively, extra dependencies can be installed alongside the required dependencies:
 
 * The developer installation will install additional dependencies used to update the documentation.
-* The visualisation installation will install ``matplotlib`` so results can be visualised.
+* The visualisation installation will install packages that can be used to visualise results.
 
 Below the commands can be found to install each installation. If you want to install all optional dependencies, 
 both commands should be executed.
