@@ -14,13 +14,11 @@ for details on the default values.*
 
 1. Import the classes DigitalCow and DigitalHerd:
 *************************************************
-First import the DigitalCow class:
+Import the classes from the modules ``digital_cow`` and ``digital_herd``.
+::
 
-    ``from cow_builder.digital_cow import DigitalCow``
-
-You will also need to import the DigitalHerd class from the digital_herd module:
-
-    ``from cow_builder.digital_herd import DigitalHerd``
+    from cow_builder.digital_cow import DigitalCow
+    from cow_builder.digital_herd import DigitalHerd
 
 ************************************************************
 
@@ -30,14 +28,14 @@ A DigitalCow object can be made without a DigitalHerd object,
 however it won't have full functionality until a DigitalHerd is added as its herd.
 
 a) Without a DigitalHerd object:
-    1) Without parameters:
+    1) Without parameters::
 
-        ``cow = DigitalCow()``\n
+        cow = DigitalCow()
 
-    2) With parameters:
+    2) With parameters::
 
-        ``cow = DigitalCow(days_in_milk=245, lactation_number=3,
-        days_pregnant=165, age_at_first_heat=371, age=2079, state='Pregnant')``\n
+        cow = DigitalCow(days_in_milk=245, lactation_number=3,
+        days_pregnant=165, diet_cp_cu=160, diet_cp_fo=140, age=2079, state='Pregnant')
 
     *These parameters may not be all available parameters. Look at each class'
     documentation for details.*
@@ -45,62 +43,122 @@ a) Without a DigitalHerd object:
 b) With a DigitalHerd object:
     1) Without parameters:
 
-        ``a_herd = DigitalHerd()``\n
-        ``cow = DigitalCow(herd=a_herd)``\n
+        a_herd = DigitalHerd()
+        cow = DigitalCow(herd=a_herd)
 
-    2) With parameters:
+    2) With parameters::
 
-        ``a_herd = DigitalHerd(vwp=[365, 90, 70], insemination_window=[110, 100, 90],
-        milk_threshold=Decimal("12"), duration_dry=[70, 50])``\n
-        ``cow = DigitalCow(days_in_milk=67, lactation_number=1,
-        days_pregnant=0, age=767, herd=a_herd, state='Open')``\n
+        a_herd = DigitalHerd(vwp=[365, 90, 70], insemination_window=[110, 100, 90],
+        milk_threshold=12, duration_dry=[70, 50])
+        cow = DigitalCow(days_in_milk=67, lactation_number=1,
+        days_pregnant=0, diet_cp_cu=160, diet_cp_fo=140, age=767, herd=a_herd, state='Open')
 
     *These parameters may not be all available parameters. Look at each class'
     documentation for details.*
 
 c) Set the herd of the DigitalCow:
-    1) Sets the DigitalHerd as the herd of the DigitalCow:
+    1) Sets the DigitalHerd as the herd of the DigitalCow::
 
-        ``a_herd = DigitalHerd()``\n
-        ``cow = DigitalCow(herd=a_herd)``\n
+        a_herd = DigitalHerd()
+        cow = DigitalCow(herd=a_herd)
 
-    2) Overwrites the DigitalHerd as the herd of the DigitalCow:
+    2) Overwrites the DigitalHerd as the herd of the DigitalCow::
 
-        ``a_herd = DigitalHerd()``\n
-        ``another_herd = DigitalHerd()``\n
-        ``cow = DigitalCow(herd=a_herd)``\n
-        ``cow.herd = another_herd``\n
+        a_herd = DigitalHerd()
+        another_herd = DigitalHerd()
+        cow = DigitalCow(herd=a_herd)
+        cow.herd = another_herd
 
     *There are other methods that alter the herd of the cow using functions from the
-    DigitalHerd class. These are described in the digital_herd module.*
+    ``DigitalHerd`` class. These are described in the ``digital_herd`` module.*
 
 ************************************************************
 
-3. Generate states for the DigitalCow object:
+3. Retrieving and altering instance variables:
+**********************************************
+There are many variables in the ``DigitalCow`` class, all of which can be called.
+
+1) Retrieving ``property`` variables:
+
+all instance variables are ``properties``. They can be called like this::
+
+    a_cow = DigitalCow()
+    dim = a_cow.current_days_in_milk
+
+2) Altering ``property`` variables:
+
+all instance variables can be altered like this::
+
+    a_cow = DigitalCow()
+    dim = 200
+    a_cow.current_days_in_milk = dim
+
+************************************************************
+
+4. Generate states for the DigitalCow object:
 *********************************************
-Generate states for the cow with using the ``generate_total_states()`` function:
+Generate states for the cow with using the ``generate_total_states()`` function.
+If you use these to make a transition matrix, this will determine the size of the matrix and
+thus how far you can simulate.
 
-a) without parameters:
+The ``days_in_milk_limit`` parameter determines the maximum number of days within one lactation
+(The actual number can be less depending on the milk threshold). The ``lactation_number_limit`` is the maximum
+number of lactations that can be completed before culling.
 
-    ``cow.generate_total_state()``
+
+a) without parameters::
+
+    cow.generate_total_state()
 
 Here the ``days_in_milk_limit`` and ``lactation_number_limit`` variables from the
-herd are used.\n
+herd are used.
 
-b) with parameters:
+b) with parameters::
 
-    ``cow.generate_total_states(dim_limit=750, ln_limit=9)``
+    cow.generate_total_states(dim_limit=750, ln_limit=9)
+
+************************************************************
+
+5. Using the ``state_probability_generator``:
+*********************************************
+The ``state_probability_generator()`` function takes a DigitalCow as a parameter.
+It goes through the states that have been generated and returns the probability of the cow moving from one state
+to another together with the indices of these states. This can be used together with the ``array_assembler`` function
+from the ``chain_simulator`` package to create a transition matrix.
+
+::
+    from chain_simulator.assembly import array_assembler
+    from cow_builder.digital_cow import state_probability_generator
+
+    tm = array_assembler(state_count=cow.node_count, probability_calculator=state_probability_generator(cow))
+
+************************************************************
+
+6. Using the vector phenotype functions:
+****************************************
+The vector phenotype functions are used to calculate phenotype values from a given vector of state probabilities.
+These functions can be passed to the ``simulation_accumulator`` function of the ``chain_simulator`` package in
+a dictionary. Parameters should be partially filled to allow the ``simulation_accumulator`` to access specific
+instance variables and functions.
+
+::
+
+    from cow_builder.digital_cow import vector_milk_production, vector_nitrogen_emission
+    from functools import partial
+
+    callbacks = {
+        "milk": partial(vector_milk_production, digital_cow=cow),
+        "nitrogen": partial(vector_nitrogen_emission, digital_cow=cow)
+    }
 
 ************************************************************
 """
-import time
-from numpy import ndarray, dtype
+from numpy import ndarray
 from cow_builder.digital_herd import DigitalHerd
 from cow_builder.state import State
 import math
-from typing import Generator, Iterator, Any
+from typing import Generator
 import numpy as np
-
 from functools import cache
 
 
@@ -124,7 +182,7 @@ class DigitalCow:
             states this cow can be in or transition to. Filled by
             ``self.generate_total_states()``.
         :type _total_states: tuple[State] | None
-        :var _milkbot_variables: A tuple of 4 ``Decimal`` objects used for the
+        :var _milkbot_variables: A tuple of 4 floats used for the
             ``self.milk_production`` function.
 
             * index = 0: scale
@@ -133,7 +191,7 @@ class DigitalCow:
             * index = 3: decay
 
             Filled by ``self.__set_milkbot_variables()``.
-        :type _milkbot_variables: tuple[Decimal]
+        :type _milkbot_variables: tuple[float]
 
     :Methods:
         __init__(days_in_milk, lactation_number, days_pregnant, age_at_first_heat,
@@ -845,17 +903,17 @@ class DigitalCow:
                f"\tAge: {self._age}\n" \
                f"\tHerd: {self.herd}\n" \
                f"\tCurrent state: {self.current_life_state}"
-        # TODO fix parameters
 
     def __repr__(self):
         return f"DigitalCow(days_in_milk={self.current_days_in_milk}, " \
                f"lactation_number={self.current_lactation_number}, " \
                f"days_pregnant={self.current_days_pregnant}, " \
-               f"age_at_first_heat={self._age_at_first_heat}, " \
+               f"diet_cp_cu={self._diet_cp_cu}" \
+               f"diet_cp_fo={self._diet_cp_fo}" \
+               f"milk_cp={self._milk_cp}" \
                f"age={self._age}, " \
                f"herd={self.herd}, " \
                f"state={self.current_life_state})"
-        # TODO fix parameters
 
     @property
     def herd(self) -> DigitalHerd:
@@ -1070,6 +1128,26 @@ def state_probability_generator(digital_cow: DigitalCow) -> \
 def vector_milk_production(vector: np.ndarray, step_in_time: int, step_size: int, digital_cow: DigitalCow,
                            intermediate_accumulator: dict[int, float] | None):
     """
+    A function that calculates the milk production of a cow ``digital_cow``,
+    on a given day in simulation ``step_in_time``, using a vector of state probabilities.
+    The milk production is multiplied with ``step_size`` to extrapolate the milk production until the
+    next ``step_in_time``. If an intermediate_accumulator is given, milk production is also saved in that dictionary.
+
+    :param vector: A vector of state probabilities that represents the probability of the cow being in each state at
+        the current time in the simulation.
+    :type vector: np.ndarray
+    :param step_in_time: The current day in the simulation.
+    :type step_in_time: int
+    :param step_size: The interval in days for which phenotype values are calculated during the simulation.
+    :type step_size: int
+    :param digital_cow: The representation of the cow that is being simulated.
+    :type digital_cow: DigitalCow
+    :param intermediate_accumulator: A dictionary that stores the milk production of each day in the simulation for
+        which phenotype values are calculated.
+    :type intermediate_accumulator: dict[int, float] | None
+
+    :return The milk production of the current day in simulation extrapolated until the next step_in_time.
+    :rtype: float
     """
     non_exit_states = 0
     vector_phenotype = 0
@@ -1095,6 +1173,26 @@ def vector_milk_production(vector: np.ndarray, step_in_time: int, step_size: int
 def vector_nitrogen_emission(vector: np.ndarray, step_in_time: int, step_size: int, digital_cow: DigitalCow,
                              intermediate_accumulator: dict[int, float] | None):
     """
+    A function that calculates the nitrogen emission of a cow ``digital_cow``,
+    on a given day in simulation ``step_in_time``, using a vector of state probabilities.
+    The nitrogen emission is multiplied with ``step_size`` to extrapolate the nitrogen emission until the
+    next ``step_in_time``. If an intermediate_accumulator is given, nitrogen emission is also saved in that dictionary.
+
+    :param vector: A vector of state probabilities that represents the probability of the cow being in each state at
+        the current time in the simulation.
+    :type vector: np.ndarray
+    :param step_in_time: The current day in the simulation.
+    :type step_in_time: int
+    :param step_size: The interval in days for which phenotype values are calculated during the simulation.
+    :type step_size: int
+    :param digital_cow: The representation of the cow that is being simulated.
+    :type digital_cow: DigitalCow
+    :param intermediate_accumulator: A dictionary that stores the nitrogen emission of each day in the simulation for
+        which phenotype values are calculated.
+    :type intermediate_accumulator: dict[int, float] | None
+
+    :return: The nitrogen emission of the current day in simulation extrapolated until the next step_in_time.
+    :rtype: float
     """
     non_exit_states = 0
     vector_phenotype = 0
@@ -1193,7 +1291,7 @@ def set_korver_function_variables(lactation_number: int):
     """
 
     # Source: (A. De Vries, 2006)
-    # fitted on data:
+    # fitted on data: (Poncheki et al., 2015)
     match lactation_number:
         case 0:
             birth_weight = np.random.normal(42, 0)
@@ -1241,7 +1339,7 @@ def calculate_body_weight(state: State, age: int) -> float:
     :param age: The age of the cow in days.
     :type age: int
     :return: The body weight of the cow in kg in the state that is given.
-    :rtype: Decimal
+    :rtype: float
     """
     # Source: (Giordano J.O., et al., 2012) (Cabrera)
     # Source: (De Vries A., 2006)
@@ -1277,7 +1375,7 @@ def set_milkbot_variables(lactation_number: int) -> tuple:
         * index = 2: ramp
         * index = 3: offset
         * index= 4: decay
-    :rtype: tuple[Decimal]
+    :rtype: tuple[float]
     :raises ValueError: If the lactation number is larger than the lactation
         number limit.
     """

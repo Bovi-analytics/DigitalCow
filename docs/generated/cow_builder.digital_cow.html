@@ -229,14 +229,11 @@ dairy herd, as well as some functions that it uses.</p>
 for details on the default values.</em></p>
 <section id="import-the-classes-digitalcow-and-digitalherd">
 <h3>1. Import the classes DigitalCow and DigitalHerd:<a class="headerlink" href="#import-the-classes-digitalcow-and-digitalherd" title="Permalink to this heading">#</a></h3>
-<p>First import the DigitalCow class:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">cow_builder.digital_cow</span> <span class="pre">import</span> <span class="pre">DigitalCow</span></code></p>
-</div></blockquote>
-<p>You will also need to import the DigitalHerd class from the digital_herd module:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">cow_builder.digital_herd</span> <span class="pre">import</span> <span class="pre">DigitalHerd</span></code></p>
-</div></blockquote>
+<p>Import the classes from the modules <code class="docutils literal notranslate"><span class="pre">digital_cow</span></code> and <code class="docutils literal notranslate"><span class="pre">digital_herd</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cow_builder.digital_cow</span> <span class="kn">import</span> <span class="n">DigitalCow</span>
+<span class="kn">from</span> <span class="nn">cow_builder.digital_herd</span> <span class="kn">import</span> <span class="n">DigitalHerd</span>
+</pre></div>
+</div>
 </section>
 <hr class="docutils" />
 <section id="create-a-digitalcow-and-digitalherd-object">
@@ -247,15 +244,15 @@ however it won’t have full functionality until a DigitalHerd is added as its h
 <li><dl>
 <dt>Without a DigitalHerd object:</dt><dd><ol class="arabic">
 <li><p>Without parameters:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">cow</span> <span class="pre">=</span> <span class="pre">DigitalCow()</span></code></p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cow</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">()</span>
+</pre></div>
+</div>
 </li>
 <li><p>With parameters:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">cow</span> <span class="pre">=</span> <span class="pre">DigitalCow(days_in_milk=245,</span> <span class="pre">lactation_number=3,</span>
-<span class="pre">days_pregnant=165,</span> <span class="pre">age_at_first_heat=371,</span> <span class="pre">age=2079,</span> <span class="pre">state='Pregnant')</span></code></p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cow</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">(</span><span class="n">days_in_milk</span><span class="o">=</span><span class="mi">245</span><span class="p">,</span> <span class="n">lactation_number</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+<span class="n">days_pregnant</span><span class="o">=</span><span class="mi">165</span><span class="p">,</span> <span class="n">diet_cp_cu</span><span class="o">=</span><span class="mi">160</span><span class="p">,</span> <span class="n">diet_cp_fo</span><span class="o">=</span><span class="mi">140</span><span class="p">,</span> <span class="n">age</span><span class="o">=</span><span class="mi">2079</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s1">&#39;Pregnant&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 </li>
 </ol>
 <p><em>These parameters may not be all available parameters. Look at each class’
@@ -267,17 +264,17 @@ documentation for details.</em></p>
 <dt>With a DigitalHerd object:</dt><dd><ol class="arabic">
 <li><p>Without parameters:</p>
 <blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">a_herd</span> <span class="pre">=</span> <span class="pre">DigitalHerd()</span></code></p>
-<p><code class="docutils literal notranslate"><span class="pre">cow</span> <span class="pre">=</span> <span class="pre">DigitalCow(herd=a_herd)</span></code></p>
+<div><p>a_herd = DigitalHerd()
+cow = DigitalCow(herd=a_herd)</p>
 </div></blockquote>
 </li>
 <li><p>With parameters:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">a_herd</span> <span class="pre">=</span> <span class="pre">DigitalHerd(vwp=[365,</span> <span class="pre">90,</span> <span class="pre">70],</span> <span class="pre">insemination_window=[110,</span> <span class="pre">100,</span> <span class="pre">90],</span>
-<span class="pre">milk_threshold=Decimal(&quot;12&quot;),</span> <span class="pre">duration_dry=[70,</span> <span class="pre">50])</span></code></p>
-<p><code class="docutils literal notranslate"><span class="pre">cow</span> <span class="pre">=</span> <span class="pre">DigitalCow(days_in_milk=67,</span> <span class="pre">lactation_number=1,</span>
-<span class="pre">days_pregnant=0,</span> <span class="pre">age=767,</span> <span class="pre">herd=a_herd,</span> <span class="pre">state='Open')</span></code></p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a_herd</span> <span class="o">=</span> <span class="n">DigitalHerd</span><span class="p">(</span><span class="n">vwp</span><span class="o">=</span><span class="p">[</span><span class="mi">365</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">70</span><span class="p">],</span> <span class="n">insemination_window</span><span class="o">=</span><span class="p">[</span><span class="mi">110</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span>
+<span class="n">milk_threshold</span><span class="o">=</span><span class="n">Decimal</span><span class="p">(</span><span class="s2">&quot;12&quot;</span><span class="p">),</span> <span class="n">duration_dry</span><span class="o">=</span><span class="p">[</span><span class="mi">70</span><span class="p">,</span> <span class="mi">50</span><span class="p">])</span>
+<span class="n">cow</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">(</span><span class="n">days_in_milk</span><span class="o">=</span><span class="mi">67</span><span class="p">,</span> <span class="n">lactation_number</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="n">days_pregnant</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">diet_cp_cu</span><span class="o">=</span><span class="mi">160</span><span class="p">,</span> <span class="n">diet_cp_fo</span><span class="o">=</span><span class="mi">140</span><span class="p">,</span> <span class="n">age</span><span class="o">=</span><span class="mi">767</span><span class="p">,</span> <span class="n">herd</span><span class="o">=</span><span class="n">a_herd</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s1">&#39;Open&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 </li>
 </ol>
 <p><em>These parameters may not be all available parameters. Look at each class’
@@ -288,47 +285,105 @@ documentation for details.</em></p>
 <li><dl>
 <dt>Set the herd of the DigitalCow:</dt><dd><ol class="arabic">
 <li><p>Sets the DigitalHerd as the herd of the DigitalCow:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">a_herd</span> <span class="pre">=</span> <span class="pre">DigitalHerd()</span></code></p>
-<p><code class="docutils literal notranslate"><span class="pre">cow</span> <span class="pre">=</span> <span class="pre">DigitalCow(herd=a_herd)</span></code></p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a_herd</span> <span class="o">=</span> <span class="n">DigitalHerd</span><span class="p">()</span>
+<span class="n">cow</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">(</span><span class="n">herd</span><span class="o">=</span><span class="n">a_herd</span><span class="p">)</span>
+</pre></div>
+</div>
 </li>
 <li><p>Overwrites the DigitalHerd as the herd of the DigitalCow:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">a_herd</span> <span class="pre">=</span> <span class="pre">DigitalHerd()</span></code></p>
-<p><code class="docutils literal notranslate"><span class="pre">another_herd</span> <span class="pre">=</span> <span class="pre">DigitalHerd()</span></code></p>
-<p><code class="docutils literal notranslate"><span class="pre">cow</span> <span class="pre">=</span> <span class="pre">DigitalCow(herd=a_herd)</span></code></p>
-<p><code class="docutils literal notranslate"><span class="pre">cow.herd</span> <span class="pre">=</span> <span class="pre">another_herd</span></code></p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a_herd</span> <span class="o">=</span> <span class="n">DigitalHerd</span><span class="p">()</span>
+<span class="n">another_herd</span> <span class="o">=</span> <span class="n">DigitalHerd</span><span class="p">()</span>
+<span class="n">cow</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">(</span><span class="n">herd</span><span class="o">=</span><span class="n">a_herd</span><span class="p">)</span>
+<span class="n">cow</span><span class="o">.</span><span class="n">herd</span> <span class="o">=</span> <span class="n">another_herd</span>
+</pre></div>
+</div>
 </li>
 </ol>
 <p><em>There are other methods that alter the herd of the cow using functions from the
-DigitalHerd class. These are described in the digital_herd module.</em></p>
+``DigitalHerd`` class. These are described in the ``digital_herd`` module.</em></p>
 </dd>
 </dl>
 </li>
 </ol>
 </section>
 <hr class="docutils" />
+<section id="retrieving-and-altering-instance-variables">
+<h3>3. Retrieving and altering instance variables:<a class="headerlink" href="#retrieving-and-altering-instance-variables" title="Permalink to this heading">#</a></h3>
+<p>There are many variables in the <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code> class, all of which can be called.</p>
+<ol class="arabic simple">
+<li><p>Retrieving <code class="docutils literal notranslate"><span class="pre">property</span></code> variables:</p></li>
+</ol>
+<p>all instance variables are <code class="docutils literal notranslate"><span class="pre">properties</span></code>. They can be called like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a_cow</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">()</span>
+<span class="n">dim</span> <span class="o">=</span> <span class="n">a_cow</span><span class="o">.</span><span class="n">current_days_in_milk</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Altering <code class="docutils literal notranslate"><span class="pre">property</span></code> variables:</p></li>
+</ol>
+<p>all instance variables can be altered like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a_cow</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">()</span>
+<span class="n">dim</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">a_cow</span><span class="o">.</span><span class="n">current_days_in_milk</span> <span class="o">=</span> <span class="n">dim</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
 <section id="generate-states-for-the-digitalcow-object">
-<h3>3. Generate states for the DigitalCow object:<a class="headerlink" href="#generate-states-for-the-digitalcow-object" title="Permalink to this heading">#</a></h3>
-<p>Generate states for the cow with using the <code class="docutils literal notranslate"><span class="pre">generate_total_states()</span></code> function:</p>
+<h3>4. Generate states for the DigitalCow object:<a class="headerlink" href="#generate-states-for-the-digitalcow-object" title="Permalink to this heading">#</a></h3>
+<p>Generate states for the cow with using the <code class="docutils literal notranslate"><span class="pre">generate_total_states()</span></code> function.
+If you use these to make a transition matrix, this will determine the size of the matrix and
+thus how far you can simulate.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">days_in_milk_limit</span></code> parameter determines the maximum number of days within one lactation
+(The actual number can be less depending on the milk threshold). The <code class="docutils literal notranslate"><span class="pre">lactation_number_limit</span></code> is the maximum
+number of lactations that can be completed before culling.</p>
 <ol class="loweralpha">
 <li><p>without parameters:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">cow.generate_total_state()</span></code></p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cow</span><span class="o">.</span><span class="n">generate_total_state</span><span class="p">()</span>
+</pre></div>
+</div>
 </li>
 </ol>
 <p>Here the <code class="docutils literal notranslate"><span class="pre">days_in_milk_limit</span></code> and <code class="docutils literal notranslate"><span class="pre">lactation_number_limit</span></code> variables from the
 herd are used.</p>
 <ol class="loweralpha" start="2">
 <li><p>with parameters:</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">cow.generate_total_states(dim_limit=750,</span> <span class="pre">ln_limit=9)</span></code></p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cow</span><span class="o">.</span><span class="n">generate_total_states</span><span class="p">(</span><span class="n">dim_limit</span><span class="o">=</span><span class="mi">750</span><span class="p">,</span> <span class="n">ln_limit</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+</pre></div>
+</div>
 </li>
 </ol>
+</section>
+<hr class="docutils" />
+<section id="using-the-state-probability-generator">
+<h3>5. Using the <code class="docutils literal notranslate"><span class="pre">state_probability_generator</span></code>:<a class="headerlink" href="#using-the-state-probability-generator" title="Permalink to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">state_probability_generator()</span></code> function takes a DigitalCow as a parameter.
+It goes through the states that have been generated and returns the probability of the cow moving from one state
+to another together with the indices of these states. This can be used together with the <code class="docutils literal notranslate"><span class="pre">array_assembler</span></code> function
+from the <code class="docutils literal notranslate"><span class="pre">chain_simulator</span></code> package to create a transition matrix.</p>
+<dl>
+<dt>::</dt><dd><p>from chain_simulator.assembly import array_assembler
+from cow_builder.digital_cow import state_probability_generator</p>
+<p>tm = array_assembler(state_count=cow.node_count, probability_calculator=state_probability_generator(cow))</p>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="using-the-vector-phenotype-functions">
+<h3>6. Using the vector phenotype functions:<a class="headerlink" href="#using-the-vector-phenotype-functions" title="Permalink to this heading">#</a></h3>
+<p>The vector phenotype functions are used to calculate phenotype values from a given vector of state probabilities.
+These functions can be passed to the <code class="docutils literal notranslate"><span class="pre">simulation_accumulator</span></code> function of the <code class="docutils literal notranslate"><span class="pre">chain_simulator</span></code> package in
+a dictionary. Parameters should be partially filled to allow the <code class="docutils literal notranslate"><span class="pre">simulation_accumulator</span></code> to access specific
+instance variables and functions.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cow_builder.digital_cow</span> <span class="kn">import</span> <span class="n">vector_milk_production</span><span class="p">,</span> <span class="n">vector_nitrogen_emission</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+
+<span class="n">callbacks</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;milk&quot;</span><span class="p">:</span> <span class="n">partial</span><span class="p">(</span><span class="n">vector_milk_production</span><span class="p">,</span> <span class="n">digital_cow</span><span class="o">=</span><span class="n">cow</span><span class="p">),</span>
+    <span class="s2">&quot;nitrogen&quot;</span><span class="p">:</span> <span class="n">partial</span><span class="p">(</span><span class="n">vector_nitrogen_emission</span><span class="p">,</span> <span class="n">digital_cow</span><span class="o">=</span><span class="n">cow</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </section>
 </section>
 <hr class="docutils" />
@@ -635,38 +690,6 @@ the dry matter intake must be calculated.</p></li>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="cow_builder.digital_cow.convert_vector_to_1d">
-<span class="sig-prename descclassname"><span class="pre">cow_builder.digital_cow.</span></span><span class="sig-name descname"><span class="pre">convert_vector_to_1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulated_day</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_states</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cow_builder.digital_cow.convert_vector_to_1d" title="Permalink to this definition">#</a></dt>
-<dd><p>Converts a vector to 1 dimension by adding the probabilities of different states
-with the same value on the chosen dimension together. Which dimension this is
-depends on the <code class="docutils literal notranslate"><span class="pre">group_by</span></code> parameter.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>simulated_day</strong> (<em>tuple</em>) – A tuple that contains a vector as well as the day in
-simulation that the vector is from.</p></li>
-<li><p><strong>total_states</strong> (<em>tuple</em>) – A generated tuple of State objects that the cow can be in.</p></li>
-<li><p><strong>group_by</strong> (<em>int</em>) – <p>An int that indicates what dimension to group the states by.</p>
-<ul>
-<li><p>index = 0: days_in_milk</p></li>
-<li><p>index = 1: lactation_number</p></li>
-<li><p>index = 2: days_pregnant</p></li>
-<li><p>index = 3: life_state</p></li>
-</ul>
-</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The value of the chosen dimension with the corresponding probability
-of being in a state with that specific value</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
@@ -995,12 +1018,54 @@ whether the cow is lactating or not.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="cow_builder.digital_cow.vector_milk_production">
 <span class="sig-prename descclassname"><span class="pre">cow_builder.digital_cow.</span></span><span class="sig-name descname"><span class="pre">vector_milk_production</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_in_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">digital_cow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#cow_builder.digital_cow.DigitalCow" title="cow_builder.digital_cow.DigitalCow"><span class="pre">DigitalCow</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">intermediate_accumulator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cow_builder.digital_cow.vector_milk_production" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>A function that calculates the milk production of a cow <code class="docutils literal notranslate"><span class="pre">digital_cow</span></code>,
+on a given day in simulation <code class="docutils literal notranslate"><span class="pre">step_in_time</span></code>, using a vector of state probabilities.
+The milk production is multiplied with <code class="docutils literal notranslate"><span class="pre">step_size</span></code> to extrapolate the milk production until the
+next <code class="docutils literal notranslate"><span class="pre">step_in_time</span></code>. If an intermediate_accumulator is given, milk production is also saved in that dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vector</strong> (<em>np.ndarray</em>) – A vector of state probabilities that represents the probability of the cow being in each state at
+the current time in the simulation.</p></li>
+<li><p><strong>step_in_time</strong> (<em>int</em>) – The current day in the simulation.</p></li>
+<li><p><strong>step_size</strong> (<em>int</em>) – The interval in days for which phenotype values are calculated during the simulation.</p></li>
+<li><p><strong>digital_cow</strong> (<a class="reference internal" href="#cow_builder.digital_cow.DigitalCow" title="cow_builder.digital_cow.DigitalCow"><em>DigitalCow</em></a>) – The representation of the cow that is being simulated.</p></li>
+<li><p><strong>intermediate_accumulator</strong> (<em>dict</em><em>[</em><em>int</em><em>, </em><em>float</em><em>] </em><em>| </em><em>None</em>) – A dictionary that stores the milk production of each day in the simulation for
+which phenotype values are calculated.</p></li>
+</ul>
+</dd>
+</dl>
+<p>:return The milk production of the current day in simulation extrapolated until the next step_in_time.
+:rtype: float</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cow_builder.digital_cow.vector_nitrogen_emission">
 <span class="sig-prename descclassname"><span class="pre">cow_builder.digital_cow.</span></span><span class="sig-name descname"><span class="pre">vector_nitrogen_emission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_in_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">digital_cow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#cow_builder.digital_cow.DigitalCow" title="cow_builder.digital_cow.DigitalCow"><span class="pre">DigitalCow</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">intermediate_accumulator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cow_builder.digital_cow.vector_nitrogen_emission" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>A function that calculates the nitrogen emission of a cow <code class="docutils literal notranslate"><span class="pre">digital_cow</span></code>,
+on a given day in simulation <code class="docutils literal notranslate"><span class="pre">step_in_time</span></code>, using a vector of state probabilities.
+The nitrogen emission is multiplied with <code class="docutils literal notranslate"><span class="pre">step_size</span></code> to extrapolate the nitrogen emission until the
+next <code class="docutils literal notranslate"><span class="pre">step_in_time</span></code>. If an intermediate_accumulator is given, nitrogen emission is also saved in that dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vector</strong> (<em>np.ndarray</em>) – A vector of state probabilities that represents the probability of the cow being in each state at
+the current time in the simulation.</p></li>
+<li><p><strong>step_in_time</strong> (<em>int</em>) – The current day in the simulation.</p></li>
+<li><p><strong>step_size</strong> (<em>int</em>) – The interval in days for which phenotype values are calculated during the simulation.</p></li>
+<li><p><strong>digital_cow</strong> (<a class="reference internal" href="#cow_builder.digital_cow.DigitalCow" title="cow_builder.digital_cow.DigitalCow"><em>DigitalCow</em></a>) – The representation of the cow that is being simulated.</p></li>
+<li><p><strong>intermediate_accumulator</strong> (<em>dict</em><em>[</em><em>int</em><em>, </em><em>float</em><em>] </em><em>| </em><em>None</em>) – A dictionary that stores the nitrogen emission of each day in the simulation for
+which phenotype values are calculated.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The nitrogen emission of the current day in simulation extrapolated until the next step_in_time.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 
@@ -1063,7 +1128,10 @@ whether the cow is lactating or not.</p></li>
 <li><a class="reference internal" href="#how-to-use-this-module">How To Use This Module</a><ul>
 <li><a class="reference internal" href="#import-the-classes-digitalcow-and-digitalherd">1. Import the classes DigitalCow and DigitalHerd:</a></li>
 <li><a class="reference internal" href="#create-a-digitalcow-and-digitalherd-object">2. Create a DigitalCow and DigitalHerd object:</a></li>
-<li><a class="reference internal" href="#generate-states-for-the-digitalcow-object">3. Generate states for the DigitalCow object:</a></li>
+<li><a class="reference internal" href="#retrieving-and-altering-instance-variables">3. Retrieving and altering instance variables:</a></li>
+<li><a class="reference internal" href="#generate-states-for-the-digitalcow-object">4. Generate states for the DigitalCow object:</a></li>
+<li><a class="reference internal" href="#using-the-state-probability-generator">5. Using the <code class="docutils literal notranslate"><span class="pre">state_probability_generator</span></code>:</a></li>
+<li><a class="reference internal" href="#using-the-vector-phenotype-functions">6. Using the vector phenotype functions:</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#cow_builder.digital_cow.DigitalCow"><code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code></a><ul>
@@ -1092,7 +1160,6 @@ whether the cow is lactating or not.</p></li>
 </li>
 <li><a class="reference internal" href="#cow_builder.digital_cow.calculate_body_weight"><code class="docutils literal notranslate"><span class="pre">calculate_body_weight()</span></code></a></li>
 <li><a class="reference internal" href="#cow_builder.digital_cow.calculate_dmi"><code class="docutils literal notranslate"><span class="pre">calculate_dmi()</span></code></a></li>
-<li><a class="reference internal" href="#cow_builder.digital_cow.convert_vector_to_1d"><code class="docutils literal notranslate"><span class="pre">convert_vector_to_1d()</span></code></a></li>
 <li><a class="reference internal" href="#cow_builder.digital_cow.fecal_nitrogen_output"><code class="docutils literal notranslate"><span class="pre">fecal_nitrogen_output()</span></code></a></li>
 <li><a class="reference internal" href="#cow_builder.digital_cow.fecal_phosphor_output"><code class="docutils literal notranslate"><span class="pre">fecal_phosphor_output()</span></code></a></li>
 <li><a class="reference internal" href="#cow_builder.digital_cow.manure_nitrogen_output"><code class="docutils literal notranslate"><span class="pre">manure_nitrogen_output()</span></code></a></li>

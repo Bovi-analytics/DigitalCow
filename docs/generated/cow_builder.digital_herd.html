@@ -225,7 +225,7 @@
 <h2>How To Use This Module<a class="headerlink" href="#how-to-use-this-module" title="Permalink to this heading">#</a></h2>
 <p>(See the individual classes, methods, and attributes for details.)</p>
 <p>This module is to be used in conjunction with the <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code> class.
-The DigitalHerd contains certain variables used by the <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code> class for
+The <code class="docutils literal notranslate"><span class="pre">DigitalHerd</span></code> contains certain variables used by the <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code> class for
 simulation purposes. These variables are the same for all <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code> instances
 in the herd.</p>
 <p><em>Values in this HowTo are examples, see documentation of each class or function
@@ -257,20 +257,45 @@ follows:</p>
 <p><em>For details about the parameters, look at the</em> <code class="docutils literal notranslate"><span class="pre">__init__</span></code> <em>method.</em></p>
 </section>
 <hr class="docutils" />
+<section id="retrieve-instance-variables">
+<h3>3. Retrieve instance variables:<a class="headerlink" href="#retrieve-instance-variables" title="Permalink to this heading">#</a></h3>
+<p>There are many variables in the <code class="docutils literal notranslate"><span class="pre">DigitalHerd</span></code> class, all of which can be called.
+A few use a different method of calling the variable.</p>
+<ol class="arabic simple">
+<li><p>Normal <code class="docutils literal notranslate"><span class="pre">property</span></code> variables:</p></li>
+</ol>
+<p>Most instance variables are <code class="docutils literal notranslate"><span class="pre">properties</span></code>. They can be called like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a_herd</span> <span class="o">=</span> <span class="n">DigitalHerd</span><span class="p">()</span>
+<span class="n">milk_threshold</span> <span class="o">=</span> <span class="n">a_herd</span><span class="o">.</span><span class="n">milk_threshold</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Variables using getters and setters:</p></li>
+</ol>
+<p>Some variables use custom getters and setters because the <code class="docutils literal notranslate"><span class="pre">property</span></code> decoration does not allow parameters in getters.
+These can be called like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a_herd</span> <span class="o">=</span> <span class="n">DigitalHerd</span><span class="p">()</span>
+<span class="n">lactation_number</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">vwp</span> <span class="o">=</span> <span class="n">a_herd</span><span class="o">.</span><span class="n">get_voluntary_waiting_period</span><span class="p">(</span><span class="n">lactation_number</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><em>The special getters and setters can be found in the Methods section of the DigitalHerd class documentation.</em></p>
+</section>
+<hr class="docutils" />
 <section id="alter-the-herd">
-<h3>3. Alter the herd:<a class="headerlink" href="#alter-the-herd" title="Permalink to this heading">#</a></h3>
+<h3>4. Alter the herd:<a class="headerlink" href="#alter-the-herd" title="Permalink to this heading">#</a></h3>
 <p>There are a few different methods that can be used to alter the herd list of a
-DigitalHerd instance. These alterations will also affect the <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code> objects
+<code class="docutils literal notranslate"><span class="pre">DigitalHerd</span></code> instance. These alterations will also affect the <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code> objects
 that are added or removed from the herd.</p>
-<ol class="arabic">
-<li><p>Adds the <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code> objects to the DigitalHerd and sets the <code class="docutils literal notranslate"><span class="pre">DigitalHerd</span></code> as the herd of each <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code>:</p>
+<p>1) Adds the <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code> objects to the <code class="docutils literal notranslate"><span class="pre">DigitalHerd</span></code> and sets the <code class="docutils literal notranslate"><span class="pre">DigitalHerd</span></code> as
+the herd of each <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a_herd</span> <span class="o">=</span> <span class="n">DigitalHerd</span><span class="p">()</span>
 <span class="n">cow</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">()</span>
 <span class="n">cow2</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">()</span>
 <span class="n">a_herd</span><span class="o">.</span><span class="n">add_to_herd</span><span class="p">(</span><span class="n">cows</span><span class="o">=</span><span class="p">[</span><span class="n">cow</span><span class="p">,</span> <span class="n">cow2</span><span class="p">])</span>
 </pre></div>
 </div>
-</li>
+<ol class="arabic" start="2">
 <li><p>Removes the <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code> objects from the <code class="docutils literal notranslate"><span class="pre">DigitalHerd</span></code> and sets the herd of each <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code> to <code class="docutils literal notranslate"><span class="pre">None</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a_herd</span> <span class="o">=</span> <span class="n">DigitalHerd</span><span class="p">()</span>
 <span class="n">cow</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">(</span><span class="n">herd</span><span class="o">=</span><span class="n">a_herd</span><span class="p">)</span>
@@ -279,15 +304,37 @@ that are added or removed from the herd.</p>
 </pre></div>
 </div>
 </li>
-<li><p>Overwrites the list of <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code> objects as the herd of the DigitalHerd and the DigitalHerd as the herd of each <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code>:</p>
+</ol>
+<p>3) Overwrites the list of <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code> objects as the herd of the <code class="docutils literal notranslate"><span class="pre">DigitalHerd</span></code>
+and the <code class="docutils literal notranslate"><span class="pre">DigitalHerd</span></code> as the herd of each <code class="docutils literal notranslate"><span class="pre">DigitalCow</span></code> in the list:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a_herd</span> <span class="o">=</span> <span class="n">DigitalHerd</span><span class="p">()</span>
 <span class="n">cow</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">()</span>
 <span class="n">cow2</span> <span class="o">=</span> <span class="n">DigitalCow</span><span class="p">()</span>
 <span class="n">a_herd</span><span class="o">.</span><span class="n">herd</span> <span class="o">=</span> <span class="p">[</span><span class="n">cow</span><span class="p">,</span> <span class="n">cow2</span><span class="p">]</span>
 </pre></div>
 </div>
-</li>
-</ol>
+</section>
+<hr class="docutils" />
+<section id="alter-other-instance-variables">
+<h3>5. Alter other instance variables:<a class="headerlink" href="#alter-other-instance-variables" title="Permalink to this heading">#</a></h3>
+<p>There are many variables in the <code class="docutils literal notranslate"><span class="pre">DigitalHerd</span></code> class, all of which can be altered.
+A few use a different method of alteration.</p>
+<p>1) Normal <code class="docutils literal notranslate"><span class="pre">property</span></code> variables:
+Most instance variables are <code class="docutils literal notranslate"><span class="pre">properties</span></code>. They can be changed like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a_herd</span> <span class="o">=</span> <span class="n">DigitalHerd</span><span class="p">()</span>
+<span class="n">milk_threshold</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="n">a_herd</span><span class="o">.</span><span class="n">milk_threshold</span> <span class="o">=</span> <span class="n">milk_threshold</span>
+</pre></div>
+</div>
+<p>2) Variables using getters and setters:
+Some variables use custom getters and setters because the <code class="docutils literal notranslate"><span class="pre">property</span></code> decoration does not allow parameters in getters.
+These can be changed like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a_herd</span> <span class="o">=</span> <span class="n">DigitalHerd</span><span class="p">()</span>
+<span class="n">vwp</span> <span class="o">=</span> <span class="p">(</span><span class="mi">370</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">a_herd</span><span class="o">.</span><span class="n">set_voluntary_waiting_period</span><span class="p">(</span><span class="n">vwp</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><em>The special getters and setters can be found in the Methods section of the DigitalHerd class documentation.</em></p>
 </section>
 </section>
 <hr class="docutils" />
@@ -295,7 +342,7 @@ that are added or removed from the herd.</p>
 <dt class="sig sig-object py" id="cow_builder.digital_herd.DigitalHerd">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cow_builder.digital_herd.</span></span><span class="sig-name descname"><span class="pre">DigitalHerd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vwp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(365,</span> <span class="pre">80,</span> <span class="pre">60)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">insemination_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(100,</span> <span class="pre">100,</span> <span class="pre">100)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">milk_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">days_in_milk_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lactation_number_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">days_pregnant_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(279,</span> <span class="pre">280,</span> <span class="pre">282)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration_dry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(60,</span> <span class="pre">60)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu_age_at_first_heat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">365</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_age_at_first_heat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cow_builder.digital_herd.DigitalHerd" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A class to represent a digital herd of cows and manage their properties.</p>
+<p>A class to represent a herd of cows and manage their properties.</p>
 <dl class="field-list">
 <dt class="field-odd">Attributes<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="field-list simple">
@@ -307,7 +354,7 @@ will experience its first estrus.</p>
 <dd class="field-even"><p>int</p>
 </dd>
 <dt class="field-odd">var _sigma_age_at_first_heat<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The standard deviation in days of the age
+<dd class="field-odd"><p>The standard deviation in days to generate an age
 at which a cow will experience its first estrus.</p>
 </dd>
 <dt class="field-even">type _sigma_age_at_first_heat<span class="colon">:</span></dt>
@@ -399,10 +446,6 @@ lactation_number_limit, days_pregnant_limit, duration_dry)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>mu_age_at_first_heat</strong> (<em>int</em>) – The mean age in days at which a cow
-will experience its first estrus.</p></li>
-<li><p><strong>sigma_age_at_first_heat</strong> (<em>int</em>) – The standard deviation of the age
-at which a cow will experience its first estrus.</p></li>
 <li><p><strong>vwp</strong> (<em>tuple</em><em>[</em><em>int</em><em>]</em>) – The voluntary waiting period in days before a
 cow can be inseminated. Values in the tuple are for lactation 0, 1,
 and 2+.</p></li>
@@ -412,13 +455,17 @@ are for lactation 0, 1, and 2+.</p></li>
 <li><p><strong>milk_threshold</strong> (<em>float</em>) – The minimum milk production in kg
 to be considered as a productive cow. Default is 10.</p></li>
 <li><p><strong>days_in_milk_limit</strong> (<em>int</em>) – The maximum number of days a cow can be in milk
-before being culled.</p></li>
+before being culled. Default is 1000.</p></li>
 <li><p><strong>lactation_number_limit</strong> (<em>int</em>) – The maximum number of lactation cycles a cow
-can have completed before being culled.</p></li>
+can have completed before being culled. Default is 9.</p></li>
 <li><p><strong>days_pregnant_limit</strong> (<em>tuple</em><em>[</em><em>int</em><em>]</em>) – The maximum number of days a cow can be pregnant.
 Values in the tuple are for lactation 0, 1, and 2+.</p></li>
 <li><p><strong>duration_dry</strong> (<em>tuple</em><em>[</em><em>int</em><em>]</em>) – The number of days before calving, when a cow is not
 being milked. Values in the tuple are for lactation 1 and 2+.</p></li>
+<li><p><strong>mu_age_at_first_heat</strong> (<em>int</em>) – The mean age in days at which a cow
+will experience its first estrus.</p></li>
+<li><p><strong>sigma_age_at_first_heat</strong> (<em>int</em>) – The standard deviation used to generate an age
+at which a cow will experience its first estrus.</p></li>
 </ul>
 </dd>
 </dl>
@@ -461,7 +508,8 @@ its first estrus.</p>
 and its standard deviation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A random age at first heat based on the mean age at first heat and its standard deviation.</p>
+<dd class="field-odd"><p>A random age the cow will have her first heat,
+based on the mean age at first heat and its standard deviation.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>int</p>
@@ -595,6 +643,9 @@ objects.</p>
 <dd class="field-odd"><p><strong>limit</strong> (<em>tuple</em><em>[</em><em>int</em><em>]</em>) – A tuple containing limits for number of days a cow can be
 pregnant. Values in the tuple are for lactation 0, 1, and 2+.</p>
 </dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>TypeError</strong> – If not all items in the limit parameter are of type int.</p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -608,6 +659,9 @@ pregnant. Values in the tuple are for lactation 0, 1, and 2+.</p>
 with a specific lactation number. Values in the tuple are for
 lactation 1 and 2+.</p>
 </dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>TypeError</strong> – If not all items in the duration_dry parameter are of type int.</p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -619,6 +673,9 @@ lactation 1 and 2+.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>dim_window</strong> (<em>tuple</em><em>[</em><em>int</em><em>]</em>) – A tuple with insemination windows in days when a cow can
 be inseminated. Values in the tuple are for lactation 0, 1, and 2+.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>TypeError</strong> – If not all items in the dim_window parameter are of type int.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -632,6 +689,9 @@ be inseminated. Values in the tuple are for lactation 0, 1, and 2+.</p>
 <dd class="field-odd"><p><strong>vwp</strong> (<em>tuple</em><em>[</em><em>int</em><em>]</em>) – A tuple with the voluntary waiting periods in days before a
 cow can be inseminated. Values in the tuple are for lactation 0, 1,
 and 2+.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>TypeError</strong> – If not all items in the vwp parameter are of type int.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -706,7 +766,9 @@ its first estrus.</p>
 <li><a class="reference internal" href="#how-to-use-this-module">How To Use This Module</a><ul>
 <li><a class="reference internal" href="#import-the-class-digitalherd">1. Import the class DigitalHerd:</a></li>
 <li><a class="reference internal" href="#create-a-digitalherd-instance">2. Create a DigitalHerd instance:</a></li>
-<li><a class="reference internal" href="#alter-the-herd">3. Alter the herd:</a></li>
+<li><a class="reference internal" href="#retrieve-instance-variables">3. Retrieve instance variables:</a></li>
+<li><a class="reference internal" href="#alter-the-herd">4. Alter the herd:</a></li>
+<li><a class="reference internal" href="#alter-other-instance-variables">5. Alter other instance variables:</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#cow_builder.digital_herd.DigitalHerd"><code class="docutils literal notranslate"><span class="pre">DigitalHerd</span></code></a><ul>

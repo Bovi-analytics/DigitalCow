@@ -1,5 +1,3 @@
-# $Id:
-# Copyright:
 """
 :module: state
 :module author: Gabe van den Hoeven
@@ -64,8 +62,9 @@ class State:
         :type milk_output: float
 
     :Methods:
-        __post_init__()\n
-        mutate(**kwargs)\n
+        __post_init__()
+
+        mutate(**kwargs)
 
     ************************************************************
     """

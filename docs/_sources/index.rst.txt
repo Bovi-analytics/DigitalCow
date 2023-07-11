@@ -84,7 +84,13 @@ c) Set the herd of the ``DigitalCow``:
 
 3. Generate states for the DigitalCow object:
 *********************************************
-Generate states for the cow using the ``generate_total_states()`` function:
+Generate states for the cow using the ``generate_total_states()`` function.
+If you use these to make a transition matrix, this will determine the size of the matrix and
+thus how far you can simulate.
+
+The ``days_in_milk_limit`` parameter determines the maximum number of days within one lactation
+(The actual number can be less depending on the milk threshold). The ``lactation_number_limit`` is the maximum
+number of lactations that can be completed before culling.
 
 a) without parameters::
 
