@@ -1,5 +1,3 @@
-# $Id:
-# Copyright:
 """
 :module: digital_herd
 :module author: Gabe van den Hoeven
@@ -8,11 +6,13 @@
 ======================
 How To Use This Module
 ======================
-(See the individual classes, methods, and attributes for details.)\n
+(See the individual classes, methods, and attributes for details.)
+
 This module is to be used in conjunction with the ``DigitalCow`` class.
-The DigitalHerd contains certain variables used by the ``DigitalCow`` class for
+The ``DigitalHerd`` contains certain variables used by the ``DigitalCow`` class for
 simulation purposes. These variables are the same for all ``DigitalCow`` instances
-in the herd.\n
+in the herd.
+
 *Values in this HowTo are examples, see documentation of each class or function
 for details on the default values.*
 
@@ -41,13 +41,39 @@ b) with parameters::
 
 ************************************************************
 
-3. Alter the herd:
+3. Retrieve instance variables:
+*******************************
+There are many variables in the ``DigitalHerd`` class, all of which can be called.
+A few use a different method of calling the variable.
+
+1) Normal ``property`` variables:
+
+Most instance variables are ``properties``. They can be called like this::
+
+    a_herd = DigitalHerd()
+    milk_threshold = a_herd.milk_threshold
+
+2) Variables using getters and setters:
+
+Some variables use custom getters and setters because the ``property`` decoration does not allow parameters in getters.
+These can be called like this::
+
+    a_herd = DigitalHerd()
+    lactation_number = 1
+    vwp = a_herd.get_voluntary_waiting_period(lactation_number)
+
+*The special getters and setters can be found in the Methods section of the DigitalHerd class documentation.*
+
+************************************************************
+
+4. Alter the herd:
 ******************
 There are a few different methods that can be used to alter the herd list of a
-DigitalHerd instance. These alterations will also affect the ``DigitalCow`` objects
+``DigitalHerd`` instance. These alterations will also affect the ``DigitalCow`` objects
 that are added or removed from the herd.
 
-1) Adds the ``DigitalCow`` objects to the DigitalHerd and sets the ``DigitalHerd`` as the herd of each ``DigitalCow``::
+1) Adds the ``DigitalCow`` objects to the ``DigitalHerd`` and sets the ``DigitalHerd`` as
+the herd of each ``DigitalCow``::
 
     a_herd = DigitalHerd()
     cow = DigitalCow()
@@ -61,7 +87,8 @@ that are added or removed from the herd.
     cow2 = DigitalCow(herd=a_herd)
     a_herd.remove_from_herd(cows=[cow, cow2])
 
-3) Overwrites the list of ``DigitalCow`` objects as the herd of the ``DigitalHerd`` and the ``DigitalHerd`` as the herd of each ``DigitalCow``::
+3) Overwrites the list of ``DigitalCow`` objects as the herd of the ``DigitalHerd``
+and the ``DigitalHerd`` as the herd of each ``DigitalCow`` in the list::
 
     a_herd = DigitalHerd()
     cow = DigitalCow()
@@ -70,11 +97,34 @@ that are added or removed from the herd.
 
 ************************************************************
 
+5. Alter other instance variables:
+**********************************
+There are many variables in the ``DigitalHerd`` class, all of which can be altered.
+A few use a different method of alteration.
+
+1) Normal ``property`` variables:
+Most instance variables are ``properties``. They can be changed like this::
+
+    a_herd = DigitalHerd()
+    milk_threshold = 15
+    a_herd.milk_threshold = milk_threshold
+
+2) Variables using getters and setters:
+Some variables use custom getters and setters because the ``property`` decoration does not allow parameters in getters.
+These can be changed like this::
+
+    a_herd = DigitalHerd()
+    vwp = (370, 90, 50)
+    a_herd.set_voluntary_waiting_period(vwp)
+
+*The special getters and setters can be found in the Methods section of the DigitalHerd class documentation.*
+
+************************************************************
+
 """
 
 
 import numpy as np
-from cow_builder import digital_cow
 
 
 class DigitalHerd:
@@ -85,7 +135,7 @@ class DigitalHerd:
         :var _mu_age_at_first_heat: The mean age in days at which a cow
             will experience its first estrus.
         :type _mu_age_at_first_heat: int
-        :var _sigma_age_at_first_heat: The standard deviation in days of the age
+        :var _sigma_age_at_first_heat: The standard deviation in days to generate an age
             at which a cow will experience its first estrus.
         :type _sigma_age_at_first_heat: int
         :var _voluntary_waiting_period: The voluntary waiting period in days before a
@@ -118,19 +168,31 @@ class DigitalHerd:
     :Methods:
         __init__(mu_age_at_first_heat, sigma_age_at_first_heat, vwp,
         insemination_window, milk_threshold, days_in_milk_limit,
-        lactation_number_limit, days_pregnant_limit, duration_dry)\n
-        add_to_herd(cows)\n
-        remove_from_herd(cows)\n
-        calculate_mu_age_at_first_heat()\n
-        generate_age_at_first_heat()\n
-        get_voluntary_waiting_period(lactation_number)\n
-        set_voluntary_waiting_period(vwp)\n
-        get_insemination_window(lactation_number)\n
-        set_insemination_window(dim_window)\n
-        get_days_pregnant_limit(lactation_number)\n
-        set_days_pregnant_limit(limit)\n
-        get_duration_dry(lactation_number)\n
-        set_duration_dry(duration_dry)\n
+        lactation_number_limit, days_pregnant_limit, duration_dry)
+
+        add_to_herd(cows)
+
+        remove_from_herd(cows)
+
+        calculate_mu_age_at_first_heat()
+
+        generate_age_at_first_heat()
+
+        get_voluntary_waiting_period(lactation_number)
+
+        set_voluntary_waiting_period(vwp)
+
+        get_insemination_window(lactation_number)
+
+        set_insemination_window(dim_window)
+
+        get_days_pregnant_limit(lactation_number)
+
+        set_days_pregnant_limit(limit)
+
+        get_duration_dry(lactation_number)
+
+        set_duration_dry(duration_dry)
 
     ************************************************************
     """
@@ -153,10 +215,10 @@ class DigitalHerd:
             to be considered as a productive cow. Default is 10.
         :type milk_threshold: float
         :param days_in_milk_limit: The maximum number of days a cow can be in milk
-            before being culled.
+            before being culled. Default is 1000.
         :type days_in_milk_limit: int
         :param lactation_number_limit: The maximum number of lactation cycles a cow
-            can have completed before being culled.
+            can have completed before being culled. Default is 9.
         :type lactation_number_limit: int
         :param days_pregnant_limit: The maximum number of days a cow can be pregnant.
             Values in the tuple are for lactation 0, 1, and 2+.
@@ -167,7 +229,7 @@ class DigitalHerd:
         :param mu_age_at_first_heat: The mean age in days at which a cow
             will experience its first estrus.
         :type mu_age_at_first_heat: int
-        :param sigma_age_at_first_heat: The standard deviation of the age
+        :param sigma_age_at_first_heat: The standard deviation used to generate an age
             at which a cow will experience its first estrus.
         :type sigma_age_at_first_heat: int
         """
@@ -193,9 +255,10 @@ class DigitalHerd:
         :raises TypeError: If the list given does not solely consist of ``DigitalCow``
             objects.
         """
+        from cow_builder.digital_cow import DigitalCow
         if cows is not None:
             for cow in cows:
-                if isinstance(cow, digital_cow.DigitalCow):
+                if isinstance(cow, DigitalCow):
                     if cow not in self.herd:
                         self.herd.append(cow)
                         cow._herd = self
@@ -214,9 +277,10 @@ class DigitalHerd:
         :raises TypeError: If the list given does not solely consist of ``DigitalCow``
             objects.
         """
+        from cow_builder.digital_cow import DigitalCow
         if cows is not None:
             for cow in cows:
-                if isinstance(cow, digital_cow.DigitalCow):
+                if isinstance(cow, DigitalCow):
                     if cow in self.herd:
                         self.herd.remove(cow)
                         cow._herd = None
@@ -241,7 +305,8 @@ class DigitalHerd:
         Returns a random age at first heat based on the mean age at first heat
         and its standard deviation.
 
-        :returns: A random age at first heat based on the mean age at first heat and its standard deviation.
+        :returns: A random age the cow will have her first heat,
+         based on the mean age at first heat and its standard deviation.
         :rtype: int
         """
         self.calculate_mu_age_at_first_heat()
@@ -275,19 +340,20 @@ class DigitalHerd:
 
     @herd.setter
     def herd(self, herd: list):
-        all_instances = True
+        """
+
+        :param herd: A list of ``DigitalCow`` objects that will represent the herd.
+        :raises TypeError: If not all items in the herd parameter are of type ``DigitalCow``.
+        """
+        from cow_builder.digital_cow import DigitalCow
         if type(herd) == list:
             for cow in herd:
-                if not isinstance(cow, digital_cow.DigitalCow):
-                    all_instances = False
-            if all_instances:
-                self._herd = herd
-                for cow in self._herd:
-                    cow.herd = self
-            else:
-                raise TypeError(
-                    "Herd property must be a list containing only DigitalCow "
-                    "objects.")
+                if not isinstance(cow, DigitalCow):
+                    raise TypeError(
+                        f"All variables in the list must be of type DigitalCow, not {type(cow)}.")
+            self._herd = herd
+            for cow in self._herd:
+                cow.herd = self
 
     def get_voluntary_waiting_period(self, lactation_number: int) -> int:
         """
@@ -311,10 +377,11 @@ class DigitalHerd:
             cow can be inseminated. Values in the tuple are for lactation 0, 1,
             and 2+.
         :type vwp: tuple[int]
+        :raises TypeError: If not all items in the vwp parameter are of type int.
         """
         for i in vwp:
             if not type(i) == int:
-                raise TypeError
+                raise TypeError(f"All variables in the list must be of type int, not {type(i)}.")
         self._voluntary_waiting_period = vwp
 
     @property
@@ -341,10 +408,6 @@ class DigitalHerd:
         if lactation_number > 2:
             lactation_number = 2
         return self._insemination_window[lactation_number]
-        # TODO CHECK
-        # While creating the states, there would be 1 extra day pregnant state
-        # making the insemination window one day longer.
-        # The - 1 solves this issue without interfering with other parts of the code.
 
     def set_insemination_window(self, dim_window: tuple[int]):
         """
@@ -353,10 +416,11 @@ class DigitalHerd:
         :param dim_window: A tuple with insemination windows in days when a cow can
             be inseminated. Values in the tuple are for lactation 0, 1, and 2+.
         :type dim_window: tuple[int]
+        :raises TypeError: If not all items in the dim_window parameter are of type int.
         """
         for i in dim_window:
             if not type(i) == int:
-                raise TypeError
+                raise TypeError(f"All variables in the list must be of type int, not {type(i)}")
         self._insemination_window = dim_window
 
     @property
@@ -400,10 +464,11 @@ class DigitalHerd:
         :param limit: A tuple containing limits for number of days a cow can be
             pregnant. Values in the tuple are for lactation 0, 1, and 2+.
         :type limit: tuple[int]
+        :raises TypeError: If not all items in the limit parameter are of type int.
         """
         for i in limit:
             if not type(i) == int:
-                raise TypeError
+                raise TypeError(f"All variables in the list must be of type int, not {type(i)}")
         self._days_pregnant_limit = limit
 
     def get_duration_dry(self, lactation_number) -> int:
@@ -428,8 +493,9 @@ class DigitalHerd:
             with a specific lactation number. Values in the tuple are for
             lactation 1 and 2+.
         :type duration_dry: tuple[int]
+        :raises TypeError: If not all items in the duration_dry parameter are of type int.
         """
         for i in duration_dry:
             if not type(i) == int:
-                raise TypeError
+                raise TypeError(f"All variables in the list must be of type int, not {type(i)}")
         self._duration_dry = duration_dry

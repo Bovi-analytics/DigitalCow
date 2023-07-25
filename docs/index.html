@@ -214,7 +214,7 @@
 <p>Required packages to use this package are <a class="reference external" href="https://bovi-analytics.github.io/chain-simulator/generated/chain_simulator.html#module-chain_simulator" title="(in Chain simulator)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">chain_simulator</span></code></a> and <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html#module-numpy" title="(in NumPy v1.25)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a>.
 Additionally, <a class="reference external" href="https://docs.scipy.org/doc/scipy/index.html#module-scipy" title="(in SciPy v1.11.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy</span></code></a> can be used to save and load created transition matrices.
 These packages are automatically installed when installing the <code class="docutils literal notranslate"><span class="pre">cow_builder</span></code> package.</p>
-<p>Installing the visualisation version will also include <a class="reference external" href="https://matplotlib.org/stable/index.html#module-matplotlib" title="(in Matplotlib v3.7.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">matplotlib</span></code></a>, which can be used to visualise results
+<p>Installing the visualisation version will also include <a class="reference external" href="https://matplotlib.org/stable/index.html#module-matplotlib" title="(in Matplotlib v3.7.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">matplotlib</span></code></a>, which can be used to visualise results
 from a simulation. How this can be installed is described in the ReadMe of the cow-builder Github repository.</p>
 <section id="how-to-use-this-package">
 <h2>How To Use This Package<a class="headerlink" href="#how-to-use-this-package" title="Permalink to this heading">#</a></h2>
@@ -304,7 +304,12 @@ DigitalHerd class. These are described in the digital_herd module.</em></p>
 <hr class="docutils" />
 <section id="generate-states-for-the-digitalcow-object">
 <h3>3. Generate states for the DigitalCow object:<a class="headerlink" href="#generate-states-for-the-digitalcow-object" title="Permalink to this heading">#</a></h3>
-<p>Generate states for the cow using the <code class="docutils literal notranslate"><span class="pre">generate_total_states()</span></code> function:</p>
+<p>Generate states for the cow using the <code class="docutils literal notranslate"><span class="pre">generate_total_states()</span></code> function.
+If you use these to make a transition matrix, this will determine the size of the matrix and
+thus how far you can simulate.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">days_in_milk_limit</span></code> parameter determines the maximum number of days within one lactation
+(The actual number can be less depending on the milk threshold). The <code class="docutils literal notranslate"><span class="pre">lactation_number_limit</span></code> is the maximum
+number of lactations that can be completed before culling.</p>
 <ol class="loweralpha">
 <li><p>without parameters:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cow</span><span class="o">.</span><span class="n">generate_total_state</span><span class="p">()</span>
@@ -445,7 +450,7 @@ see the corresponding documentation of the chain_simulator package here:</em>
 <hr class="docutils" />
 <section id="optional-print-the-results-and-use-matplotlib-to-plot-the-simulation">
 <h3>8. <em>Optional:</em> Print the results and use Matplotlib to plot the simulation:<a class="headerlink" href="#optional-print-the-results-and-use-matplotlib-to-plot-the-simulation" title="Permalink to this heading">#</a></h3>
-<p>Extract the results from the dictionary or plot the simulation using the intermediate results and <a class="reference external" href="https://matplotlib.org/stable/index.html#module-matplotlib" title="(in Matplotlib v3.7.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">matplotlib</span></code></a>.</p>
+<p>Extract the results from the dictionary or plot the simulation using the intermediate results and <a class="reference external" href="https://matplotlib.org/stable/index.html#module-matplotlib" title="(in Matplotlib v3.7.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">matplotlib</span></code></a>.</p>
 <ol class="arabic">
 <li><p>Print the results from the simulation:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span>
