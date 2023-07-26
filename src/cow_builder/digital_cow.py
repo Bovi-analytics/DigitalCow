@@ -48,8 +48,8 @@ b) With a DigitalHerd object:
 
     2) With parameters::
 
-        a_herd = DigitalHerd(vwp=[365, 90, 70], insemination_window=[110, 100, 90],
-        milk_threshold=12, duration_dry=[70, 50])
+        a_herd = DigitalHerd(vwp=(365, 90, 70), insemination_window=(110, 100, 90),
+        milk_threshold=12, duration_dry=(70, 50))
         cow = DigitalCow(days_in_milk=67, lactation_number=1,
         days_pregnant=0, diet_cp_cu=160, diet_cp_fo=140, age=767, herd=a_herd, state='Open')
 
