@@ -216,7 +216,7 @@ Extract the results from the dictionary or plot the simulation using the interme
 1) Print the results from the simulation::
 
     print(
-        f"The milk production is: {accumulated['milk']} kg\n" \
+        f"The milk production is: {accumulated['milk']} kg\n"
         f"The nitrogen emission is: {accumulated['nitrogen']} g"
     )
 
@@ -228,14 +228,14 @@ Extract the results from the dictionary or plot the simulation using the interme
     plt.figure()
     x_points = np.asarray([key for key in milk_accumulator.keys()])
     y_points = np.asarray([value for value in milk_accumulator.values()])
-    plt.plot(x_points, y_points, label='milk production')
+    plt.plot(x_points, y_points, label='milk production (kg)')
     plt.legend()
     plt.show()
     plt.close()
     plt.figure()
     x_points = np.asarray([key for key in nitrogen_accumulator.keys()])
     y_points = np.asarray([value for value in nitrogen_accumulator.values()])
-    plt.plot(x_points, y_points, label='nitrogen emission')
+    plt.plot(x_points, y_points, label='nitrogen emission (g)')
     plt.legend()
     plt.show()
     plt.close()
